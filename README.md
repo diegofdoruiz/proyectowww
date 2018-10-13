@@ -11,9 +11,9 @@
 	- psycopg2-binary==2.7.5
 
 # DB - Postgresql 10
-	- create user www with password 'www'
-	- alter user with superuser createrole createdb
-	- Create database proyectowww with owner 'www'
+	- CREATE USER www WITH PASSWORD 'www'
+	- ALTER USER www WITH SUPERUSER CREATEROLE CREATEDB
+	- CREATE DATABASE proyectowww WITH OWNER www
 
 # How to use it
 	path$ mkdir localfolder
