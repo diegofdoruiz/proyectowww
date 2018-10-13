@@ -130,18 +130,20 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 
-# AUTH_USER_MODEL = 'mainapp.CustomUser'
-
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
+# *********** Link Para recuperar Password ***********/
+# Para ver el link de recuperación de contraseña en la consola
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
+
+# Para enviar un correo con el link de recuperación de contraseña, Diego tiene user y pass. Solicitar para probar
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'pruebas.univalle@gmail.com'
-EMAIL_HOST_PASSWORD = 'Desarrollo12'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 
 
