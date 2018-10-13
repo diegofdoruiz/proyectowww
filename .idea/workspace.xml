@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0910f175-7620-4072-80aa-f5d27806530a" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/proyectoprincipal/proyectoprincipal/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/proyectoprincipal/proyectoprincipal/settings.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,7 +25,7 @@
           <entry key="css" value="1" />
           <entry key="html" value="43" />
           <entry key="json" value="2" />
-          <entry key="py" value="54" />
+          <entry key="py" value="55" />
           <entry key="scss" value="2" />
           <entry key="txt" value="2" />
         </counts>
@@ -36,7 +36,7 @@
           <entry key="HTML" value="42" />
           <entry key="JSON" value="2" />
           <entry key="PLAIN_TEXT" value="2" />
-          <entry key="Python" value="54" />
+          <entry key="Python" value="55" />
           <entry key="SCSS" value="2" />
           <entry key="Scratch" value="1" />
         </counts>
@@ -45,7 +45,7 @@
         <counts>
           <entry key="dummy" value="6" />
           <entry key="html" value="3715" />
-          <entry key="py" value="3854" />
+          <entry key="py" value="3861" />
           <entry key="txt" value="1" />
         </counts>
       </usages-collector>
@@ -53,7 +53,7 @@
         <counts>
           <entry key="HTML" value="3715" />
           <entry key="PLAIN_TEXT" value="7" />
-          <entry key="Python" value="3854" />
+          <entry key="Python" value="3861" />
         </counts>
       </usages-collector>
     </session>
@@ -61,6 +61,15 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/proyectoprincipal/proyectoprincipal/settings.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="166">
+              <caret line="80" column="24" lean-forward="true" selection-start-line="80" selection-start-column="24" selection-end-line="80" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/requirements.txt">
           <provider selected="true" editor-type-id="text-editor" />
         </entry>
@@ -115,8 +124,8 @@
         <option value="$PROJECT_DIR$/proyectoprincipal/proyectoprincipal/templates/registration/password_reset_email.html" />
         <option value="$PROJECT_DIR$/proyectoprincipal/proyectoprincipal/templates/registration/password_reset_subject.txt" />
         <option value="$PROJECT_DIR$/proyectoprincipal/proyectoprincipal/templates/registration/password_reset_complete.html" />
-        <option value="$PROJECT_DIR$/proyectoprincipal/proyectoprincipal/settings.py" />
         <option value="$PROJECT_DIR$/proyectoprincipal/mainapp/urls.py" />
+        <option value="$PROJECT_DIR$/proyectoprincipal/proyectoprincipal/settings.py" />
       </list>
     </option>
   </component>
@@ -842,8 +851,8 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="579" />
-    <option name="y" value="233" />
+    <option name="x" value="100" />
+    <option name="y" value="23" />
     <option name="width" value="1280" />
     <option name="height" value="777" />
   </component>
@@ -860,6 +869,17 @@
             <path>
               <item name="proyecto" type="b2602c69:ProjectViewProjectNode" />
               <item name="proyecto" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="proyecto" type="b2602c69:ProjectViewProjectNode" />
+              <item name="proyecto" type="462c0819:PsiDirectoryNode" />
+              <item name="proyectoprincipal" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="proyecto" type="b2602c69:ProjectViewProjectNode" />
+              <item name="proyecto" type="462c0819:PsiDirectoryNode" />
+              <item name="proyectoprincipal" type="462c0819:PsiDirectoryNode" />
+              <item name="proyectoprincipal" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="proyecto" type="b2602c69:ProjectViewProjectNode" />
@@ -913,9 +933,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="579" y="233" width="1280" height="777" extended-state="0" />
+    <frame x="100" y="23" width="1280" height="777" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20759289" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20759289" />
       <window_info id="Structure" order="1" weight="0.24959612" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -927,7 +948,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Python Console" order="8" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="9" visible="true" weight="0.48467153" />
+      <window_info anchor="bottom" id="Terminal" order="9" visible="true" weight="0.48467153" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="12" show_stripe_button="false" />
@@ -1190,13 +1211,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/proyectoprincipal/proyectoprincipal/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="139" selection-start-line="139" selection-end-line="139" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/proyectoprincipal/mainapp/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -1206,6 +1220,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/requirements.txt">
       <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/proyectoprincipal/proyectoprincipal/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="166">
+          <caret line="80" column="24" lean-forward="true" selection-start-line="80" selection-start-column="24" selection-end-line="80" selection-end-column="24" />
+        </state>
+      </provider>
     </entry>
   </component>
 </project>
