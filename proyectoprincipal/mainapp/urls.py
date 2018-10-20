@@ -1,7 +1,12 @@
 from django.urls import path
-from django.contrib.auth import login
-
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
+
 urlpatterns = [
     path('signup/', views.SignUpView.as_view(), name='signup'),
-]
+    # path('editprofile/<int:pk>/', views.edit_profile, name='edit_profile'),
+    path('edit_profile/', views.edit_profile, name='edit_profile'),
+    path('create_role/', views.create_role, name='create_role'),
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

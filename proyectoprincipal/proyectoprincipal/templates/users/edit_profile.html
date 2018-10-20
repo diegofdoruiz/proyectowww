@@ -1,0 +1,15 @@
+{% extends "../template.html" %}
+
+{% block title %}New password{% endblock %}
+
+{% block main %}
+    <form method="post" enctype="multipart/form-data">
+        {% if user.profile.pic %}
+            <img src="{{ user.profile.pic.url }}" style="width:15%">
+        {% endif %}
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" value="Update">Enviar</button>
+    </form>
+{{ form.id }}
+{% endblock %}
