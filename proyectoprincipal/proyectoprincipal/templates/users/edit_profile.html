@@ -4,7 +4,9 @@
 
 {% block main %}
     <form method="post" enctype="multipart/form-data">
-        <img src="{{ user.profile.pic.url }}" style="width:15%">
+        {% if user.profile.pic %}
+            <img src="{{ user.profile.pic.url }}" style="width:15%">
+        {% endif %}
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" value="Update">Enviar</button>

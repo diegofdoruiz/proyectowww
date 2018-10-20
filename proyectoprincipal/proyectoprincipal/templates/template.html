@@ -173,7 +173,10 @@
           <!--<p>Welcome, {{ user.get_username }}. Thanks for logging in.</p>-->
             <li class="nav-item nav-profile">
               <div class="nav-link">
-                <div class="profile-image"> <img src="{{ user.profile.pic.url }}" alt="image"/> <span class="online-status online"></span> </div>
+                {% if user.profile.pic %}
+                    <div class="profile-image"> <img src="{{ user.profile.pic.url}}" alt="image"/> <span class="online-status online"></span> </div>
+                {% endif %}
+                <div class="profile-image"> <img src="#" alt="image"/> <span class="online-status online"></span> </div>
                 <div class="profile-name">
                   <p class="name">{{ user.first_name }} {{ user.last_name }}</p>
                   {% for rol in user.profile.rol.all%}
