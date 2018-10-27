@@ -1,0 +1,12 @@
+{% extends "../template.html" %}
+
+{% block title %}New password{% endblock %}
+
+{% block main %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" value="Update">Enviar</button>
+    </form>
+{{ form.id }}
+{% endblock %}

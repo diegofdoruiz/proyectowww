@@ -6,11 +6,13 @@
 
     {% if user.is_authenticated %}
       Hi {{ user.username }}!
-      <p><a href="{% url 'logout' %}">logout</a></p>
+        <p> <a href="{% url 'logout' %}">logout</a> |
+            <a href="{% url 'edit_profile' %}">Editar Perfil</a> |
+            <a href="{% url 'create_role' %}">Crear Rol </a>
     {% else %}
-      <p>You are not logged in</p>
-      <a href="{% url 'login' %}">login</a> |
-      <a href="{% url 'signup' %}">signup</a>
+        <p>You are not logged in</p>
+        <a href="{% url 'login' %}">login</a> |
+        <a href="{% url 'signup' %}">signup</a>
     {% endif %}
 
 {% endblock %}

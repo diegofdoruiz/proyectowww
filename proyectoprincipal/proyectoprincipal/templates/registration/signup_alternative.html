@@ -1,0 +1,11 @@
+{% extends "../template.html" %}
+
+{% block title %}Registro{% endblock %}
+
+{% block main %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" value="Enviar">Enviar</button>
+    </form>
+{% endblock %}
