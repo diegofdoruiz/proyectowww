@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+from django.utils.translation import gettext as _
 
 
 class Permission(models.Model):
@@ -31,14 +30,34 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.PROTECT)
     pic = models.ImageField(blank=True, null=True, upload_to=path_profile_image)
     rol = models.ManyToManyField(Rol, blank=True)
-    id_card = models.CharField(max_length=20, blank=True)
+    id_card = models.CharField(max_length=20, blank=True, unique=True)
     telephone = models.CharField(max_length=20, blank=True)
     active = models.CharField(max_length=300, null=False, blank=False, choices=activeChoices, default='S')
 
     def __str__(self):
         return self.user.username
 
+    def save(self, *args, **kwargs):
+        if not self.id:
+            super(Profile, self).save(*args, **kwargs)
+        # process self.parent_subject (should be called ...subjects, semantically)
+        super(Profile, self).save(*args, **kwargs)
 
+    class Meta:
+        permissions = (
+            ('es_cliente', _('Cliente')),
+            ('es_proveedor', _('Proveedor')),
+            ('es_gerente', _('Gerente')),
+            ('es_administrador', _('Administrador')),
+            ('es_cajero_general', _('Cajero General')),
+            ('es_cajero_ie', _('Cajero de Importaciones y Exportaciones')),
+            ('es_cajero_s', _('Cajero de Seguros')),
+            ('es_cajero_d', _('Cajero de transacciones en Dólares')),
+            ('es_cajero_vip', _('Cajero VIP')),
+        )
+
+
+'''
 @receiver(post_save, sender=User)
 def crear_usuario_perfil(sender, instance, created, **kwargs):
     if created:
@@ -48,3 +67,5 @@ def crear_usuario_perfil(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def guardar_usuario_perfil(sender, instance, **kwargs):
     instance.profile.save()
+'''
+

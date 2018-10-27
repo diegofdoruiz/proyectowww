@@ -175,8 +175,9 @@
               <div class="nav-link">
                 {% if user.profile.pic %}
                     <div class="profile-image"> <img src="{{ user.profile.pic.url}}" alt="image"/> <span class="online-status online"></span> </div>
+                {% else %}
+                    <div class="profile-image"> <img src="#" alt="image"/> <span class="online-status online"></span> </div>
                 {% endif %}
-                <div class="profile-image"> <img src="#" alt="image"/> <span class="online-status online"></span> </div>
                 <div class="profile-name">
                   <p class="name">{{ user.first_name }} {{ user.last_name }}</p>
                   {% for rol in user.profile.rol.all%}
