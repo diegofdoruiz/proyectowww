@@ -8,7 +8,7 @@
       Hi {{ user.username }}!
         <p> <a href="{% url 'logout' %}">logout</a> |
             <a href="{% url 'edit_profile' %}">Editar Perfil</a> |
-            <a href="{% url 'create_role' %}">Crear Rol </a></p>
+            <a href="{% url 'create_role' %}">Crear Rol </a>
     {% else %}
         <p>You are not logged in</p>
         <a href="{% url 'login' %}">login</a> |

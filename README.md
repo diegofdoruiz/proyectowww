@@ -24,5 +24,6 @@
 	(env)path/localfolder/proyectowww$ pip3 install -r requirements.txt    (in this folder init git, add . commit, ....)
 	(env)path/localfolder/proyectowww$ cd proyectoprincipal
 	(env)path/localfolder/proyectowww/proyectoprincipal$ python3 manage.py makemigrations
+	(insert values in mainapp_permission e.g INSERT INTO mainapp_permission VALUES ('1', 'Permission1');)
 	(env)path/localfolder/proyectowww/proyectoprincipal$ python3 manage.py migrate
 	(env)path/localfolder/proyectowww/proyectoprincipal$ python3 manage.py runserver
