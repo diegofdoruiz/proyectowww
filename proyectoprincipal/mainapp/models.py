@@ -19,13 +19,11 @@ def path_profile_image(instance, filename):
 
 
 class Profile(models.Model):
-    activeChoices = (('S', 'Si'), ('N', 'No'))
     user = models.OneToOneField(User, on_delete=models.PROTECT)
     pic = models.ImageField(blank=True, null=True, upload_to=path_profile_image)
     rol = models.ManyToManyField(Rol, blank=True)
     id_card = models.CharField(max_length=20, blank=True, unique=True)
     telephone = models.CharField(max_length=20, blank=True)
-    active = models.CharField(max_length=300, null=False, blank=False, choices=activeChoices, default='S')
 
     def __str__(self):
         return self.user.username

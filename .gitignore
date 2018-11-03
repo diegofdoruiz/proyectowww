@@ -1,2 +1,4 @@
 env/
 proyectoprincipal/media/user/profile
+.idea/
+proyectoprincipal/mainapp/migrations/*
