@@ -1,0 +1,33 @@
+{% extends "../template.html" %}
+
+{% block title %}New password{% endblock %}
+
+{% block main %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <td>id</td>
+                <td>Username</td>
+                <td>Nombres</td>
+                <td>Apellidos</td>
+                <td>Email</td>
+                <td>Estado</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% if users %}
+                {% for user in users%}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.first_name }}</td>
+                    <td>{{ user.last_name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.is_active }}</td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+{{ form.id }}
+{% endblock %}
