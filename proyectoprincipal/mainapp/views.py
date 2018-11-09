@@ -3,10 +3,13 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import CreateView
 from django.db import transaction
+from django.db.models import Q
 from .models import Profile, Rol
 from django.contrib.auth.decorators import login_required
-
 from .forms import UserForm, ProfileForm, CreateRolForm
+from .serializers import UserListSerializer
+from .pagination import UserPageNumberPagination
+from rest_framework.decorators import api_view
 
 
 @transaction.atomic
@@ -30,10 +33,27 @@ def register(request):
         return render(request, 'registration/signup.html', {'user_form': user_form, 'profile_form': profile_form})
 
 
-def user_list(request):
-    users = User.objects.all()
-    context = {'users': users}
-    return render(request, 'users/user_list.html', context)
+@api_view(['GET',])
+def users_list(request):
+    request_from = request.GET.get('from', None)
+    query = request.GET.get('search_text', None)
+    person_objects = User.objects.all().order_by('id')
+    if query:
+        person_objects = person_objects.filter(Q(username__contains=query) |
+                                               Q(first_name__contains=query) |
+                                               Q(last_name__contains=query) |
+                                               Q(email__contains=query) |
+                                               Q(is_active__contains=query) |
+                                               Q(is_superuser__contains=query)).distinct().order_by('id')
+    paginator = UserPageNumberPagination()
+    result_page = paginator.paginate_queryset(person_objects, request)
+    serializer = UserListSerializer(result_page, many=True)
+    if request_from:
+        if request_from == 'search_input':
+            return paginator.get_paginated_response(serializer.data)
+
+    data = paginator.get_paginated_response(serializer.data)
+    return render(request, 'users/index.html', {'all_data': data})
 
 
 def user_edit(request, pk):
@@ -54,6 +74,14 @@ def user_edit(request, pk):
             alert = 'User update successfull'
         return render(request, 'registration/signup.html', {'user_form': user_form, 'profile_form': profile_form, 'alert': alert})
     return render(request, 'registration/signup.html', {'user_form': user_form, 'profile_form': profile_form})
+
+
+def user_delete(request):
+    if request.method == 'POST':
+        user = get_object_or_404(User, pk=request.POST.get('user_id'))
+        user.is_active = request.POST.get('option')
+        user.save()
+        return redirect('/mainapp/users')
 
 
 @login_required
@@ -93,6 +121,8 @@ def create_role(request):
     else:
         form = CreateRolForm()
         return render(request, 'users/create_rol.html', {'form': form})
+
+
 
 
 
