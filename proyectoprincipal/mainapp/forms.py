@@ -2,8 +2,13 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Profile, Rol
+from rest_framework import serializers
 
 
+# Folrmulario para crear y editar un usuario, este formulario se usa para crear un usuario, junto a al formulario de
+# perrfil, cuauando se edita solo el perfil solo se habilita uno de los campos de este formulario, el resto se eliminan.
+# cuando se edita el usuario completo, se elimina uno de los campos de contraseña y se secambia el tipo de input de pass1
+# para que sea visible la nueva clave al escribirla.
 class UserForm(UserCreationForm):
     username = forms.CharField(max_length=100, required=True)
     first_name = forms.CharField(max_length=140, required=True)
@@ -49,10 +54,10 @@ class UserForm(UserCreationForm):
         )
 
 
-# Se usa el mismo formulario para crear y editar, si hay una instancia,
-# quiere decir que se va a editar, por lo tanto se debe desabilitar los campos no editables
+# Se usa el mismo formulario para crear y editar uun perfil, además se agrega el formulario de usuario
+# para dar la opción de editar la contraseña. Si hay una instancia,
+# quiere decir que se va a editar el perfil, por lo tanto, se debe desabilitar los campos no editables
 class ProfileForm(forms.ModelForm):
-
     def __init__(self, *args, **kwargs):
         request = kwargs.pop('request', None)
         if 'request' in kwargs:
@@ -63,6 +68,7 @@ class ProfileForm(forms.ModelForm):
             self.fields['id_card'].widget.attrs['readonly'] = True
         if request:
             if not request.user.is_superuser:
+                # Si el usuario no es superusuario, no puede editar su rol
                 del self.fields['rol']
 
     class Meta:
@@ -74,5 +80,6 @@ class CreateRolForm(forms.ModelForm):
     class Meta:
         model = Rol
         fields = ('name', 'permission')
+
 
 
