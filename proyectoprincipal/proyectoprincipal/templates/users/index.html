@@ -17,18 +17,18 @@
     <table class="table table-bordered" id="table-users-list">
         <thead>
             <tr>
-                <td>id</td>
-                <td>Username</td>
-                <td>Nombres</td>
-                <td>Apellidos</td>
-                <td>Email</td>
-                <td>Estado</td>
-                <td>Opciones</td>
+                <th>id</th>
+                <th>Username</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Email</th>
+                <th>Estado</th>
+                <th>Opciones</th>
             </tr>
         </thead>
         <tbody>
-            {% if all_data.data.users %}
-                {% for user in all_data.data.users %}
+            {% if all_data.data.rows %}
+                {% for user in all_data.data.rows %}
                 <tr id="table-rows">
                     <td>{{ user.id }}</td>
                     <td>{{ user.username }}</td>
@@ -40,9 +40,9 @@
                         <a class="btn btn-primary" href="{% url 'user_edit' user.id %}" >Editar</a>
                         {% if not user.is_superuser %}
                             {% if user.is_active %}
-                                <a class="btn btn-danger" onclick="open_modal( '{{ user.id }}', '{{ user.first_name }}', '{{ user.last_name }}', '{{ False }}' )">Deacti</a>
+                                <a class="btn btn-danger" onclick="open_modal( '{{ user.id }}', '{{ user.first_name }}', '{{ user.last_name }}', '{{ False }}' )">Inactivar</a>
                             {% else %}
-                                <a class="btn btn-info" onclick="open_modal( '{{ user.id }}', '{{ user.first_name }}', '{{ user.last_name }}',  '{{ True }}')">Active</a>
+                                <a class="btn btn-info" onclick="open_modal( '{{ user.id }}', '{{ user.first_name }}', '{{ user.last_name }}',  '{{ True }}')">Activar&nbsp;&nbsp;&nbsp;&nbsp;</a>
                             {% endif %}
                         {% endif %}
                     </td>
