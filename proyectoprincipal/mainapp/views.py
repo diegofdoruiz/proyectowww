@@ -10,6 +10,8 @@ from .forms import UserForm, ProfileForm, CreateRolForm
 from .serializers import UserListSerializer
 from .pagination import UserPageNumberPagination
 from rest_framework.decorators import api_view
+from django.contrib.auth import authenticate, login
+from django.contrib.auth import logout
 
 
 @transaction.atomic
@@ -31,7 +33,6 @@ def register(request):
             return render(request, 'registration/signup.html', {'user_form': user_form, 'profile_form': profile_form})
     else:
         return render(request, 'registration/signup.html', {'user_form': user_form, 'profile_form': profile_form})
-
 
 @api_view(['GET',])
 def users_list(request):
