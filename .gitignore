@@ -1,4 +1,5 @@
 env/
 proyectoprincipal/media/user/profile
-.idea/
+.idea/*
 proyectoprincipal/mainapp/migrations/*
+proyectoprincipal/settings.py
