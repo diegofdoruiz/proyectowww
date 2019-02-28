@@ -8,6 +8,6 @@ urlpatterns = [
     path('user_delete/', views.user_delete, name='user_delete'),
     path('edit_profile/', views.edit_profile, name='edit_profile'),
     path('create_role/', views.create_role, name='create_role'),
-    path('signup/', views.register, name='signup'),
+    #path('signup/', views.register, name='signup'),
     path('users/', views.users_list, name='users'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
