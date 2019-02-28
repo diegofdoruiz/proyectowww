@@ -74,7 +74,11 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ('pic', 'rol', 'id_card', 'telephone')
-
+        error_messages = {
+            'id_card': {
+                'required': 'El nombre de usuario es obligatorio.',
+            },
+        }
 
 class CreateRolForm(forms.ModelForm):
     class Meta:
