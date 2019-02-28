@@ -4,7 +4,7 @@ from django.utils.translation import gettext as _
 
 
 class Rol(models.Model):
-    name = models.CharField(max_length=20, null=False)
+    name = models.CharField(max_length=20, null=False, blank=False)
     permission = models.ManyToManyField(Permission, blank=True)
 
     def __str__(self):
@@ -46,6 +46,22 @@ class Profile(models.Model):
             ('es_cajero_d', _('Cajero de transacciones en Dólares')),
             ('es_cajero_vip', _('Cajero VIP')),
         )
+
+class Priority(models.Model):
+    name = models.CharField(max_length=128, null=False, blank=False)
+    description = models.CharField(max_length=512, null=False, blank=False)
+    weight = models.IntegerField(null=False, blank=False)
+    status = models.BooleanField(null=False)
+    
+    def __str__(self):
+        return self.name
+
+class Location(models.Model):
+    name = models.CharField(max_length=128, null=False, blank=False)
+    
+    def __str__(self):
+        return self.name
+        
 
 
 '''
