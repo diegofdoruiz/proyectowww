@@ -2,3 +2,5 @@ env/
 proyectoprincipal/media/user/profile
 .idea/
 proyectoprincipal/mainapp/migrations/*
+proyectoprincipal/mainapp/__pycache__/*
+proyectoprincipal/proyectoprincipal/__pycache__/*
