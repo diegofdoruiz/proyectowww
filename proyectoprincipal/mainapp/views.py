@@ -285,3 +285,5 @@ def destroy_location(request):
 
 
 
+def atencion_clientes(request):
+    return render(request, 'turnos/atender_turnos.html')
