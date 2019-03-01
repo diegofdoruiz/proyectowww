@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile, Rol
+from .models import Profile, Rol, Priority, Location
 from rest_framework import serializers
 
 
@@ -80,6 +80,22 @@ class CreateRolForm(forms.ModelForm):
     class Meta:
         model = Rol
         fields = ('name', 'permission')
+
+
+# Se usa el mismo formulario para crear y editar una prioridad
+class PriorityForm(forms.ModelForm):
+    class Meta:
+        model = Priority
+        fields = ('id', 'name', 'description', 'weight', 'status')
+
+# Se usa el mismo formulario para crear y editar una prioridad
+class LocationForm(forms.ModelForm):
+    class Meta:
+        model = Location
+        fields = ('id', 'name')
+
+    
+
 
 
 

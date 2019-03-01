@@ -4,74 +4,145 @@
 
 {% block main %}
     {% if alert %}
-        <div> Alerta: {{ alert }}</div>
+        <label class="alert alert-success"> Alerta: {{ alert }}</label>
     {% endif %}
-    <!-- Acá se combinan los los formularios de a cuerdo a como se pidió en el front -->
-    <form method="post" enctype="multipart/form-data">
+<h1>Registro de un nuevo usuario</h1>
+<hr>
+<form method="post" enctype="multipart/form-data">
+    <div class="row">
         {% csrf_token %}
-        <p>
-            {{ profile_form.pic.label }}
-            {{ profile_form.pic }}
-            {{ profile_form.pic.errors }}
-        </p>
-        <p>
-            {{ profile_form.rol.label }}
-            {{ profile_form.rol }}
-            {{ profile_form.rol.errors }}
-        </p>
-        <p>
-            {{ user_form.username.label }}
-            {{ user_form.username }}
-            {{ user_form.username.errors }}
-        </p>
-        <p>
-            {{ user_form.password1.label }}
-            {{ user_form.password1 }}
-            {{ user_form.password1.errors }}
-        </p>
-        <p>
-            {{ user_form.password2.label }}
-            {{ user_form.password2 }}
-            {{ user_form.password2.errors }}
-        </p>
-        <p>
-            {{ user_form.email.label }}
-            {{ user_form.email }}
-            {{ user_form.email.errors }}
-        </p>
-        <p>
-            {{ user_form.first_name.label }}
-            {{ user_form.first_name }}
-            {{ user_form.first_name.errors }}
-        </p>
-        <p>
-            {{ user_form.last_name.label }}
-            {{ user_form.last_name }}
-            {{ user_form.last_name.errors }}
-        </p>
-        <p>
-            {{ profile_form.id_card.label }}
-            {{ profile_form.id_card }}
-            {{ profile_form.id_card.errors }}
-        </p>
-        <p>
-            {{ profile_form.telephone.label }}
-            {{ profile_form.telephone }}
-            {{ profile_form.telephone.errors }}
-        </p>
-        <p>
-            {{ user_form.is_active.label }}
-            {{ user_form.is_active }}
-            {{ user_form.is_active.errors }}
-        </p>
-        <p>
-            {{ user_form.is_superuser.label }}
-            {{ user_form.is_superuser }}
-            {{ user_form.is_superuser.errors }}
-        </p>
-        <div id="buttons">
-            <button type="submit" value="Update">Enviar</button>
-            <button type="reset" value="Cancel">Cancelar</button>
+        <div class="col-12 col-md-6">
+            <div class="form-group">
+                <label>Nombre de usuario:</label>
+                <input 
+                    type="text" 
+                    name="username" 
+                    class="form-control {% if user_form.username.errors %} is-invalid {% endif %}" 
+                    value="{{ user_form.username.value|default_if_none:'' }}">
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ user_form.username.errors }}</strong>
+                </span>
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input 
+                    type="text" 
+                    name="email" 
+                    class="form-control {% if user_form.email.errors %} is-invalid {% endif %}"
+                    value="{{ user_form.email.value|default_if_none:'' }}">
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ user_form.email.errors }}</strong>
+                </span>
+            </div>
+            <div class="form-group">
+                <label>Nombres:</label>
+                <input 
+                    type="text" 
+                    name="first_name" 
+                    class="form-control {% if user_form.first_name.errors %} is-invalid {% endif %}"
+                    value="{{ user_form.first_name.value|default_if_none:'' }}">
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ user_form.first_name.errors }}</strong>
+                </span>
+            </div>
+            <div class="form-group">
+                <label>Apellidos:</label>
+                <input 
+                    type="text" 
+                    name="last_name" 
+                    class="form-control {% if user_form.last_name.errors %} is-invalid {% endif %}"
+                    value="{{ user_form.last_name.value|default_if_none:'' }}">
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ user_form.last_name.errors }}</strong>
+                </span>
+            </div>
+            <div class="form-group">
+                <label>Identificación:</label>
+                <input 
+                    type="text" 
+                    name="id_card" 
+                    class="form-control {% if profile_form.id_card.errors %} is-invalid {% endif %}"
+                    value="{{ profile_form.id_card.value|default_if_none:'' }}">
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ profile_form.id_card.errors }}</strong>
+                </span>
+            </div>
+            <div class="form-group">
+                <label>Teléfono:</label>
+                <input 
+                    type="text"     
+                    name="telephone" 
+                    class="form-control {% if profile_form.telephone.errors %} is-invalid {% endif %}"
+                    value="{{ profile_form.telephone.value|default_if_none:'' }}">
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ profile_form.telephone.errors }}</strong>
+                </span>
+            </div>
         </div>
-    </form>
+        <div class="col-12 col-md-6">
+            <div class="form-group">
+                <label>Rol:</label>
+                <select 
+                    class="form-control {% if profile_form.rol.errors %} is-invalid {% endif %}"
+                    name="rol">
+                    <option value="0">Seleccione:</option>
+                    {% for rol in profile_form.rol %}
+                        {{ rol }}
+                    {% endfor %}
+                </select>
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ profile_form.rol.errors }}</strong>
+                </span>
+            </div>
+            <div class="form-group">
+                <label>imágen:</label>
+                <input 
+                    type="file" 
+                    name="pic" 
+                    class="form-control {% if profile_form.pic.errors %} is-invalid {% endif %}">
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ profile_form.pic.errors }}</strong>
+                </span>
+            </div>
+            <div class="form-group">
+                <label>Contraseña:</label>
+                <input 
+                    type="password" 
+                    name="password1" 
+                    class="form-control {% if user_form.password1.errors %} is-invalid {% endif %}">
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ user_form.password1.errors }}</strong>
+                </span>
+            </div>
+            <div class="form-group">
+                <label>Confirmar Contraseña:</label>
+                <input 
+                    type="password" 
+                    name="password2" 
+                    class="form-control {% if user_form.password2.errors %} is-invalid {% endif %}">
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ user_form.password2.errors }}</strong>
+                </span>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <p>
+                            <label>Estado:</label>
+                            {{ user_form.is_active }}
+                        </p>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        {{ user_form.is_admin }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Enviar</button>
+                <button type="submit" class="btn btn-secondary">Cancelar</button>
+            </div>
+        </div>
+        </form>
+    </div>
+</form>
 {% endblock %}

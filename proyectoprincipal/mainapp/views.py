@@ -1,17 +1,20 @@
 from django.shortcuts import redirect
+from django.http import HttpResponse
+from django.utils.html import escape
 from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import CreateView
 from django.db import transaction
 from django.db.models import Q
-from .models import Profile, Rol
+from .models import Profile, Rol, Priority, Location
 from django.contrib.auth.decorators import login_required
-from .forms import UserForm, ProfileForm, CreateRolForm
-from .serializers import UserListSerializer
-from .pagination import UserPageNumberPagination
+from .forms import UserForm, ProfileForm, CreateRolForm, PriorityForm, LocationForm
+from .serializers import UserListSerializer, PriorityListSerializer, LocationListSerializer
+from .pagination import CustomPageNumberPagination
 from rest_framework.decorators import api_view
+from django.contrib.auth import authenticate, login
 
-
+########################### Usuarios ##########################
 @transaction.atomic
 def register(request):
     user_form = UserForm(request.POST or None)
@@ -32,7 +35,6 @@ def register(request):
     else:
         return render(request, 'registration/signup.html', {'user_form': user_form, 'profile_form': profile_form})
 
-
 @api_view(['GET',])
 def users_list(request):
     request_from = request.GET.get('from', None)
@@ -45,7 +47,7 @@ def users_list(request):
                                                Q(email__contains=query) |
                                                Q(is_active__contains=query) |
                                                Q(is_superuser__contains=query)).distinct().order_by('id')
-    paginator = UserPageNumberPagination()
+    paginator = CustomPageNumberPagination()
     result_page = paginator.paginate_queryset(person_objects, request)
     serializer = UserListSerializer(result_page, many=True)
     if request_from:
@@ -109,7 +111,7 @@ class CreateRole(CreateView):
 
     def form_valid(self, form):
         form.save()
-        return redirect('/')
+        return redirect('/home')
 
 
 def create_role(request):
@@ -118,12 +120,152 @@ def create_role(request):
         if form.is_valid():
             form.save()
             return redirect('/')
+        else:
+            return render(request, 'users/create_rol.html', {'form': form})
+
     else:
         form = CreateRolForm()
         return render(request, 'users/create_rol.html', {'form': form})
 
+###################### Prioridades #######################
+@api_view(['GET','POST'])
+def priorities(request):
+    #Informacion para la tabla
+    request_from = request.GET.get('from', None)
+    query = request.GET.get('search_text', None)
+    priority_objects = Priority.objects.all().order_by('id')
+    if query:
+        priority_objects = priority_objects.filter( Q(name__contains=query) | 
+                                                    Q(description__contains=query) | 
+                                                    Q(weight__contains=query)).distinct().order_by('id')
+    paginator = CustomPageNumberPagination()
+    result_page = paginator.paginate_queryset(priority_objects, request)
+    serializer = PriorityListSerializer(result_page, many=True)
+    if request_from:
+        if request_from == 'search_input':
+            return paginator.get_paginated_response(serializer.data)
+    data = paginator.get_paginated_response(serializer.data)
+    #Crear la prioridad
+    if request.method =='POST':   
+        form = PriorityForm(request.POST) 
+        if form.is_valid():    
+            post = form.save(commit = False) 
+            post.save()   
+            return redirect('/mainapp/priorities')
+              
+        else: 
+            return render(request, 'priorities/create.html', {'all_data': data, 'form': form})  
+    else: 
+        #formulario la creación de nueva prioridad 
+        form = PriorityForm()
+        return render(request, 'priorities/create.html', {'all_data': data, 'form': form})
+
+@api_view(['POST'])
+def edit_priority(request):
+    #Informacion para la tabla
+    request_from = request.GET.get('from', None)
+    query = request.GET.get('search_text', None)
+    priority_objects = Priority.objects.all().order_by('id')
+    if query:
+        priority_objects = priority_objects.filter( Q(name__contains=query) | 
+                                                    Q(description__contains=query) | 
+                                                    Q(weight__contains=query)).distinct().order_by('id')
+    paginator = CustomPageNumberPagination()
+    result_page = paginator.paginate_queryset(priority_objects, request)
+    serializer = PriorityListSerializer(result_page, many=True)
+    if request_from:
+        if request_from == 'search_input':
+            return paginator.get_paginated_response(serializer.data)
+    data = paginator.get_paginated_response(serializer.data)
+    #Editar la prioridad
+    instance = get_object_or_404(Priority, pk=request.POST.get('priority_id'))
+    #return HttpResponse(escape(repr(instance)))
+    form = PriorityForm(request.POST, instance=instance)
+    if request.method == 'POST':
+        if form.is_valid():
+            updated_priority = form.save(commit=False)
+            updated_priority.save()
+            form.save()
+            return redirect('/mainapp/priorities')
+        else:
+            return render(request, 'priorities/create.html', {'form1': form, 'request': request, 'all_data': data})
+    return redirect('/mainapp/priorities')
+
+def destroy_priority(request):
+    if request.method == 'POST':
+        priority = get_object_or_404(Priority, pk=request.POST.get('priority_id'))
+        priority.delete()
+        return redirect('/mainapp/priorities')
+
+###################### Ubicaciones #######################
+@api_view(['GET','POST'])
+def locations(request):
+    #Informacion para la tabla
+    request_from = request.GET.get('from', None)
+    query = request.GET.get('search_text', None)
+    location_objects = Location.objects.all().order_by('id')
+    if query:
+        location_objects = location_objects.filter( Q(name__contains=query)).distinct().order_by('id')
+    paginator = CustomPageNumberPagination()
+    result_page = paginator.paginate_queryset(location_objects, request)
+    serializer = LocationListSerializer(result_page, many=True)
+    if request_from:
+        if request_from == 'search_input':
+            return paginator.get_paginated_response(serializer.data)
+    data = paginator.get_paginated_response(serializer.data)
+    #Crear la prioridad
+    if request.method =='POST':   
+        form = LocationForm(request.POST) 
+        if form.is_valid():    
+            post = form.save(commit = False) 
+            post.save()   
+            return redirect('/mainapp/locations')
+              
+        else: 
+            return render(request, 'locations/index.html', {'all_data': data, 'form': form})  
+    else: 
+        #formulario la creación de nueva prioridad 
+        form = LocationForm()
+        return render(request, 'locations/index.html', {'all_data': data, 'form': form})
+
+@api_view(['POST'])
+def edit_location(request):
+    #Informacion para la tabla
+    request_from = request.GET.get('from', None)
+    query = request.GET.get('search_text', None)
+    location_objects = Location.objects.all().order_by('id')
+    if query:
+        location_objects = location_objects.filter( Q(name__contains=query)).distinct().order_by('id')
+    paginator = CustomPageNumberPagination()
+    result_page = paginator.paginate_queryset(location_objects, request)
+    serializer = LocationListSerializer(result_page, many=True)
+    if request_from:
+        if request_from == 'search_input':
+            return paginator.get_paginated_response(serializer.data)
+    data = paginator.get_paginated_response(serializer.data)
+    #Editar la prioridad
+    instance = get_object_or_404(Location, pk=request.POST.get('location_id'))
+    #return HttpResponse(escape(repr(instance)))
+    form = LocationForm(request.POST, instance=instance)
+    if request.method == 'POST':
+        if form.is_valid():
+            updated_priority = form.save(commit=False)
+            updated_priority.save()
+            form.save()
+            return redirect('/mainapp/locations')
+        else:
+            return render(request, 'locations/index.html', {'form1': form, 'request': request, 'all_data':data})
+    return redirect('/mainapp/locations')
 
 
 
+def destroy_location(request):
+    if request.method == 'POST':
+        location = get_object_or_404(Location, pk=request.POST.get('location_id'))
+        location.delete()
+        return redirect('/mainapp/locations')
 
 
+
+def atencion_clientes(request):
+    return render(request, 'turnos/atender_turnos.html')
