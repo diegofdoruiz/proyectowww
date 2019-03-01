@@ -33,7 +33,7 @@
 				  </thead>
 				  <tbody>
 				    <tr>
-				      <th scope="row"><h1 class="display-2">C05</h1></th>
+				      <th id="turn" scope="row"><h1 class="display-2">C05</h1></th>
 				      <td>Sacar Plata</td>
 				      <td>Otto Nule</td>
 				      <td>1143844395</td>
@@ -78,8 +78,10 @@
 $(function(){
 
 $('#next').on('click',function(){
+	$('#turn h1').html($('ul#next_list li:eq(1) span').text());
 	$('ul#next_list li:eq(1) span').html($('ul#next_list li:eq(2)').text());
 	$('ul#next_list li:eq(2)').remove();
+
 
 });
 
