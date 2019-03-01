@@ -266,6 +266,6 @@ def destroy_location(request):
         return redirect('/mainapp/locations')
 
 
-
+@login_required
 def atencion_clientes(request):
     return render(request, 'turnos/atender_turnos.html')

@@ -62,7 +62,14 @@ class Location(models.Model):
     def __str__(self):
         return self.name
         
-
+class turn(models.Model):
+    code = models.CharField(max_length=128, null=False, blank=False)
+    service = models.CharField(max_length=512, null=False, blank=False)
+    user_id = models.IntegerField(null=False, blank=False)
+    status = models.BooleanField(null=False)
+    
+    def __str__(self):
+        return self.code
 
 '''
 @receiver(post_save, sender=User)
