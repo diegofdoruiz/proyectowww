@@ -4,6 +4,7 @@ from django.utils.html import escape
 from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import CreateView
+from django.contrib.auth.views import LoginView
 from django.db import transaction
 from django.db.models import Q
 from .models import Profile, Rol, Priority, Location
@@ -16,6 +17,13 @@ from django.contrib.auth import authenticate, login
 from django.core import serializers
 
 ########################### Usuarios ##########################
+def home(request):
+    if request.user.is_authenticated:
+        return redirect('home/')
+    else:
+        return redirect('login/')
+
+
 @transaction.atomic
 def register(request):
     user_form = UserForm(request.POST or None)
