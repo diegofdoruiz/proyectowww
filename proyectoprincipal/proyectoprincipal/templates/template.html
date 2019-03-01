@@ -13,7 +13,13 @@
   <link rel="stylesheet" href="{% static 'node_modules/mdi/css/materialdesignicons.min.css' %}">
   <link rel="stylesheet" href="{% static 'node_modules/simple-line-icons/css/simple-line-icons.css' %}">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<<<<<<< HEAD
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+=======
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/css/bootstrap-select.min.css">
+
+>>>>>>> 1a7444a01a1bdde3762c203017040539d0e509bd
   <!-- endinject -->
   <!-- plugin css for this page -->
   <!-- End plugin css for this page -->
@@ -198,6 +204,7 @@
             <li class="nav-item"><a class="nav-link" href="#"><img class="menu-icon" src="{% static 'images/menu_icons/01.png' %}" alt="menu icon"><span class="menu-title">Dashboard</span></a></li>
           {% endif %}
 
+<<<<<<< HEAD
 <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#pestanas_usuarios" aria-expanded="false" aria-controls="pestanas_usuarios"><i
             class="fa fa-user" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Usuarios</span><i class="menu-arrow"></i></a>
@@ -207,6 +214,45 @@
                 <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/login.html' %}">Consultar Usuarios</a></li>
               </ul>
             </div>
+=======
+          <!-- Panel para el proyecto de www -->
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'edit_profile' %}">
+              <i class="menu-icon far fa-user-circle"></i>
+              <span class="menu-title"> Perfil</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'users' %}">
+              <i class="menu-icon fas fa-users"></i>
+              <span class="menu-title"> Usuarios</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'roles' %}">
+              <i class="menu-icon fas fa-sitemap"></i>
+              <span class="menu-title"> Roles</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'priorities' %}">
+              <i class="menu-icon fas fa-file-medical"></i>
+              <span class="menu-title">Prioridades</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'locations' %}">
+              <i class="menu-icon fas fa-arrows-alt"></i>
+              <span class="menu-title">Ubicaciones</span>
+            </a>
+          </li>
+
+          <!--<li class="nav-item">
+            <a class="nav-link" href="{% static 'pages/widgets.html' %}">
+              <img class="menu-icon" src="{% static 'images/menu_icons/02.png' %}" alt="menu icon">
+              <span class="menu-title">Widgets</span>
+            </a>
+>>>>>>> 1a7444a01a1bdde3762c203017040539d0e509bd
           </li>
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#pestanas_empleados" aria-expanded="false" aria-controls="pestanas_empleados"><i
@@ -238,14 +284,44 @@
             </div>
           </li>
           <li class="nav-item">
+<<<<<<< HEAD
             <a class="nav-link" data-toggle="collapse" href="#pestanas_publi" aria-expanded="false" aria-controls="pestanas_publi"><i
             class="fa fa-bullhorn" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Publicidad</span><i class="menu-arrow"></i></a>
             <div class="collapse" id="pestanas_publi">
+=======
+            <a class="nav-link" href="{% static 'pages/tables/basic-table.html' %}">
+              <img class="menu-icon" src="{% static 'images/menu_icons/06.png' %}" alt="menu icon">
+              <span class="menu-title">Table</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% static 'pages/icons/font-awesome.html' %}">
+              <img class="menu-icon" src="{% static 'images/menu_icons/07.png' %}" alt="menu icon">
+              <span class="menu-title">Icons</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#general-pages" aria-expanded="false" aria-controls="general-pages">
+              <img class="menu-icon" src="{% static 'images/menu_icons/08.png' %}" alt="menu icon">
+              <span class="menu-title">General Pages</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="general-pages">
+>>>>>>> 1a7444a01a1bdde3762c203017040539d0e509bd
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/blank-page.html' %}">Agregar Publicidad</a></li>
               </ul>
             </div>
           </li>
+<<<<<<< HEAD
+=======
+          <li class="nav-item">
+            <a class="nav-link" href="{% static 'pages/ui-features/typography.html' %}">
+              <img class="menu-icon" src="{% static 'images/menu_icons/09.png' %}" alt="menu icon">
+              <span class="menu-title">Typography</span>
+            </a>
+          </li>-->
+>>>>>>> 1a7444a01a1bdde3762c203017040539d0e509bd
 
         </ul>
       </nav>
@@ -753,6 +829,9 @@
   <script src="{% static 'node_modules/popper.js/dist/umd/popper.min.js' %}"></script>
   <script src="{% static 'node_modules/bootstrap/dist/js/bootstrap.min.js' %}"></script>
   <!-- endinject -->
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/js/bootstrap-select.min.js"></script>
+
   <!-- Plugin js for this page-->
   <script src="{% static 'node_modules/chart.js/dist/Chart.min.js' %}"></script>
   <!-- End plugin js for this page-->
