@@ -237,21 +237,21 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#pestanas_rep" aria-expanded="false" aria-controls="pestanas_rep" style="border-bottom-color: #1146CB">
-              <i class="fa fa-file-text" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Reportes</span><i class="menu-arrow"></i></a>
+              <i class="fa fa-file-text" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Prioridades</span><i class="menu-arrow"></i></a>
             <div class="collapse" id="pestanas_rep">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/login.html' %}">Consultar Reportes</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% url 'priorities' %}">Registrar Prioridades</a></li>
               </ul>
             </div>
           </li>
           <li class="nav-item">
 
             <a class="nav-link" data-toggle="collapse" href="#pestanas_publi" aria-expanded="false" aria-controls="pestanas_publi"><i
-            class="fa fa-bullhorn" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Publicidad</span><i class="menu-arrow"></i></a>
+            class="fa fa-bullhorn" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Localizaciones</span><i class="menu-arrow"></i></a>
             <div class="collapse" id="pestanas_publi">
 
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/blank-page.html' %}">Agregar Publicidad</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% url 'locations' %}">Agregar localización</a></li>
               </ul>
             </div>
           </li>
