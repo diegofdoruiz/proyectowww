@@ -1,6 +1,12 @@
 env/
 proyectoprincipal/media/user/profile
+<<<<<<< HEAD
 .idea/
 proyectoprincipal/mainapp/migrations/*
 proyectoprincipal/mainapp/__pycache__/*
 proyectoprincipal/proyectoprincipal/__pycache__/*
+=======
+.idea/*
+proyectoprincipal/mainapp/migrations/*
+proyectoprincipal/settings.py
+>>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f

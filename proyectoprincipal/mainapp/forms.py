@@ -82,6 +82,7 @@ class CreateRolForm(forms.ModelForm):
         fields = ('name', 'permission')
 
 
+
 # Se usa el mismo formulario para crear y editar una prioridad
 class PriorityForm(forms.ModelForm):
     class Meta:
@@ -93,9 +94,5 @@ class LocationForm(forms.ModelForm):
     class Meta:
         model = Location
         fields = ('id', 'name')
-
-    
-
-
 
 

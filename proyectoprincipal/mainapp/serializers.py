@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from .models import Profile, Rol, Priority, Location
 
 
+
 class UserListSerializer(ModelSerializer):
     class Meta:
         model = User
@@ -14,6 +15,7 @@ class UserListSerializer(ModelSerializer):
             'email',
             'is_active',
             'is_superuser'
+
         ]
 
 class PriorityListSerializer(ModelSerializer):
@@ -33,6 +35,7 @@ class LocationListSerializer(ModelSerializer):
         fields = [
             'id',
             'name'
+
         ]
 
 class RolListSerializer(ModelSerializer):
@@ -41,4 +44,5 @@ class RolListSerializer(ModelSerializer):
         fields = [
             'id',
             'name'        
+
         ]

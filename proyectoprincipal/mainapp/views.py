@@ -17,11 +17,13 @@ from django.contrib.auth import authenticate, login
 from django.core import serializers
 
 ########################### Usuarios ##########################
+
 def home(request):
     if request.user.is_authenticated:
         return redirect('home/')
     else:
         return redirect('login/')
+
 
 
 @transaction.atomic
@@ -56,7 +58,9 @@ def users_list(request):
                                                Q(email__contains=query) |
                                                Q(is_active__contains=query) |
                                                Q(is_superuser__contains=query)).distinct().order_by('id')
+
     paginator = CustomPageNumberPagination()
+
     result_page = paginator.paginate_queryset(person_objects, request)
     serializer = UserListSerializer(result_page, many=True)
     if request_from:
@@ -112,6 +116,7 @@ def edit_profile(request):
             return redirect('/mainapp/edit_profile')
     return render(request, 'users/edit_profile.html', {'form': form, 'user_form': user_form})
 
+
 #################### Roles ##############################
 @api_view(['GET','POST'])
 def roles(request):
@@ -134,11 +139,14 @@ def roles(request):
             return paginator.get_paginated_response(serializer.data)
     data = paginator.get_paginated_response(serializer.data)
     #Almacenar rol
+
     if request.method == 'POST':
         form = CreateRolForm(request.POST)
         if form.is_valid():
             form.save()
+
             return redirect('/mainapp/roles')
+
         else:
             return render(request, 'users/create_rol.html', {'form': form, 'all_data': data})
 
@@ -151,6 +159,7 @@ def destroy_rol(request):
         rol = get_object_or_404(Rol, pk=request.POST.get('rol_id'))
         rol.delete()
         return redirect('/mainapp/roles')
+
 
 
 ###################### Prioridades #######################
@@ -292,6 +301,7 @@ def destroy_location(request):
         return redirect('/mainapp/locations')
 
 
-
+@login_required
 def atencion_clientes(request):
     return render(request, 'turnos/atender_turnos.html')
+

@@ -18,4 +18,5 @@ urlpatterns = [
     path('edit_location/', views.edit_location, name='edit_location'),
     path('destroy_location/', views.destroy_location, name='destroy_location'),
     path('atencion_clientes/', views.atencion_clientes, name='atencion_clientes'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

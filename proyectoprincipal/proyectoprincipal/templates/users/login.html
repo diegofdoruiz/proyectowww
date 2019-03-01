@@ -34,7 +34,9 @@
               <form class="pt-5"  method="POST" action="{% url 'login' %}">
                   {% csrf_token %}
                   <div class="form-group">
-                    <label for="exampleInputEmail1">Nombre de Usuario:*</label>
+
+                    <label for="exampleInputEmail1">Nombre de Usuario*</label>
+
                     <input 
                       type="text"
                       name="username" 
@@ -47,7 +49,9 @@
                     </span>
                   </div>
                   <div class="form-group">
-                    <label for="exampleInputPassword1">Contraseña:*</label>
+
+                    <label for="exampleInputPassword1">Contraseña*</label>
+
                     <input 
                       type="password"
                       name="password" 
@@ -60,7 +64,9 @@
                   <div class="mt-5">
                     <button
                       type="submit" 
-                      class="btn btn-block btn-warning btn-lg font-weight-medium">
+
+                      class="btn btn-block btn-info btn-lg font-weight-medium">
+
                       Login
                     </button>
                   </div>

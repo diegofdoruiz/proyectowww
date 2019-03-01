@@ -13,6 +13,9 @@
   <link rel="stylesheet" href="{% static 'node_modules/mdi/css/materialdesignicons.min.css' %}">
   <link rel="stylesheet" href="{% static 'node_modules/simple-line-icons/css/simple-line-icons.css' %}">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/css/bootstrap-select.min.css">
 
@@ -30,10 +33,13 @@
   <div class="container-scroller">
     <!-- partial:partials/_navbar.html -->
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
-      <div class="text-center navbar-brand-wrapper d-flex align-items-top justify-content-center">
-        <a class="navbar-brand brand-logo" href="{% url 'home' %}"><img src="{% static 'images/logo.svg' %}" alt="logo"/></a>
+
+      <div class="text-center navbar-brand-wrapper d-flex align-items-top justify-content-center" style="background-color: #442cb0">
+        <a class="navbar-brand brand-logo" href="{% url 'home' %}" ><img src="{% static 'images/logo.svg' %}" alt="logo"/></a>
+
         <a class="navbar-brand brand-logo-mini" href="{% url 'home' %}"><img src="{% static 'images/logo-mini.svg' %}" alt="logo"/></a>
       </div>
+<!--
       <div class="navbar-menu-wrapper d-flex align-items-center">
         <ul class="navbar-nav navbar-nav-left header-links d-none d-md-flex">
           <li class="nav-item">
@@ -167,11 +173,14 @@
           <span class="icon-menu"></span>
         </button>
       </div>
+    -->
     </nav>
     <!-- partial -->
-    <div class="container-fluid page-body-wrapper">
+
+    <div class="container-fluid page-body-wrapper" >
       <!-- partial:partials/_sidebar.html -->
-      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+      <nav class="sidebar sidebar-offcanvas" id="sidebar" style="background-color: #751AFF">
+
         <ul class="nav">
           {% if user.is_authenticated %}
           <!--<p>Welcome, {{ user.get_username }}. Thanks for logging in.</p>-->
@@ -194,103 +203,66 @@
             <li class="nav-item"><a class="nav-link" href="#"><img class="menu-icon" src="{% static 'images/menu_icons/01.png' %}" alt="menu icon"><span class="menu-title">Dashboard</span></a></li>
           {% endif %}
 
-          <!-- Panel para el proyecto de www -->
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'edit_profile' %}">
-              <i class="menu-icon far fa-user-circle"></i>
-              <span class="menu-title"> Perfil</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'users' %}">
-              <i class="menu-icon fas fa-users"></i>
-              <span class="menu-title"> Usuarios</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'roles' %}">
-              <i class="menu-icon fas fa-sitemap"></i>
-              <span class="menu-title"> Roles</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'priorities' %}">
-              <i class="menu-icon fas fa-file-medical"></i>
-              <span class="menu-title">Prioridades</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'locations' %}">
-              <i class="menu-icon fas fa-arrows-alt"></i>
-              <span class="menu-title">Ubicaciones</span>
-            </a>
-          </li>
 
-          <!--<li class="nav-item">
-            <a class="nav-link" href="{% static 'pages/widgets.html' %}">
-              <img class="menu-icon" src="{% static 'images/menu_icons/02.png' %}" alt="menu icon">
-              <span class="menu-title">Widgets</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% static 'pages/ui-features/buttons.html' %}">
-              <img class="menu-icon" src="{% static 'images/menu_icons/03.png' %}" alt="menu icon">
-              <span class="menu-title">Buttons</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% static 'pages/forms/basic_elements.html' %}">
-              <img class="menu-icon" src="{% static 'images/menu_icons/04.png' %}" alt="menu icon">
-              <span class="menu-title">Form</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% static 'pages/charts/chartjs.html' %}">
-              <img class="menu-icon" src="{% static 'images/menu_icons/05.png' %}" alt="menu icon">
-              <span class="menu-title">Charts</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% static 'pages/tables/basic-table.html' %}">
-              <img class="menu-icon" src="{% static 'images/menu_icons/06.png' %}" alt="menu icon">
-              <span class="menu-title">Table</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% static 'pages/icons/font-awesome.html' %}">
-              <img class="menu-icon" src="{% static 'images/menu_icons/07.png' %}" alt="menu icon">
-              <span class="menu-title">Icons</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#general-pages" aria-expanded="false" aria-controls="general-pages">
-              <img class="menu-icon" src="{% static 'images/menu_icons/08.png' %}" alt="menu icon">
-              <span class="menu-title">General Pages</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="general-pages">
+<li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#pestanas_usuarios" aria-expanded="false" aria-controls="pestanas_usuarios"><i
+            class="fa fa-user" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Usuarios</span><i class="menu-arrow"></i></a>
+            <div class="collapse" id="pestanas_usuarios">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/blank-page.html' %}">Blank Page</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/login.html' %}">Login</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/register.html' %}">Register</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/error-404.html' %}">404</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/error-500.html' %}">500</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/blank-page.html' %}" >Registrar Usuario</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/login.html' %}">Consultar Usuarios</a></li>
+              </ul>
+            </div>
+
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#pestanas_empleados" aria-expanded="false" aria-controls="pestanas_empleados"><i
+            class="fa fa-drivers-license-o" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Empleados</span><i class="menu-arrow"></i></a>
+            <div class="collapse" id="pestanas_empleados">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/blank-page.html' %}">Registrar Empleado</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/login.html' %}">Consultar Empleados</a></li>
+              </ul>
+            </div>
+          </li> 
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#pestanas_roles" aria-expanded="false" aria-controls="pestanas_roles"><i
+            class="fa fa-users" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Roles</span><i class="menu-arrow"></i></a>
+            <div class="collapse" id="pestanas_roles">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/blank-page.html' %}">Registrar Rol</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/login.html' %}">Consultar Roles</a></li>
               </ul>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% static 'pages/ui-features/typography.html' %}">
-              <img class="menu-icon" src="{% static 'images/menu_icons/09.png' %}" alt="menu icon">
-              <span class="menu-title">Typography</span>
-            </a>
-          </li>-->
+            <a class="nav-link" data-toggle="collapse" href="#pestanas_rep" aria-expanded="false" aria-controls="pestanas_rep" style="border-bottom-color: #1146CB">
+              <i class="fa fa-file-text" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Reportes</span><i class="menu-arrow"></i></a>
+            <div class="collapse" id="pestanas_rep">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/login.html' %}">Consultar Reportes</a></li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item">
 
+            <a class="nav-link" data-toggle="collapse" href="#pestanas_publi" aria-expanded="false" aria-controls="pestanas_publi"><i
+            class="fa fa-bullhorn" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Publicidad</span><i class="menu-arrow"></i></a>
+            <div class="collapse" id="pestanas_publi">
+
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/blank-page.html' %}">Agregar Publicidad</a></li>
+              </ul>
+            </div>
+          </li>
         </ul>
       </nav>
       <!-- partial -->
       <div class="main-panel">
 
-        <div class="content-wrapper">
+
+        <div class="content-wrapper" >
+
         <!--<div class="row">
             <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
               <div class="card card-statistics">
@@ -814,6 +786,7 @@
   {% block myjs %}
 
   {% endblock %}
+
 </body>
 
 </html>
