@@ -34,7 +34,7 @@ class UserForm(UserCreationForm):
         # se eliminan todos los otros campos del formulario usuario.
         if from_update_profile:
             del self.fields['username']
-            del self.fields['email']
+            #del self.fields['email']
             del self.fields['first_name']
             del self.fields['last_name']
             del self.fields['is_active']
@@ -65,7 +65,7 @@ class ProfileForm(forms.ModelForm):
         super(ProfileForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
-            self.fields['id_card'].widget.attrs['readonly'] = True
+            del self.fields['id_card']
         if request:
             if not request.user.is_superuser:
                 # Si el usuario no es superusuario, no puede editar su rol
