@@ -1,0 +1,24 @@
+{% extends "../template.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block main %}
+
+    <div><!-- Confirmación de creación de una cuenta -->
+        {% if alert %}
+            <p> {{ alert }}</p>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+          Hi {{ user.username }}!
+            <p>
+                <a href="{% url 'logout' %}">logout</a> |
+                <a href="{% url 'edit_profile' %}">Editar Perfil</a>
+            </p>
+        {% else %}
+            <a href="{% url 'login' %}">login1</a> |
+            <a href="{% url 'signup' %}">signup1</a>
+        {% endif %}
+    </div>
+
+{% endblock %}

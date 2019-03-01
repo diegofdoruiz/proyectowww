@@ -1,0 +1,61 @@
+{% extends "../template.html" %}
+
+{% block title %}New password{% endblock %}
+
+{% block main %}
+    {% if user.profile.pic %}
+        <img src="{{ user.profile.pic.url }}" style="width:15%">
+    {% endif %}
+    <p>
+        <label>Username: </label>
+        {{ user.username }}
+    </p>
+    <p>
+        <label>First name: </label>
+        {{ user.first_name }}
+    </p>
+    <p>
+        <label>Last name: </label>
+        {{ user.last_name }}
+    </p>
+    <p>
+        <label>Email: </label>
+        {{ user.email }}
+    </p>
+    <p>
+        <label>Estado: </label>
+        {{ user.is_active }}
+    </p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>
+            {{ form.pic.label }}
+            {{ form.pic }}
+            {{ form.pic.errors }}
+        </p>
+        <p>
+            {{ form.rol.label }}
+            {{ form.rol }}
+            {{ form.rol.errors }}
+        </p>
+        <p>
+            {{ form.id_card.label }}
+            {{ form.id_card }}
+            {{ form.id_card.errors }}
+        </p>
+        <p>
+            {{ form.telephone.label }}
+            {{ form.telephone }}
+            {{ form.telephone.errors }}
+        </p>
+        <p>
+        <p>Dejar en blanco si no desea cambiar</p>
+            {{ user_form.password1.label }}
+            {{ user_form.password1 }}
+            {{ user_form.password1.errors }}
+        </p>
+        <button type="submit" value="Update">Enviar</button>
+    </form>
+{{ form.id }}
+{% endblock %}
