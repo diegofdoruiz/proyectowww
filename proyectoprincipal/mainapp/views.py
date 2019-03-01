@@ -17,15 +17,14 @@ from django.contrib.auth import authenticate, login
 from django.core import serializers
 
 ########################### Usuarios ##########################
-<<<<<<< HEAD
-=======
+
 def home(request):
     if request.user.is_authenticated:
         return redirect('home/')
     else:
         return redirect('login/')
 
->>>>>>> 1a7444a01a1bdde3762c203017040539d0e509bd
+
 
 @transaction.atomic
 def register(request):
@@ -117,22 +116,7 @@ def edit_profile(request):
             return redirect('/mainapp/edit_profile')
     return render(request, 'users/edit_profile.html', {'form': form, 'user_form': user_form})
 
-<<<<<<< HEAD
 
-class CreateRole(CreateView):
-    model = Rol
-    form_class = CreateRolForm
-    template_name = 'users/create_rol.html'
-
-    def form_valid(self, form):
-        form.save()
-
-        return redirect('/home')
-
-
-
-def create_role(request):
-=======
 #################### Roles ##############################
 @api_view(['GET','POST'])
 def roles(request):
@@ -155,17 +139,14 @@ def roles(request):
             return paginator.get_paginated_response(serializer.data)
     data = paginator.get_paginated_response(serializer.data)
     #Almacenar rol
->>>>>>> 1a7444a01a1bdde3762c203017040539d0e509bd
+
     if request.method == 'POST':
         form = CreateRolForm(request.POST)
         if form.is_valid():
             form.save()
-<<<<<<< HEAD
-            return redirect('/')
 
-=======
             return redirect('/mainapp/roles')
->>>>>>> 1a7444a01a1bdde3762c203017040539d0e509bd
+
         else:
             return render(request, 'users/create_rol.html', {'form': form, 'all_data': data})
 

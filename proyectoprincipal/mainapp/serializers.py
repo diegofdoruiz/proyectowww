@@ -35,9 +35,7 @@ class LocationListSerializer(ModelSerializer):
         fields = [
             'id',
             'name'
-<<<<<<< HEAD
 
-=======
         ]
 
 class RolListSerializer(ModelSerializer):
@@ -46,5 +44,5 @@ class RolListSerializer(ModelSerializer):
         fields = [
             'id',
             'name'        
->>>>>>> 1a7444a01a1bdde3762c203017040539d0e509bd
+
         ]
