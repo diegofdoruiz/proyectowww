@@ -1,11 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-<<<<<<< HEAD
 from .models import Profile, Rol, Priority, Location
-=======
-from .models import Profile, Rol
->>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
 from rest_framework import serializers
 
 
@@ -78,15 +74,7 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ('pic', 'rol', 'id_card', 'telephone')
-<<<<<<< HEAD
 
-=======
-        error_messages = {
-            'id_card': {
-                'required': 'El nombre de usuario es obligatorio.',
-            },
-        }
->>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
 
 class CreateRolForm(forms.ModelForm):
     class Meta:
@@ -94,7 +82,7 @@ class CreateRolForm(forms.ModelForm):
         fields = ('name', 'permission')
 
 
-<<<<<<< HEAD
+
 # Se usa el mismo formulario para crear y editar una prioridad
 class PriorityForm(forms.ModelForm):
     class Meta:
@@ -107,10 +95,4 @@ class LocationForm(forms.ModelForm):
         model = Location
         fields = ('id', 'name')
 
-    
-
-
-
-=======
->>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
 

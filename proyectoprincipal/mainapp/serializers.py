@@ -1,9 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 from django.contrib.auth.models import User
-<<<<<<< HEAD
 from .models import Profile, Rol, Priority, Location
-=======
->>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
+
 
 
 class UserListSerializer(ModelSerializer):
@@ -17,7 +15,7 @@ class UserListSerializer(ModelSerializer):
             'email',
             'is_active',
             'is_superuser'
-<<<<<<< HEAD
+
         ]
 
 class PriorityListSerializer(ModelSerializer):
@@ -37,6 +35,5 @@ class LocationListSerializer(ModelSerializer):
         fields = [
             'id',
             'name'
-=======
->>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
+
         ]
