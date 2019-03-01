@@ -75,12 +75,17 @@ WSGI_APPLICATION = 'proyectotickets.wsgi.application'
 
 DATABASES = {
     'default': {
+<<<<<<< HEAD
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': '1522589',
         'USER': '1522589',
         'PASSWORD': '1522589',
         'HOST': 'pgsql2',
         'PORT': '5432',
+=======
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+>>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
     }
 }
 

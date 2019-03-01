@@ -17,6 +17,7 @@
     <table class="table table-bordered" id="table-users-list">
         <thead>
             <tr>
+<<<<<<< HEAD
                 <th>id</th>
                 <th>Username</th>
                 <th>Nombres</th>
@@ -29,6 +30,20 @@
         <tbody>
             {% if all_data.data.rows %}
                 {% for user in all_data.data.rows %}
+=======
+                <td>id</td>
+                <td>Username</td>
+                <td>Nombres</td>
+                <td>Apellidos</td>
+                <td>Email</td>
+                <td>Estado</td>
+                <td>Opciones</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% if all_data.data.users %}
+                {% for user in all_data.data.users %}
+>>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
                 <tr id="table-rows">
                     <td>{{ user.id }}</td>
                     <td>{{ user.username }}</td>
@@ -40,9 +55,15 @@
                         <a class="btn btn-primary" href="{% url 'user_edit' user.id %}" >Editar</a>
                         {% if not user.is_superuser %}
                             {% if user.is_active %}
+<<<<<<< HEAD
                                 <a class="btn btn-danger" onclick="open_modal( '{{ user.id }}', '{{ user.first_name }}', '{{ user.last_name }}', '{{ False }}' )">Inactivar</a>
                             {% else %}
                                 <a class="btn btn-info" onclick="open_modal( '{{ user.id }}', '{{ user.first_name }}', '{{ user.last_name }}',  '{{ True }}')">Activar&nbsp;&nbsp;&nbsp;&nbsp;</a>
+=======
+                                <a class="btn btn-danger" onclick="open_modal( '{{ user.id }}', '{{ user.first_name }}', '{{ user.last_name }}', '{{ False }}' )">Deacti</a>
+                            {% else %}
+                                <a class="btn btn-info" onclick="open_modal( '{{ user.id }}', '{{ user.first_name }}', '{{ user.last_name }}',  '{{ True }}')">Active</a>
+>>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
                             {% endif %}
                         {% endif %}
                     </td>

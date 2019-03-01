@@ -1,11 +1,15 @@
 from django.shortcuts import redirect
+<<<<<<< HEAD
 from django.http import HttpResponse
 from django.utils.html import escape
+=======
+>>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
 from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import CreateView
 from django.db import transaction
 from django.db.models import Q
+<<<<<<< HEAD
 from .models import Profile, Rol, Priority, Location
 from django.contrib.auth.decorators import login_required
 from .forms import UserForm, ProfileForm, CreateRolForm, PriorityForm, LocationForm
@@ -15,6 +19,18 @@ from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate, login
 
 ########################### Usuarios ##########################
+=======
+from .models import Profile, Rol
+from django.contrib.auth.decorators import login_required
+from .forms import UserForm, ProfileForm, CreateRolForm
+from .serializers import UserListSerializer
+from .pagination import UserPageNumberPagination
+from rest_framework.decorators import api_view
+from django.contrib.auth import authenticate, login
+from django.contrib.auth import logout
+
+
+>>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
 @transaction.atomic
 def register(request):
     user_form = UserForm(request.POST or None)
@@ -47,7 +63,11 @@ def users_list(request):
                                                Q(email__contains=query) |
                                                Q(is_active__contains=query) |
                                                Q(is_superuser__contains=query)).distinct().order_by('id')
+<<<<<<< HEAD
     paginator = CustomPageNumberPagination()
+=======
+    paginator = UserPageNumberPagination()
+>>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
     result_page = paginator.paginate_queryset(person_objects, request)
     serializer = UserListSerializer(result_page, many=True)
     if request_from:
@@ -111,7 +131,11 @@ class CreateRole(CreateView):
 
     def form_valid(self, form):
         form.save()
+<<<<<<< HEAD
         return redirect('/home')
+=======
+        return redirect('/')
+>>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
 
 
 def create_role(request):
@@ -120,13 +144,17 @@ def create_role(request):
         if form.is_valid():
             form.save()
             return redirect('/')
+<<<<<<< HEAD
         else:
             return render(request, 'users/create_rol.html', {'form': form})
 
+=======
+>>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
     else:
         form = CreateRolForm()
         return render(request, 'users/create_rol.html', {'form': form})
 
+<<<<<<< HEAD
 ###################### Prioridades #######################
 @api_view(['GET','POST'])
 def priorities(request):
@@ -269,3 +297,10 @@ def destroy_location(request):
 @login_required
 def atencion_clientes(request):
     return render(request, 'turnos/atender_turnos.html')
+=======
+
+
+
+
+
+>>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f

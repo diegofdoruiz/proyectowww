@@ -5,7 +5,11 @@ $(function () {
             dataType: "json",
             success : function (data) {
                 //console.log(data);
+<<<<<<< HEAD
                 build_rows(data["rows"]);
+=======
+                build_rows(data["users"]);
+>>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
                 buid_pagination(data['pag_links'])
             }
         });

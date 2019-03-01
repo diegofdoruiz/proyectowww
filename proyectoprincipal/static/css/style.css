@@ -15512,11 +15512,19 @@ select.form-control {
 /* === Landing screens === */
 /* Auth */
 .auth.login-full-bg {
+<<<<<<< HEAD
   background: url("../images/auth/login_1.jpg");
   background-size: cover; }
 
 .auth.register-full-bg {
   background: url("../images/auth/register_1.jpg");
+=======
+  background: url("../images/auth/login.gif");
+  background-size: cover; }
+
+.auth.register-full-bg {
+  background: url("../images/auth/login.gif");
+>>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
   background-size: cover; }
 
 .auth .auth-form-dark {

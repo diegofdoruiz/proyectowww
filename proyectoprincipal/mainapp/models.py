@@ -4,7 +4,11 @@ from django.utils.translation import gettext as _
 
 
 class Rol(models.Model):
+<<<<<<< HEAD
     name = models.CharField(max_length=20, null=False, blank=False)
+=======
+    name = models.CharField(max_length=20, null=False)
+>>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
     permission = models.ManyToManyField(Permission, blank=True)
 
     def __str__(self):
@@ -47,6 +51,7 @@ class Profile(models.Model):
             ('es_cajero_vip', _('Cajero VIP')),
         )
 
+<<<<<<< HEAD
 class Priority(models.Model):
     name = models.CharField(max_length=128, null=False, blank=False)
     description = models.CharField(max_length=512, null=False, blank=False)
@@ -70,6 +75,8 @@ class turn(models.Model):
     
     def __str__(self):
         return self.code
+=======
+>>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
 
 '''
 @receiver(post_save, sender=User)
