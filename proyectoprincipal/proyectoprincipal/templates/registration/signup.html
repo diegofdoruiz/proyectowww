@@ -4,12 +4,7 @@
 
 {% block main %}
     {% if alert %}
-<<<<<<< HEAD
-        <label class="alert alert-success"> Alerta: {{ alert }}</label>
-    {% endif %}
-<h1>Registro de un nuevo usuario</h1>
-<hr>
-=======
+
         <div> Alerta: {{ alert }}</div>
     {% endif %}
     <!-- Acá se combinan los los formularios de a cuerdo a como se pidió en el front -->
@@ -83,36 +78,31 @@
 
     <div class="card" style="background-color: #fff">
         <div class= "card-body">
->>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
+
 <form method="post" enctype="multipart/form-data">
     <div class="row">
         {% csrf_token %}
         <div class="col-12 col-md-6">
             <div class="form-group">
-<<<<<<< HEAD
-                <label>Nombre de usuario:</label>
-=======
+
                 <label>Nombre de usuario</label>
->>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
+
                 <input 
                     type="text" 
                     name="username" 
                     class="form-control {% if user_form.username.errors %} is-invalid {% endif %}" 
-<<<<<<< HEAD
-=======
+
                     id="exampleInputEmail1"
->>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
+
                     value="{{ user_form.username.value|default_if_none:'' }}">
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ user_form.username.errors }}</strong>
                 </span>
             </div>
             <div class="form-group">
-<<<<<<< HEAD
-                <label>Email:</label>
-=======
+
                 <label>Email</label>
->>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
+
                 <input 
                     type="text" 
                     name="email" 
@@ -123,11 +113,9 @@
                 </span>
             </div>
             <div class="form-group">
-<<<<<<< HEAD
-                <label>Nombres:</label>
-=======
+
                 <label>Nombres</label>
->>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
+
                 <input 
                     type="text" 
                     name="first_name" 
@@ -138,11 +126,8 @@
                 </span>
             </div>
             <div class="form-group">
-<<<<<<< HEAD
-                <label>Apellidos:</label>
-=======
+
                 <label>Apellidos</label>
->>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
                 <input 
                     type="text" 
                     name="last_name" 
@@ -153,11 +138,8 @@
                 </span>
             </div>
             <div class="form-group">
-<<<<<<< HEAD
-                <label>Identificación:</label>
-=======
+
                 <label>Identificación</label>
->>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
                 <input 
                     type="text" 
                     name="id_card" 
@@ -168,11 +150,8 @@
                 </span>
             </div>
             <div class="form-group">
-<<<<<<< HEAD
-                <label>Teléfono:</label>
-=======
+
                 <label>Teléfono</label>
->>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
                 <input 
                     type="text"     
                     name="telephone" 
@@ -185,11 +164,8 @@
         </div>
         <div class="col-12 col-md-6">
             <div class="form-group">
-<<<<<<< HEAD
-                <label>Rol:</label>
-=======
+
                 <label>Rol</label>
->>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
                 <select 
                     class="form-control {% if profile_form.rol.errors %} is-invalid {% endif %}"
                     name="rol">
@@ -202,32 +178,14 @@
                     <strong>{{ profile_form.rol.errors }}</strong>
                 </span>
             </div>
-<<<<<<< HEAD
-            <div class="form-group">
-                <label>imágen:</label>
-=======
-
-        
-
-        
-
-          
+     
             <div class="form-group">
                 <label>Imagen</label>
-            
->>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
+
                 <input 
                     type="file" 
                     name="pic" 
                     class="form-control {% if profile_form.pic.errors %} is-invalid {% endif %}">
-<<<<<<< HEAD
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ profile_form.pic.errors }}</strong>
-                </span>
-            </div>
-            <div class="form-group">
-                <label>Contraseña:</label>
-=======
 
                 <span class="invalid-feedback" role="alert">
 
@@ -239,7 +197,6 @@
 
             <div class="form-group">
                 <label>Contraseña</label>
->>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
                 <input 
                     type="password" 
                     name="password1" 
@@ -249,11 +206,8 @@
                 </span>
             </div>
             <div class="form-group">
-<<<<<<< HEAD
-                <label>Confirmar Contraseña:</label>
-=======
+
                 <label>Confirmar Contraseña</label>
->>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
                 <input 
                     type="password" 
                     name="password2" 
@@ -263,35 +217,15 @@
                 </span>
             </div>
             <div class="form-group">
-<<<<<<< HEAD
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <p>
-                            <label>Estado:</label>
-                            {{ user_form.is_active }}
-                        </p>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        {{ user_form.is_admin }}
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-=======
->>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
+
+
                 <button type="submit" class="btn btn-primary">Enviar</button>
                 <button type="submit" class="btn btn-secondary">Cancelar</button>
             </div>
         </div>
         </form>
-<<<<<<< HEAD
-    </div>
-</form>
-=======
-
 
 </div>
         </div>
 
->>>>>>> b781bbc5447e812b65f01e1b63d8aeebb665fe0f
 {% endblock %}

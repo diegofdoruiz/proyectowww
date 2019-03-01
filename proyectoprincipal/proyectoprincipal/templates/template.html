@@ -209,8 +209,8 @@
             class="fa fa-user" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Usuarios</span><i class="menu-arrow"></i></a>
             <div class="collapse" id="pestanas_usuarios">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/blank-page.html' %}" >Registrar Usuario</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/login.html' %}">Consultar Usuarios</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% url 'signup' %}" >Registrar Usuario</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% url 'users' %}">Consultar Usuarios</a></li>
               </ul>
             </div>
 
@@ -220,8 +220,8 @@
             class="fa fa-drivers-license-o" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Empleados</span><i class="menu-arrow"></i></a>
             <div class="collapse" id="pestanas_empleados">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/blank-page.html' %}">Registrar Empleado</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/login.html' %}">Consultar Empleados</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% url 'signup' %}">Registrar Empleado</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% url 'users' %}">Consultar Empleados</a></li>
               </ul>
             </div>
           </li> 
@@ -230,8 +230,8 @@
             class="fa fa-users" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Roles</span><i class="menu-arrow"></i></a>
             <div class="collapse" id="pestanas_roles">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/blank-page.html' %}">Registrar Rol</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{% static 'pages/samples/login.html' %}">Consultar Roles</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% url 'roles' %}">Registrar Rol</a></li>
+                
               </ul>
             </div>
           </li>
