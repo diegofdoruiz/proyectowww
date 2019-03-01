@@ -5,7 +5,9 @@ $(function () {
             dataType: "json",
             success : function (data) {
                 //console.log(data);
-                build_rows(data["users"]);
+
+                build_rows(data["rows"]);
+
                 buid_pagination(data['pag_links'])
             }
         });

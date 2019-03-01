@@ -3,7 +3,8 @@
 {% block title %}New password{% endblock %}
 
 {% block main %}
-    <div>
+    <div class="row">
+      <div class="col-12 col-md-6">
         <p>
             {% csrf_token %}
             <label>buscar: </label>
@@ -13,10 +14,15 @@
                 <input type="text" name="search" id="search">
             {% endif %}
         </p>
+      </div>
+      <div class="col-12 col-md-6" style="text-align: right;">
+        <a class="btn btn-secondary" href="{% url 'signup' %}">Agregar Usuario</a>
+      </div>
     </div>
     <table class="table table-bordered" id="table-users-list">
         <thead>
             <tr>
+
                 <td>id</td>
                 <td>Username</td>
                 <td>Nombres</td>
@@ -29,6 +35,7 @@
         <tbody>
             {% if all_data.data.users %}
                 {% for user in all_data.data.users %}
+
                 <tr id="table-rows">
                     <td>{{ user.id }}</td>
                     <td>{{ user.username }}</td>
@@ -40,6 +47,7 @@
                         <a class="btn btn-primary" href="{% url 'user_edit' user.id %}" >Editar</a>
                         {% if not user.is_superuser %}
                             {% if user.is_active %}
+
                                 <a class="btn btn-danger" onclick="open_modal( '{{ user.id }}', '{{ user.first_name }}', '{{ user.last_name }}', '{{ False }}' )">Deacti</a>
                             {% else %}
                                 <a class="btn btn-info" onclick="open_modal( '{{ user.id }}', '{{ user.first_name }}', '{{ user.last_name }}',  '{{ True }}')">Active</a>

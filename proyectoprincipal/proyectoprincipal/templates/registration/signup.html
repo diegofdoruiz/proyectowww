@@ -4,10 +4,11 @@
 
 {% block main %}
     {% if alert %}
+
         <div> Alerta: {{ alert }}</div>
     {% endif %}
     <!-- Acá se combinan los los formularios de a cuerdo a como se pidió en el front -->
-    <form method="post" enctype="multipart/form-data">
+    <!--<form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <p>
             {{ profile_form.pic.label }}
@@ -73,5 +74,158 @@
             <button type="submit" value="Update">Enviar</button>
             <button type="reset" value="Cancel">Cancelar</button>
         </div>
-    </form>
+    </form>-->
+
+    <div class="card" style="background-color: #fff">
+        <div class= "card-body">
+
+<form method="post" enctype="multipart/form-data">
+    <div class="row">
+        {% csrf_token %}
+        <div class="col-12 col-md-6">
+            <div class="form-group">
+
+                <label>Nombre de usuario</label>
+
+                <input 
+                    type="text" 
+                    name="username" 
+                    class="form-control {% if user_form.username.errors %} is-invalid {% endif %}" 
+
+                    id="exampleInputEmail1"
+
+                    value="{{ user_form.username.value|default_if_none:'' }}">
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ user_form.username.errors }}</strong>
+                </span>
+            </div>
+            <div class="form-group">
+
+                <label>Email</label>
+
+                <input 
+                    type="text" 
+                    name="email" 
+                    class="form-control {% if user_form.email.errors %} is-invalid {% endif %}"
+                    value="{{ user_form.email.value|default_if_none:'' }}">
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ user_form.email.errors }}</strong>
+                </span>
+            </div>
+            <div class="form-group">
+
+                <label>Nombres</label>
+
+                <input 
+                    type="text" 
+                    name="first_name" 
+                    class="form-control {% if user_form.first_name.errors %} is-invalid {% endif %}"
+                    value="{{ user_form.first_name.value|default_if_none:'' }}">
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ user_form.first_name.errors }}</strong>
+                </span>
+            </div>
+            <div class="form-group">
+
+                <label>Apellidos</label>
+                <input 
+                    type="text" 
+                    name="last_name" 
+                    class="form-control {% if user_form.last_name.errors %} is-invalid {% endif %}"
+                    value="{{ user_form.last_name.value|default_if_none:'' }}">
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ user_form.last_name.errors }}</strong>
+                </span>
+            </div>
+            <div class="form-group">
+
+                <label>Identificación</label>
+                <input 
+                    type="text" 
+                    name="id_card" 
+                    class="form-control {% if profile_form.id_card.errors %} is-invalid {% endif %}"
+                    value="{{ profile_form.id_card.value|default_if_none:'' }}">
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ profile_form.id_card.errors }}</strong>
+                </span>
+            </div>
+            <div class="form-group">
+
+                <label>Teléfono</label>
+                <input 
+                    type="text"     
+                    name="telephone" 
+                    class="form-control {% if profile_form.telephone.errors %} is-invalid {% endif %}"
+                    value="{{ profile_form.telephone.value|default_if_none:'' }}">
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ profile_form.telephone.errors }}</strong>
+                </span>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="form-group">
+
+                <label>Rol</label>
+                <select 
+                    class="form-control {% if profile_form.rol.errors %} is-invalid {% endif %}"
+                    name="rol">
+                    <option value="0">Seleccione:</option>
+                    {% for rol in profile_form.rol %}
+                        {{ rol }}
+                    {% endfor %}
+                </select>
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ profile_form.rol.errors }}</strong>
+                </span>
+            </div>
+     
+            <div class="form-group">
+                <label>Imagen</label>
+
+                <input 
+                    type="file" 
+                    name="pic" 
+                    class="form-control {% if profile_form.pic.errors %} is-invalid {% endif %}">
+
+                <span class="invalid-feedback" role="alert">
+
+                    <strong>{{ profile_form.pic.errors }}</strong>
+                </span>
+            
+            </div>
+           
+
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input 
+                    type="password" 
+                    name="password1" 
+                    class="form-control {% if user_form.password1.errors %} is-invalid {% endif %}">
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ user_form.password1.errors }}</strong>
+                </span>
+            </div>
+            <div class="form-group">
+
+                <label>Confirmar Contraseña</label>
+                <input 
+                    type="password" 
+                    name="password2" 
+                    class="form-control {% if user_form.password2.errors %} is-invalid {% endif %}">
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ user_form.password2.errors }}</strong>
+                </span>
+            </div>
+            <div class="form-group">
+
+
+                <button type="submit" class="btn btn-primary">Enviar</button>
+                <button type="submit" class="btn btn-secondary">Cancelar</button>
+            </div>
+        </div>
+        </form>
+
+</div>
+        </div>
+
 {% endblock %}

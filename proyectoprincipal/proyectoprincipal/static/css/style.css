@@ -13783,7 +13783,9 @@ input:focus {
       z-index: 999; }
     .sidebar .nav .nav-item .collapse.show,
     .sidebar .nav .nav-item .collapsing {
-      background: #f1f6ff; }
+
+      background: #907AF6; }
+
     .sidebar .nav .nav-item .nav-link {
       align-items: center;
       display: flex;
@@ -13792,7 +13794,9 @@ input:focus {
       height: 52px;
       color: #4a4949; }
       .sidebar .nav .nav-item .nav-link[aria-expanded="true"] {
-        background: #f1f6ff; }
+
+        background: #907AF6; }
+
       .sidebar .nav .nav-item .nav-link .menu-icon {
         margin-right: 1.25rem;
         width: 16px;
@@ -13866,13 +13870,17 @@ input:focus {
       .sidebar .nav .nav-item.active > .nav-link i {
         color: inherit; }
     .sidebar .nav:not(.sub-menu) > .nav-item:hover:not(.nav-profile) > .nav-link {
-      background: #f1f6ff;
+
+      background: #907AF6;
+
       color: #4a4949; }
     .sidebar .nav.sub-menu {
       margin-bottom: 0;
       padding: 0 0 0 3.25rem; }
       .sidebar .nav.sub-menu .nav-item .nav-link {
-        color: #4a4949;
+
+        color: #d5d5d5;
+
         padding: 0.75rem 1rem;
         font-size: 0.875rem;
         line-height: 1;
@@ -13884,7 +13892,9 @@ input:focus {
             background: #1991EB; }
       .sidebar .nav.sub-menu .nav-item:hover > .nav-link {
         background: initial;
-        color: #000; }
+
+        color: #FFFFFF; }
+
         .sidebar .nav.sub-menu .nav-item:hover > .nav-link:before {
           background: #000; }
     .sidebar .nav .nav-item.purchase-button {
@@ -15512,7 +15522,8 @@ select.form-control {
 /* === Landing screens === */
 /* Auth */
 .auth.login-full-bg {
-  background: url("../images/auth/login_1.jpg");
+
+  background: url("../images/auth/login.gif");
   background-size: cover; }
 
 .auth.register-full-bg {

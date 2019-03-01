@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile, Rol
+from .models import Profile, Rol, Priority, Location
 from rest_framework import serializers
 
 
@@ -34,7 +34,7 @@ class UserForm(UserCreationForm):
         # se eliminan todos los otros campos del formulario usuario.
         if from_update_profile:
             del self.fields['username']
-            del self.fields['email']
+            #del self.fields['email']
             del self.fields['first_name']
             del self.fields['last_name']
             del self.fields['is_active']
@@ -65,7 +65,7 @@ class ProfileForm(forms.ModelForm):
         super(ProfileForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
-            self.fields['id_card'].widget.attrs['readonly'] = True
+            del self.fields['id_card']
         if request:
             if not request.user.is_superuser:
                 # Si el usuario no es superusuario, no puede editar su rol
@@ -81,5 +81,18 @@ class CreateRolForm(forms.ModelForm):
         model = Rol
         fields = ('name', 'permission')
 
+
+
+# Se usa el mismo formulario para crear y editar una prioridad
+class PriorityForm(forms.ModelForm):
+    class Meta:
+        model = Priority
+        fields = ('id', 'name', 'description', 'weight', 'status')
+
+# Se usa el mismo formulario para crear y editar una prioridad
+class LocationForm(forms.ModelForm):
+    class Meta:
+        model = Location
+        fields = ('id', 'name')
 
 
