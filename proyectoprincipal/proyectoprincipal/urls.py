@@ -22,7 +22,8 @@ from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, 
 from mainapp import views
 
 urlpatterns = [
-    path('', LoginView.as_view(template_name='users/login.html'), name="login"),
+    path('login/', LoginView.as_view(template_name='users/login.html'), name="login"),
+    path('', views.home, name="home"),
     path('logout/', LogoutView.as_view(template_name='login.html'), name="logout"),
     path('password_reset/', PasswordResetView.as_view(template_name='users/password_reset_form.html'), name="password_reset"),
     path('password_reset_done/', PasswordResetDoneView.as_view(template_name='users/password_reset_done.html'), name="password_reset_done"),
