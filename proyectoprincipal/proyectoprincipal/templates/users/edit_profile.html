@@ -3,59 +3,145 @@
 {% block title %}New password{% endblock %}
 
 {% block main %}
-    {% if user.profile.pic %}
-        <img src="{{ user.profile.pic.url }}" style="width:15%">
-    {% endif %}
-    <p>
-        <label>Username: </label>
-        {{ user.username }}
-    </p>
-    <p>
-        <label>First name: </label>
-        {{ user.first_name }}
-    </p>
-    <p>
-        <label>Last name: </label>
-        {{ user.last_name }}
-    </p>
-    <p>
-        <label>Email: </label>
-        {{ user.email }}
-    </p>
-    <p>
-        <label>Estado: </label>
-        {{ user.is_active }}
-    </p>
-
-    <form method="post" enctype="multipart/form-data">
+<h1>Información de Perfil</h1>
+<hr>
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-12 col-md-6" style="text-align: right;">
+                        <label>Nombre de Usuario:</label>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-control"><strong>{{ user.username }}</strong></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-12 col-md-6" style="text-align: right;">
+                        <label>Nombres:</label>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-control"><strong>{{ user.first_name }}</strong></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-12 col-md-6" style="text-align: right;">
+                        <label>Apellidos:</label>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-control"><strong>{{ user.last_name }}</strong></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-12 col-md-6" style="text-align: right;">
+                        <label>Identificación:</label>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-control"><strong>{{ user.profile.id_card }}</strong></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="form-group" style="text-align: center;">
+                {% if user.profile.pic %}
+                    <img src="{{ user.profile.pic.url }}" class="" alt="Cinque Terre" style="width:60%; margin:auto;">
+                    <a href="{{user.profile.pic.url}}" style="display: block;" target="_blank">Ampliar</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <p>
-            {{ form.pic.label }}
-            {{ form.pic }}
-            {{ form.pic.errors }}
-        </p>
-        <p>
-            {{ form.rol.label }}
-            {{ form.rol }}
-            {{ form.rol.errors }}
-        </p>
-        <p>
-            {{ form.id_card.label }}
-            {{ form.id_card }}
-            {{ form.id_card.errors }}
-        </p>
-        <p>
-            {{ form.telephone.label }}
-            {{ form.telephone }}
-            {{ form.telephone.errors }}
-        </p>
-        <p>
-        <p>Dejar en blanco si no desea cambiar</p>
-            {{ user_form.password1.label }}
-            {{ user_form.password1 }}
-            {{ user_form.password1.errors }}
-        </p>
-        <button type="submit" value="Update">Enviar</button>
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-12 col-md-6" style="text-align: right;">
+                            <label>Estado:</label>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            {% if user.is_active %}
+                            <label class="form-control"><strong>Activo</strong></label>
+                            {% else %}
+                            <label class="form-control"><strong>Inactivo</strong></label>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-12 col-md-6" style="text-align: right;">
+                            <label>Email:</label>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <input 
+                                class="form-control" 
+                                type="email" 
+                                name="email" 
+                                value="{{user_form.email.value}}">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-12 col-md-6" style="text-align: right;">
+                            <label>Imágen de Perfil:</label>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="custom-file mt-3 mb-3">
+                                <input type="file" class="custom-file-input" name="pic" accept="image/*">
+                                <label class="custom-file-label" for="customFile">
+                                    Actualizar Imágen
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-12 col-md-4" style="text-align: right;">
+                            <label>Teléfono:</label>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <input 
+                                class="form-control" 
+                                type="test" 
+                                name="telephone" 
+                                value="{{form.telephone.value}}">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-12 col-md-4" style="text-align: right;">
+                            <label>Password:</label>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <input 
+                                class="form-control" 
+                                type="password" 
+                                name="password1">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <br>
+                    <button class="btn btn-primary btn-block">
+                        Actualizar
+                    </button>
+                </div>
+            </div>
+        </div>
     </form>
-{{ form.id }}
+</div>
 {% endblock %}

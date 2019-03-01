@@ -9,10 +9,11 @@ from django.db.models import Q
 from .models import Profile, Rol, Priority, Location
 from django.contrib.auth.decorators import login_required
 from .forms import UserForm, ProfileForm, CreateRolForm, PriorityForm, LocationForm
-from .serializers import UserListSerializer, PriorityListSerializer, LocationListSerializer
+from .serializers import UserListSerializer, PriorityListSerializer, LocationListSerializer, RolListSerializer
 from .pagination import CustomPageNumberPagination
 from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate, login
+from django.core import serializers
 
 ########################### Usuarios ##########################
 @transaction.atomic
@@ -100,32 +101,49 @@ def edit_profile(request):
                 updated_user.password = old_pass
             updated_user.save()
             form.save()
-            return redirect('/')
+            return redirect('/mainapp/edit_profile')
     return render(request, 'users/edit_profile.html', {'form': form, 'user_form': user_form})
 
-
-class CreateRole(CreateView):
-    model = Rol
-    form_class = CreateRolForm
-    template_name = 'users/create_rol.html'
-
-    def form_valid(self, form):
-        form.save()
-        return redirect('/home')
-
-
-def create_role(request):
+#################### Roles ##############################
+@api_view(['GET','POST'])
+def roles(request):
+    #Informacion para la tabla
+    request_from = request.GET.get('from', None)
+    query = request.GET.get('search_text', None)
+    rol_id = request.GET.get('rol_id', None)
+    if rol_id:
+        rol_to_edit = get_object_or_404(Rol, pk=rol_id)
+    else:
+        rol_to_edit = None
+    rol_objects = Rol.objects.all().order_by('id')
+    if query:
+        rol_objects = rol_objects.filter(   Q(name__contains=query)).distinct().order_by('id')
+    paginator = CustomPageNumberPagination()
+    result_page = paginator.paginate_queryset(rol_objects, request)
+    serializer = RolListSerializer(result_page, many=True)
+    if request_from:
+        if request_from == 'search_input':
+            return paginator.get_paginated_response(serializer.data)
+    data = paginator.get_paginated_response(serializer.data)
+    #Almacenar rol
     if request.method == 'POST':
         form = CreateRolForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('/')
+            return redirect('/mainapp/roles')
         else:
-            return render(request, 'users/create_rol.html', {'form': form})
+            return render(request, 'users/create_rol.html', {'form': form, 'all_data': data})
 
     else:
         form = CreateRolForm()
-        return render(request, 'users/create_rol.html', {'form': form})
+        return render(request, 'users/create_rol.html', {'form': form, 'all_data': data, 'rol_to_edit': rol_to_edit})
+
+def destroy_rol(request):
+    if request.method == 'POST':
+        rol = get_object_or_404(Rol, pk=request.POST.get('rol_id'))
+        rol.delete()
+        return redirect('/mainapp/roles')
+
 
 ###################### Prioridades #######################
 @api_view(['GET','POST'])

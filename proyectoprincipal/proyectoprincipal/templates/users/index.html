@@ -3,7 +3,8 @@
 {% block title %}New password{% endblock %}
 
 {% block main %}
-    <div>
+    <div class="row">
+      <div class="col-12 col-md-6">
         <p>
             {% csrf_token %}
             <label>buscar: </label>
@@ -13,6 +14,10 @@
                 <input type="text" name="search" id="search">
             {% endif %}
         </p>
+      </div>
+      <div class="col-12 col-md-6" style="text-align: right;">
+        <a class="btn btn-secondary" href="{% url 'signup' %}">Agregar Usuario</a>
+      </div>
     </div>
     <table class="table table-bordered" id="table-users-list">
         <thead>

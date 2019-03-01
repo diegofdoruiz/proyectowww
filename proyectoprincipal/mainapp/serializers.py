@@ -34,3 +34,11 @@ class LocationListSerializer(ModelSerializer):
             'id',
             'name'
         ]
+
+class RolListSerializer(ModelSerializer):
+    class Meta:
+        model = Rol
+        fields = [
+            'id',
+            'name'        
+        ]
