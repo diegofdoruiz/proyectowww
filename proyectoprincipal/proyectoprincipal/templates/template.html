@@ -192,7 +192,7 @@
                     <div class="profile-image"> <img src="#" alt="image"/> <span class="online-status online"></span> </div>
                 {% endif %}
                 <div class="profile-name">
-                  <p class="name">{{ user.first_name }} {{ user.last_name }}</p>
+                  <p class="name" style="color: #FFFFFF">{{ user.first_name }} {{ user.last_name }}</p>
                   {% for rol in user.profile.rol.all%}
                     <p class="designation">{{ rol }}</p>
                   {% endfor %}
@@ -200,7 +200,13 @@
                 </div>
               </div>
             </li>
-            <li class="nav-item"><a class="nav-link" href="#"><img class="menu-icon" src="{% static 'images/menu_icons/01.png' %}" alt="menu icon"><span class="menu-title">Dashboard</span></a></li>
+            <!-- <li class="nav-item"><a class="nav-link" href="#"><img class="menu-icon" src="{% static 'images/menu_icons/01.png' %}" alt="menu icon"><span class="menu-title">Dashboard</span></a></li>-->
+            <li class="nav-item">
+            <a class="nav-link" href="{% url 'edit_profile' %}">
+              <i class="menu-icon far fa-user-circle" style="color: #FFFFFF" ></i>
+              <span class="menu-title" style="color: #FFFFFF"> Perfil</span>
+            </a>
+          </li>
           {% endif %}
 
 
