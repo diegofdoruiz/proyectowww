@@ -78,6 +78,7 @@ class Service(models.Model):
     name = models.CharField(max_length=128, null=False, blank=False)
     description = models.CharField(max_length=512, null=False, blank=False)
     status = models.BooleanField(null=False)
+    user = models.ManyToManyField(User, blank=True) # un usuario atiende muchos servicios y ...
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -86,6 +87,7 @@ class Service(models.Model):
 # pueden ser las ventanillas
 class Location(models.Model):
     name = models.CharField(max_length=128, null=False, blank=False)
+    priority = models.ManyToManyField(Priority, blank=True) # una ubicación atiende muchas prioridades y una prioridad es atendida en mucha...
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -116,9 +118,11 @@ class LocationOnService(models.Model):
     MY_CHOICES = (
         ('1', 'free'),
         ('2', 'attending'),
+        ('3', 'paused'),
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=1, choices=MY_CHOICES)
+    is_online = models.BooleanField(default = False)
 
 
 ### Models for channels ###
