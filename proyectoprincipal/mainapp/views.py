@@ -1,20 +1,35 @@
 from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.utils.html import escape
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import CreateView
 from django.contrib.auth.views import LoginView
 from django.db import transaction
 from django.db.models import Q
-from .models import Profile, Rol, Priority, Location
+from .models import Profile, Rol, Priority, Location, Service, Turn
 from django.contrib.auth.decorators import login_required
-from .forms import UserForm, ProfileForm, CreateRolForm, PriorityForm, LocationForm
-from .serializers import UserListSerializer, PriorityListSerializer, LocationListSerializer, RolListSerializer
+from .forms import UserForm, ProfileForm, CreateRolForm, PriorityForm, LocationForm, ServiceForm
+from .serializers import UserListSerializer, PriorityListSerializer, LocationListSerializer, RolListSerializer, ServiceListSerializer
 from .pagination import CustomPageNumberPagination
 from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate, login
 from django.core import serializers
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import Http404, HttpResponseForbidden
+from django.urls import reverse
+from django.views.generic.edit import FormMixin
+
+from django.views.generic import DetailView, ListView
+from django.utils.safestring import mark_safe
+import json
+from datetime import datetime as lib_date
+import datetime
+from rolepermissions.roles import assign_role
+
+from .forms import ComposeForm
+from .models import Thread, ChatMessage
 
 ########################### Usuarios ##########################
 
@@ -33,12 +48,15 @@ def register(request):
     if request.method == 'POST':
         if user_form.is_valid() and profile_form.is_valid():
             new_user = user_form.save()
+            for rr in request.POST.getlist('rol'):
+                if rr == 'a':
+                    assign_role(new_user, 'administrador')
+                elif rr == 'b':
+                    assign_role(new_user, 'cajero')
+                else:
+                    assign_role(new_user, 'cliente')
             profile = profile_form.save(commit=False)
             profile.user = new_user
-            profile.save()
-            for rr in request.POST.getlist('rol'):
-                rol = get_object_or_404(Rol, id=rr)
-                profile.rol.add(rol)
             profile.save()
             return render(request, 'registration/confirmation.html', {'alert': ' User created has been created'})
         else:
@@ -84,6 +102,13 @@ def user_edit(request, pk):
             updated_user = user_form.save(commit=False)
             if new_pass == '':
                 updated_user.password = old_pass
+            rol = request.POST.get('rol')
+            if rol == 'a':
+                assign_role(updated_user, 'administrador')
+            elif rol == 'b':
+                assign_role(updated_user, 'cajero')
+            else:
+                assign_role(updated_user, 'cliente')
             updated_user.save()
             profile_form.save()
             alert = 'User update successfull'
@@ -143,8 +168,10 @@ def roles(request):
     if request.method == 'POST':
         form = CreateRolForm(request.POST)
         if form.is_valid():
-            form.save()
-
+            rol = form.save()
+            for permission_id in request.POST.getlist('permissions'):
+                permission = get_object_or_404(Permission, id=permission_id)
+                rol.permission.add(permission)
             return redirect('/mainapp/roles')
 
         else:
@@ -153,6 +180,7 @@ def roles(request):
     else:
         form = CreateRolForm()
         return render(request, 'users/create_rol.html', {'form': form, 'all_data': data, 'rol_to_edit': rol_to_edit})
+
 
 def destroy_rol(request):
     if request.method == 'POST':
@@ -300,8 +328,217 @@ def destroy_location(request):
         location.delete()
         return redirect('/mainapp/locations')
 
+###################### Servicios #######################
+@api_view(['GET','POST'])
+def services(request):
+    #Informacion para la tabla
+    request_from = request.GET.get('from', None)
+    query = request.GET.get('search_text', None)
+    location_objects = Service.objects.all().order_by('id')
+    if query:
+        location_objects = location_objects.filter( Q(name__contains=query)).distinct().order_by('id')
+    paginator = CustomPageNumberPagination()
+    result_page = paginator.paginate_queryset(location_objects, request)
+    serializer = ServiceListSerializer(result_page, many=True)
+    if request_from:
+        if request_from == 'search_input':
+            return paginator.get_paginated_response(serializer.data)
+    data = paginator.get_paginated_response(serializer.data)
+    #Crear la prioridad
+    if request.method =='POST':   
+        form = ServiceForm(request.POST) 
+        if form.is_valid():    
+            post = form.save(commit = False) 
+            post.save()   
+            return redirect('/mainapp/services')
+              
+        else: 
+            return render(request, 'services/index.html', {'all_data': data, 'form': form})  
+    else: 
+        #formulario la creación de nueva prioridad 
+        form = ServiceForm()
+        return render(request, 'services/index.html', {'all_data': data, 'form': form})
+
+@api_view(['POST'])
+def edit_service(request):
+    #Informacion para la tabla
+    request_from = request.GET.get('from', None)
+    query = request.GET.get('search_text', None)
+    service_objects = Service.objects.all().order_by('id')
+    if query:
+        service_objects = service_objects.filter( Q(name__contains=query)).distinct().order_by('id')
+    paginator = CustomPageNumberPagination()
+    result_page = paginator.paginate_queryset(service_objects, request)
+    serializer = ServiceListSerializer(result_page, many=True)
+    if request_from:
+        if request_from == 'search_input':
+            return paginator.get_paginated_response(serializer.data)
+    data = paginator.get_paginated_response(serializer.data)
+    #Editar la prioridad
+    instance = get_object_or_404(Service, pk=request.POST.get('service_id'))
+    form = ServiceForm(request.POST, instance=instance)
+    if request.method == 'POST':
+        if form.is_valid():
+            updated_priority = form.save(commit=False)
+            updated_priority.save()
+            form.save()
+            return redirect('/mainapp/services')
+        else:
+            return render(request, 'services/index.html', {'form1': form, 'request': request, 'all_data':data})
+    return redirect('/mainapp/services')
+
+
+
+def destroy_service(request):
+    if request.method == 'POST':
+        service = get_object_or_404(Service, pk=request.POST.get('service_id'))
+        service.delete()
+        return redirect('/mainapp/services')
+
+
 
 @login_required
 def atencion_clientes(request):
     return render(request, 'turnos/atender_turnos.html')
+
+### Vistas para channels ###
+class InboxView(LoginRequiredMixin, ListView):
+    template_name = 'chat/inbox.html'
+    def get_queryset(self):
+        return Thread.objects.by_user(self.request.user)
+
+
+class ThreadView(LoginRequiredMixin, FormMixin, DetailView):
+    template_name = 'chat/thread.html'
+    form_class = ComposeForm
+    success_url = './'
+
+    def get_queryset(self):
+        return Thread.objects.by_user(self.request.user)
+
+    def get_object(self):
+        other_username  = self.kwargs.get("username")
+        self.success_url = './'+self.kwargs.get("username")
+        obj, created    = Thread.objects.get_or_new(self.request.user, other_username)
+        if obj == None:
+            raise Http404
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.get_form()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        thread = self.get_object()
+        user = self.request.user
+        message = form.cleaned_data.get("message")
+        ChatMessage.objects.create(user=user, thread=thread, message=message)
+        return super().form_valid(form)
+
+@login_required
+def index(request):
+    return render(request, 'chat/index.html', {})
+
+@login_required
+def room(request, room_name):
+    if request.user.is_authenticated:
+        return render(request, 'chat/room.html', {
+            'room_name_json': mark_safe(json.dumps(room_name))})
+    else:
+        return render(request, 'chat/room.html', {
+            'room_name_json': mark_safe(json.dumps(room_name))
+        })
+
+def pedir_turno(request, turn=''):
+    if request.POST:
+        step = request.POST.get('step')
+        if step == '1':
+            user_id = request.POST.get('id_card')
+            if user_id:
+                try:
+                    profile = Profile.objects.get(id_card=user_id)
+                    services = Service.objects.all().order_by('name')
+                    if profile:
+                        return render(request, 'turnos/pedir_turno.html', {
+                            'step2':True, 
+                            'error':'', 
+                            'profile':profile,
+                            'services':services})
+                except Profile.DoesNotExist:
+                    return render(request, 'turnos/pedir_turno.html', {'step1':True, 'error':'Usuario no encontrado'})
+            else:
+                return render(request, 'turnos/pedir_turno.html', {'step1':True, 'error':'Debe Completar el campo identificación'})
+        elif step == '2':
+            service_id = request.POST.get('service')
+            profile_id = request.POST.get('profile_id')
+            if service_id:
+                try:
+                    service = Service.objects.get(pk=service_id)
+                    if service:
+                        priorities = Priority.objects.all().order_by('name')
+                        return render(request, 'turnos/pedir_turno.html', {
+                            'step3':True, 
+                            'profile_id':profile_id, 
+                            'service': service,
+                            'priorities': priorities
+                            }
+                        )
+                except Profile.DoesNotExist:
+                    return render(request, 'turnos/pedir_turno.html', {'step1':True, 'error':''})
+            else:
+                return render(request, 'turnos/pedir_turno.html', {'step1':True, 'error':''})
+        elif step == '3':
+            service_id = request.POST.get('service_id')
+            profile_id = request.POST.get('profile_id')
+            priority_id = request.POST.get('priority')
+            if priority_id:
+                try:
+                    priority = Priority.objects.get(pk=priority_id)
+                    if priority:
+                        profile = Profile.objects.get(pk=profile_id)
+                        priority = Priority.objects.get(pk=priority_id)
+                        service = Service.objects.get(pk=service_id)
+                        turn = Turn()
+                        turn.status = '1'
+                        turn.user = profile.user
+                        turn.priority = priority
+                        turn.service = service
+                        turn.save()
+                        # fecha para reiniciar los códigod de los turnos diáriamente
+                        input_date = str(datetime.datetime.now().date())
+                        from_date = lib_date.strptime(input_date, '%Y-%m-%d').date()
+                        from_date = datetime.datetime.combine(from_date, datetime.time.min)
+                        to_date = datetime.datetime.combine(from_date, datetime.time.max)
+                        turns = Turn.objects.all().filter(service=service, priority=priority, created_at__range=(from_date, to_date)).count()
+                        character = turn.service.name[0]+turn.priority.name[0].upper()
+                        if turns <= 0:
+                            code = character+str(1)
+                        else:
+                            code = character+str(turns)
+                        turn.code = code
+                        turn.save()
+                        return render(request, 'turnos/pedir_turno.html', {
+                            'step4':True,
+                            'turn':code,
+                            }
+                        )
+                    else:
+                        return render(request, 'turnos/pedir_turno.html', {'step3':True, 'error':'No existe la prioridad'})
+                except Profile.DoesNotExist:
+                    return render(request, 'turnos/pedir_turno.html', {'step1':True, 'error':''})
+            else:
+                return render(request, 'turnos/pedir_turno.html', {'step1':True, 'error':''})
+
+    return render(request, 'turnos/pedir_turno.html', {'step1':True, 'error':''})
 

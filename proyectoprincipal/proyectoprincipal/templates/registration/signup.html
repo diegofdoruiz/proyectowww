@@ -169,7 +169,6 @@
                 <select 
                     class="form-control {% if profile_form.rol.errors %} is-invalid {% endif %}"
                     name="rol">
-                    <option value="0">Seleccione:</option>
                     {% for rol in profile_form.rol %}
                         {{ rol }}
                     {% endfor %}
@@ -178,7 +177,6 @@
                     <strong>{{ profile_form.rol.errors }}</strong>
                 </span>
             </div>
-     
             <div class="form-group">
                 <label>Imagen</label>
 
@@ -194,7 +192,22 @@
             
             </div>
            
+            <div class="form-group">
+                <label style="display: inline;">Estado</label>
 
+                <input 
+                    type="checkbox" 
+                    name="is_active" 
+                    class="form-control {% if profile_form.is_active.errors %} is-invalid {% endif %}"
+                    style="display: inline;" 
+                    {% if user_form.is_active.value %} checked {% endif %}>
+
+                <span class="invalid-feedback" role="alert">
+
+                    <strong>{{ profile_form.is_active.errors }}</strong>
+                </span>
+            
+            </div>
             <div class="form-group">
                 <label>Contraseña</label>
                 <input 
@@ -226,6 +239,5 @@
         </form>
 
 </div>
-        </div>
-
+</div>
 {% endblock %}

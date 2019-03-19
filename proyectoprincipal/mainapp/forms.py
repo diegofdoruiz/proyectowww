@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile, Rol, Priority, Location
+from .models import Profile, Rol, Priority, Location, Service
 from rest_framework import serializers
 
 
@@ -89,10 +89,23 @@ class PriorityForm(forms.ModelForm):
         model = Priority
         fields = ('id', 'name', 'description', 'weight', 'status')
 
-# Se usa el mismo formulario para crear y editar una prioridad
+# Se usa el mismo formulario para crear y editar una localización
 class LocationForm(forms.ModelForm):
     class Meta:
         model = Location
         fields = ('id', 'name')
+
+class ServiceForm(forms.ModelForm):
+    class Meta:
+        model = Service
+        fields = ('id', 'name', 'description', 'status')
+
+### Form for channels ###
+class ComposeForm(forms.Form):
+    message = forms.CharField(
+            widget=forms.TextInput(
+                attrs={"class": "form-control"}
+                )
+            )
 
 
