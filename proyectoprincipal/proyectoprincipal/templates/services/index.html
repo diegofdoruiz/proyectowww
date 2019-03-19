@@ -1,0 +1,325 @@
+{% extends "../template.html" %}
+
+{% block title %}New password{% endblock %}
+
+{% block main %}
+<div class="row">
+	<div class="col-12 col-md-6">
+		<h1>Agregar Servicio</h1>
+		<hr>
+		<form method="post">
+        	{% csrf_token %}
+			<div class="form-group">
+	            <label>Nombre:</label>
+	            <input 
+	                type="text" 
+	                name="name" 
+	                class="form-control {% if form.name.errors %} is-invalid {% endif %}" 
+	                value="{{ form.name.value|default_if_none:'' }}">
+	            <span class="invalid-feedback" role="alert">
+	                <strong>{{ form.name.errors }}</strong>
+	            </span>
+	        </div>
+	        <div class="form-group">
+	            <label>Descripción:</label>
+	            <input
+	            	type="text"
+	                name="description" 
+	                class="form-control {% if form.description.errors %} is-invalid {% endif %}"
+	                value="{{ form.description.value|default_if_none:'' }}">
+	            <span class="invalid-feedback" role="alert">
+	                <strong>{{ form.description.errors }}</strong>
+	            </span>
+	        </div>
+	        <div class="form-group">
+	            <p>
+	            	<label>Estado:</label>
+	            	{{ form.status }}
+	            </p>
+	            <span class="invalid-feedback" role="alert">
+	                <strong>{{ form.weight.errors }}</strong>
+	            </span>
+	        </div>
+	        <div class="form-group">
+                <button type="submit" class="btn btn-primary">Enviar</button>
+                <button type="submit" class="btn btn-secondary">Cancelar</button>
+            </div>
+	    </form>
+	</div>
+	<div class="col-12 col-md-6">
+		<h1>Servicios</h1>
+		<hr>
+		<div>
+			<p>
+				{% csrf_token %}
+				<label>buscar: </label>
+				{% if all_data.data.search_text != None %}
+				<input type="text" name="search" id="search_priority" value="{{ all_data.data.search_text }}">
+				{% else %}
+				<input type="text" name="search" id="search_priority">
+				{% endif %}
+			</p>
+		</div>
+		<table class="table table-bordered" id="table-users-list">
+	        <thead>
+	            <tr>
+	                <th>id</th>
+	                <th>Nombre</th>
+	                <th>estado</th>
+	                <th>Opciones</th>
+	            </tr>
+	        </thead>
+	        <tbody>
+	            {% if all_data.data.rows %}
+	                {% for service in all_data.data.rows %}
+	                <tr id="table-rows">
+	                    <td>{{ service.id }}</td>
+	                    <td>{{ service.name }}</td>
+	                    <td>{{ service.status }}</td>
+	                    <td>
+	                        <button 
+	                        	class="btn btn-primary btn-sm" 
+	                        	onclick="editService('{{ service.id }}')" >
+	                        	<i class="fas fa-edit"></i>
+	                        </button>
+                            <button 
+                            	class="btn btn-danger btn-sm" 
+                            	onclick="deleteService( '{{ service.id }}', '{{ service.name }}' )">
+                            	<i class="fas fa-trash-alt"></i>
+                            </button>
+	                    </td>
+	                </tr>
+	                {% endfor %}
+	            {% endif %}
+	        </tbody>
+	    </table>
+	    {% if all_data.data.pag_links.next_url != None or all_data.data.pag_links.previous_url != None %}
+	    <ul class="pagination" id="ul-pagination">
+	    	{% if all_data.data.pag_links.previous_url != None %}
+	    	<li><a href="{{ all_data.data.pag_links.previous_url }}">&laquo;</a></li>
+	    	{% else %}
+	    	<li class="disabled"><span>&laquo;</span></li>
+	    	{% endif %}
+	    	{% for link in all_data.data.pag_links.page_links %}
+	    	{% if link.2 %}
+	    	<li class="active"><span>{{ link.1 }} <span class="sr-only">(current)</span></span></li>
+	    	{% else %}
+	    	<li><a href="{{ link.0 }}">{{ link.1 }}</a></li>
+	    	{% endif %}
+	    	{% endfor %}
+	    	{% if all_data.data.pag_links.next_url != None %}
+	    	<li><a href="{{ all_data.data.pag_links.next_url }}">&raquo;</a></li>
+	    	{% else %}
+	    	<li class="disabled"><span>&raquo;</span></li>
+	    	{% endif %}
+	    </ul>
+	    {% endif %}
+	</div>
+</div>
+
+
+<!-- Modal para editar priority -->
+<div class="modal" tabindex="-1" role="dialog"  aria-hidden="true" id="modal-edit-service">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Edición de prioridad</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form method="post" action="{% url 'edit_service' %}" id="form-edit-service">
+					{% csrf_token %}
+					{% if request %}
+					<input type="hidden" name="service_id" value="{{ request.POST.service_id }}" class="form-control">
+					{% else %}
+					<input type="hidden" name="service_id" value="" class="form-control">
+					{% endif %}
+					<div class="form-group">
+						<label>Nombre:</label>
+						<input 
+						type="text" 
+						name="name" 
+						class="form-control {% if form1.name.errors %} is-invalid {% endif %}" 
+						value="{{ form1.name.value|default_if_none:'' }}">
+						<span class="invalid-feedback" role="alert">
+							<strong>{{ form1.name.errors }}</strong>
+						</span>
+					</div>
+					<div class="form-group">
+						<label>Descripción: {{ form1.description.value }}</label>
+						<input
+						type="text"
+						name="description" 
+						class="form-control {% if form1.description.errors %} is-invalid {% endif %}"
+						value="{{ form1.description.value|default_if_none:'sss' }}">
+						<span class="invalid-feedback" role="alert">
+							<strong>{{ form1.description.errors }}</strong>
+						</span>
+					</div>
+					<div class="form-group">
+						<p>
+							<label>Estado:</label>
+							{% if form1.status %}
+								{{ form1.status }}
+							{% else %}
+								<input type="checkbox" name="status">
+							{% endif %}
+						</p>
+						<span class="invalid-feedback" role="alert">
+							<strong>{{ form1.status.errors }}</strong>
+						</span>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+				<button type="submit" class="btn btn-danger" form="form-edit-service">Confirmar</button>
+			</div>
+		</div>
+	</div>
+</div>
+{{form1}}
+<!-- /Modal para editar priority -->
+
+<!-- Modal para eliminar priority -->
+<div class="modal" tabindex="-1" role="dialog"  aria-hidden="true" id="modal-delete-service">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Confirmation</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div> <p id="delete_service_confirm"></p></div>
+				<form method="post" action="{% url 'destroy_service' %}" id="form-delete-priority">
+					{% csrf_token %}
+					<input type="hidden" name="service_id" value="">
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+				<button type="submit" class="btn btn-danger" form="form-delete-priority">Confirmar</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /Modal para eliminar priority -->
+{% endblock %}
+
+
+{% block myjs %}
+<script type="text/javascript">
+
+	{% if form1.name.errors or form1.description.errors %}
+		$("#modal-edit-service").modal("show");
+	{% endif %}
+
+	$(function () {
+		$('#search_priority').keyup(function () {
+			$.ajax({
+				url: '/mainapp/services/?from=search_input&search_text='+$('#search_priority').val(),
+				dataType: "json",
+				success : function (data) {
+	                //console.log(data);
+	                build_rows(data["rows"]);
+	                buid_pagination(data['pag_links'])
+	            }
+    		});
+		});
+	});
+
+	function buid_pagination(pag_links) {
+		$( "#ul-pagination" ).empty();
+		var links = pag_links["page_links"];
+		var previous = pag_links["previous_url"];
+		var next = pag_links["next_url"];
+		var html = "";
+
+		if(links.length > 1){
+			if(previous != null){
+				previous = previous.replace("from=search_input&", "");
+				html += '<li><a href='+previous+'>&laquo;</a></li>';
+			}else{
+				html += '<li class="disabled"><span>&laquo;</span></li>';
+			}
+
+			for(var i=0; i<links.length; i++){
+				if(links[i][2]){
+					html += '<li class="active"><span>'+links[i][1]+' <span class="sr-only">(current)</span></span></li>';
+				}else{
+					var link = links[i][0];
+					link = link.replace("from=search_input&", "");
+					html += '<li><a href='+link+'><span>'+ links[i][1] +'</span></a></li>';
+				}
+			}
+
+			if(next != null){
+				next = next.replace("from=search_input&", "");
+				html += '<li><a href='+next+'>&raquo;</a></li>';
+			}else{
+				html += '<li class="disabled"><span>&raquo;</span></li>';
+			}
+		}
+		$( "#ul-pagination" ).append(html);
+	}
+
+	function build_rows(objects) {
+		var html;
+		$("#table-users-list > tbody").empty();
+		for(var i=0; i<objects.length; i++) {
+			html = "";
+			html += "<tr id='table-rows'>";
+			html += "<td>" + objects[i].id + "</td>";
+			html += "<td>" + objects[i].name + "</td>";
+			html += "<td>" + objects[i].weight + "</td>";
+			html += "<td>" + objects[i].status + "</td>";
+			html += "<td>"+
+					"<button class='btn btn-primary btn-sm'"+
+						"onclick=\"editService('" + objects[i].id + "')\">"+
+						"<i class='fas fa-edit'></i>"+
+					"</button> "+
+					"<button "+
+						"class='btn btn-danger btn-sm'"+
+						"onclick=\"deleteService('" + objects[i].id + "','" + objects[i].name + "')\">"+
+						"<i class='fas fa-trash-alt'></i>"+
+					"</button>"+
+					"</td>";
+
+			html += "</tr>";
+			$( "#table-users-list > tbody" ).append(html);
+		}
+	}
+
+	function editService(id){
+		$.ajax({
+			url: '/mainapp/services/?from=search_input&search_text='+$('#search_priority').val(),
+			dataType: "json",
+			success : function (data) {
+                var rows = data["rows"];
+                for(var i=0; i<rows.length; i++){
+                	if(rows[i].id == id){
+                		$("#form-edit-service input[name='service_id']").val(rows[i].id);
+                		$("#form-edit-service input[name='name']").val(rows[i].name);
+                		$("#form-edit-service input[name='description']").val(rows[i].description);
+                		if(rows[i].status){
+                			$("#form-edit-service input[name='status']").prop("checked", true);
+                		}
+                		break;
+                	}
+                }
+                $("#modal-edit-service").modal("show");
+            }
+		});
+	}
+
+	function deleteService(id, name){
+		$("input[name=service_id]").val(id);
+		$("#delete_service_confirm").text("Desea eliminar el servicio: "+name);
+		$("#modal-delete-service").modal("show");
+	}
+</script>
+{% endblock %}
