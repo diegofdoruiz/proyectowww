@@ -1,7 +1,9 @@
-from .models import Turn
+from .models import Turn, LocationOnService
 
 
 class cola():
-	turnos = Turn.objects.all()
 	turnos = Turn.objects.get(status='1')
-	def contruir_cola():
+	atendiendo = LocationOnService.objects.get(status='1', is_online = True)
+	def contruir_cola(self):
+		return self.atendiendo
+
