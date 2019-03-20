@@ -50,20 +50,16 @@ def register(request):
                 if rr == 'a':
                     assign_role(new_user, 'administrador')
                 elif rr == 'b':
-                    assign_role(new_user, 'cajero_g')
-                elif rr == 'c':
-                    assign_role(new_user, 'cajero_ie')
-                elif rr == 'd':
-                    assign_role(new_user, 'cajero_s')
-                elif rr == 'e':
-                    assign_role(new_user, 'cajero_d')
-                elif rr == 'f':
-                    assign_role(new_user, 'cajero_vip')
+                    assign_role(new_user, 'cajero')
                 else:
                     assign_role(new_user, 'cliente')
+
             profile = profile_form.save(commit=False)
             profile.user = new_user
             profile.save()
+            for sp_id in request.POST.getlist('specialty'):
+                specialty = get_object_or_404(Specialty, pk=sp_id)
+                added = profile.specialty.add(specialty)
             return render(request, 'registration/confirmation.html', {'alert': ' User created has been created'})
         else:
             return render(request, 'registration/signup.html', {'user_form': user_form, 'profile_form': profile_form})
@@ -111,15 +107,7 @@ def user_edit(request, pk):
             if rol == 'a':
                 assign_role(updated_user, 'administrador')
             elif rol == 'b':
-                assign_role(updated_user, 'cajero_g')
-            elif rol == 'c':
-                assign_role(updated_user, 'cajero_ie')
-            elif rol == 'd':
-                assign_role(updated_user, 'cajero_s')
-            elif rol == 'e':
-                assign_role(updated_user, 'cajero_d')
-            elif rol == 'f':
-                assign_role(updated_user, 'cajero_vip')
+                assign_role(updated_user, 'cajero')
             else:
                 assign_role(updated_user, 'cliente')
             updated_user.save()

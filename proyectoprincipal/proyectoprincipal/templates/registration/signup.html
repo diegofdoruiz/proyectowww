@@ -164,7 +164,6 @@
         </div>
         <div class="col-12 col-md-6">
             <div class="form-group">
-
                 <label>Rol</label>
                 <select 
                     class="form-control {% if profile_form.rol.errors %} is-invalid {% endif %}"
@@ -176,6 +175,16 @@
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ profile_form.rol.errors }}</strong>
                 </span>
+            </div>
+            <div style="display: {% if profile_form.specialty.value or profile_form.rol.value == 'b' %} inline; {% else %} none; {% endif %} " id="specialties">
+                <div class="form-group">
+                    <label>Especialidad</label>
+                    <select class="form-control selectpicker" name="specialty" multiple>
+                        {% for specilaty in profile_form.specialty %}
+                            {{specilaty}}
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
             <div class="form-group">
                 <label>Imagen</label>
@@ -240,4 +249,24 @@
 
 </div>
 </div>
+{% endblock %}
+
+{% block myjs %}
+<script type="text/javascript">
+    $('.selectpicker').selectpicker({
+        style: 'btn-light',
+        size: 4,
+        noneSelectedText: 'Seleccione',
+    });
+
+    $("select[name=rol]").change(function(){
+        if($(this).val() == 'b'){
+            $("#specialties").attr("style","display:inline;");
+        }else{
+            $(".selectpicker").selectpicker("val", "");
+            $(".selectpicker").selectpicker("refresh");
+            $("#specialties").attr("style","display:none;");
+        }
+    });
+</script>
 {% endblock %}

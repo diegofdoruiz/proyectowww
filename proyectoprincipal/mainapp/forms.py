@@ -16,7 +16,6 @@ class UserForm(UserCreationForm):
     email = forms.EmailField(required=True)
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
-
     def __init__(self, *args, **kwargs):
         # Variable que indica que el form se está llamando desde la actualización del perfil
         from_update_profile = kwargs.pop('from_update_profile', False)
@@ -73,7 +72,7 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ('pic', 'rol', 'id_card', 'telephone')
+        fields = ('pic', 'rol', 'id_card', 'telephone', 'specialty')
 
 
 class CreateRolForm(forms.ModelForm):
