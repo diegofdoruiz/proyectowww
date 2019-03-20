@@ -14,12 +14,12 @@
     {% elif cajero_flag %}
     {% elif administrador_flag %}
     {% endif %}
-    <textarea id="chat-log" cols="50" rows="3"></textarea><br/>
+    <!--<textarea id="chat-log" cols="50" rows="3"></textarea><br/>
     <input id="chat-message-input" type="text" size="50"/><br/>
-    <input id="chat-message-submit" type="button" value="Send"/>
+    <input id="chat-message-submit" type="button" value="Send"/>-->
     <div class="container d-flex h-100">
         <div class="row align-self-center w-100">
-            <div class="col-8 mx-auto" style="margin-top: 3%;">
+            <div class="col-8 mx-auto" style="margin-top: 1%;">
                 {% if step1 %}
                 <div class="form-group">
                     <form method="POST" action="{% url 'pedir_turno' %}">
@@ -45,33 +45,33 @@
                     {% csrf_token %}
                     <input type="hidden" name="step" value="2">
                     <input type="hidden" name="profile_id" value="{{profile.pk}}">
-                    <input type="hidden" name="service" value="">
-                    {% for service in services %}
-                    <div class="form-group" style="margin-top: 0.5rem;">
-                        <div class="card service bg-dark" style="cursor: pointer;">
+                    <input type="hidden" name="specialty" value="">
+                    {% for specialty in specialties %}
+                    <div class="form-group" style="margin-top: 0.3rem;">
+                        <div class="card specialty bg-dark" style="cursor: pointer;">
                             <div class="card-body" style="color: #fff;font-size: 1.5rem;">
-                                <input type="hidden" value="{{service.pk}}">
-                                <center>{{service.name}}</center>
+                                <input type="hidden" value="{{specialty.pk}}">
+                                <center>{{specialty.name}}</center>
                             </div>
                         </div>
                     </div>
                     {% endfor %}
                 </form>
                 {% elif step3 %}
-                <center><h3>Servicio: {{service.name}}</h3></center>
+                <center><h3>Servicio: {{specialty.name}}</h3></center>
                 <center><small>Seleccione una prioridad</small></center>
                 <form method="POST" action="{% url 'pedir_turno' %}">
                     {% csrf_token %}
                     <input type="hidden" name="step" value="3">
                     <input type="hidden" name="profile_id" value="{{profile_id}}">
-                    <input type="hidden" name="service_id" value="{{service.pk}}">
-                    <input type="hidden" name="priority" value="">
-                    {% for priority in priorities %}
-                    <div class="form-group" style="margin-top: 0.5rem;">
-                        <div class="card priority bg-light" style="cursor: pointer;">
-                            <div class="card-body bg-dark" style="color: #fff; font-size: 1.5rem;">
-                                <input type="hidden" name="service" value="{{priority.pk}}">
-                                <center>{{priority.name}}</center>
+                    <input type="hidden" name="specialty_id" value="{{specialty.pk}}">
+                    <input type="hidden" name="service" value="">
+                    {% for service in services %}
+                    <div class="form-group" style="margin-top: 0.3rem;">
+                        <div class="card service bg-light" style="cursor: pointer;">
+                            <div class="card-footer bg-dark" style="color: #fff; font-size: 1.5rem;">
+                                <input type="hidden" name="specialty" value="{{service.pk}}">
+                                <center>{{service.name}}</center>
                             </div>
                         </div>
                     </div>
@@ -130,15 +130,15 @@
     $(".content-wrapper").removeClass("content-wrapper");
 
     //Manejo de procesos iniciales del pedido de turno
-    $(".service").click(function(){
-        var service_id = $(this).children().eq(0).children().eq(0).val();
-        $("input[name='service']").val(service_id);
+    $(".specialty").click(function(){
+        var specialty_id = $(this).children().eq(0).children().eq(0).val();
+        $("input[name='specialty']").val(specialty_id);
         $(this).parent().parent().submit();
     });
 
-    $(".priority").click(function(){
-        var priority_id = $(this).children().eq(0).children().eq(0).val();
-        $("input[name='priority']").val(priority_id);
+    $(".service").click(function(){
+        var service_id = $(this).children().eq(0).children().eq(0).val();
+        $("input[name='service']").val(service_id);
         $(this).parent().parent().submit();
     });
 

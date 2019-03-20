@@ -494,13 +494,13 @@ def pedir_turno(request, turn=''):
             else:
                 return render(request, 'turnos/pedir_turno.html', {'step1':True, 'error':'Debe Completar el campo identificación'})
         elif step == '2':
-            specialty_id = request.POST.get('')
+            specialty_id = request.POST.get('specialty')
             profile_id = request.POST.get('profile_id')
             if specialty_id:
                 try:
                     specialty = Specialty.objects.get(pk=specialty_id)
                     if specialty:
-                        services = service.objects.all().order_by('name')
+                        services = Service.objects.all().filter(specialty=specialty)
                         return render(request, 'turnos/pedir_turno.html', {
                             'step3':True, 
                             'profile_id':profile_id, 
