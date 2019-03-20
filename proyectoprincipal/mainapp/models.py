@@ -23,16 +23,22 @@ def path_profile_image(instance, filename):
     new_filename = 'profile'
     return "user/profile/{}/{}.{}".format(instance.user.id, new_filename, ext)
 
+# servicios disponible para atención
+class Specialty(models.Model):
+    name = models.CharField(max_length=128, null=False, blank=False)
+    description = models.CharField(max_length=512, null=False, blank=False)
+    status = models.BooleanField(null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return self.name
 
 class Profile(models.Model):
     MY_CHOICES = (
-        ('a', 'administrador'),
-        ('b', 'cajero_g'),
-        ('c', 'cajero_ie'),
-        ('d', 'cajero_s'),
-        ('e', 'cajero_d'),
-        ('f', 'cajero_vip'),
-        ('g', 'cliente'),
+        ('a', 'Administrador'),
+        ('b', 'Cajero'),
+        ('c', 'Cliente'),
     )
     user = models.OneToOneField(User, on_delete=models.PROTECT)
     pic = models.ImageField(blank=True, null=True, upload_to=path_profile_image)
@@ -40,6 +46,7 @@ class Profile(models.Model):
     rol = models.CharField(max_length=1, choices=MY_CHOICES)
     id_card = models.CharField(max_length=20, blank=True, unique=True)
     telephone = models.CharField(max_length=20, blank=True)
+    specialty = models.ManyToManyField(Specialty, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -64,18 +71,6 @@ class Profile(models.Model):
             ('es_cajero_d', _('Cajero de transacciones en Dólares')),
             ('es_cajero_vip', _('Cajero VIP')),
         )
-
-# servicios disponible para atención
-class Specialty(models.Model):
-    name = models.CharField(max_length=128, null=False, blank=False)
-    description = models.CharField(max_length=512, null=False, blank=False)
-    status = models.BooleanField(null=False)
-    user = models.ManyToManyField(User, blank=True) # un usuario atiende muchos servicios y ...
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    def __str__(self):
-        return self.name
 
 class Service(models.Model):
     name = models.CharField(max_length=128, null=False, blank=False)
