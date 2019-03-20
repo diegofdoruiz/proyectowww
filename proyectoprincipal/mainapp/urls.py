@@ -13,17 +13,18 @@ urlpatterns = [
     path('destroy_rol/', views.destroy_rol, name='destroy_rol'),
     #path('signup/', views.register, name='signup'),
     path('users/', views.users_list, name='users'),
-    path('priorities/', views.priorities, name='priorities'),
-    path('edit_priority/', views.edit_priority, name='edit_priority'),
-    path('destroy_priority/', views.destroy_priority, name='destroy_priority'),
+    
+    path('services/', views.services, name='services'),
+    path('edit_service/', views.edit_service, name='edit_service'),
+    path('destroy_service/', views.destroy_service, name='destroy_service'),
     
     path('locations/', views.locations, name='locations'),
     path('edit_location/', views.edit_location, name='edit_location'),
     path('destroy_location/', views.destroy_location, name='destroy_location'),
 
-    path('services/', views.services, name='services'),
-    path('edit_service/', views.edit_service, name='edit_service'),
-    path('destroy_service/', views.destroy_service, name='destroy_service'),
+    path('specialties/', views.specialties, name='specialties'),
+    path('edit_specialty/', views.edit_specialty, name='edit_specialty'),
+    path('destroy_specialty/', views.destroy_specialty, name='destroy_specialty'),
 
     path('atencion_clientes/', views.atencion_clientes, name='atencion_clientes'),
     # re_path(r"^(?P<username>[\w.@+-]+)", views.ThreadView.as_view()),

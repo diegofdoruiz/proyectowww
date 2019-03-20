@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile, Rol, Priority, Location, Service
+from .models import Profile, Rol, Service, Location, Specialty
 from rest_framework import serializers
 
 
@@ -84,10 +84,11 @@ class CreateRolForm(forms.ModelForm):
 
 
 # Se usa el mismo formulario para crear y editar una prioridad
-class PriorityForm(forms.ModelForm):
+class ServiceForm(forms.ModelForm):
+    specialty = forms.ModelChoiceField(Specialty.objects.all())
     class Meta:
-        model = Priority
-        fields = ('id', 'name', 'description', 'weight', 'status')
+        model = Service
+        fields = ('id', 'name', 'description', 'status', 'specialty')
 
 # Se usa el mismo formulario para crear y editar una localización
 class LocationForm(forms.ModelForm):
@@ -95,9 +96,9 @@ class LocationForm(forms.ModelForm):
         model = Location
         fields = ('id', 'name')
 
-class ServiceForm(forms.ModelForm):
+class SpecialtyForm(forms.ModelForm):
     class Meta:
-        model = Service
+        model = Specialty
         fields = ('id', 'name', 'description', 'status')
 
 ### Form for channels ###

@@ -5,7 +5,7 @@
 {% block main %}
 <div class="row">
 	<div class="col-12 col-md-6">
-		<h1>Agregar Servicio</h1>
+		<h1>Agregar Especialidad</h1>
 		<hr>
 		<form method="post">
         	{% csrf_token %}
@@ -47,7 +47,7 @@
 	    </form>
 	</div>
 	<div class="col-12 col-md-6">
-		<h1>Servicios</h1>
+		<h1>Especialidades</h1>
 		<hr>
 		<div>
 			<p>
@@ -123,18 +123,18 @@
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Edición de prioridad</h4>
+				<h4 class="modal-title">Edición de Especialidad</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
 			<div class="modal-body">
-				<form method="post" action="{% url 'edit_service' %}" id="form-edit-service">
+				<form method="post" action="{% url 'edit_specialty' %}" id="form-edit-service">
 					{% csrf_token %}
 					{% if request %}
-					<input type="hidden" name="service_id" value="{{ request.POST.service_id }}" class="form-control">
+					<input type="hidden" name="specialty_id" value="{{ request.POST.specialty_id }}" class="form-control">
 					{% else %}
-					<input type="hidden" name="service_id" value="" class="form-control">
+					<input type="hidden" name="specialty_id" value="" class="form-control">
 					{% endif %}
 					<div class="form-group">
 						<label>Nombre:</label>
@@ -194,10 +194,10 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<div> <p id="delete_service_confirm"></p></div>
-				<form method="post" action="{% url 'destroy_service' %}" id="form-delete-priority">
+				<div> <p id="delete_specialty_confirm"></p></div>
+				<form method="post" action="{% url 'destroy_specialty' %}" id="form-delete-priority">
 					{% csrf_token %}
-					<input type="hidden" name="service_id" value="">
+					<input type="hidden" name="specialty_id" value="">
 				</form>
 			</div>
 			<div class="modal-footer">
@@ -221,7 +221,7 @@
 	$(function () {
 		$('#search_priority').keyup(function () {
 			$.ajax({
-				url: '/mainapp/services/?from=search_input&search_text='+$('#search_priority').val(),
+				url: '/mainapp/specialties/?from=search_input&search_text='+$('#search_priority').val(),
 				dataType: "json",
 				success : function (data) {
 	                //console.log(data);
@@ -296,13 +296,13 @@
 
 	function editService(id){
 		$.ajax({
-			url: '/mainapp/services/?from=search_input&search_text='+$('#search_priority').val(),
+			url: '/mainapp/specialties/?from=search_input&search_text='+$('#search_priority').val(),
 			dataType: "json",
 			success : function (data) {
                 var rows = data["rows"];
                 for(var i=0; i<rows.length; i++){
                 	if(rows[i].id == id){
-                		$("#form-edit-service input[name='service_id']").val(rows[i].id);
+                		$("#form-edit-service input[name='specialty_id']").val(rows[i].id);
                 		$("#form-edit-service input[name='name']").val(rows[i].name);
                 		$("#form-edit-service input[name='description']").val(rows[i].description);
                 		if(rows[i].status){
@@ -317,8 +317,8 @@
 	}
 
 	function deleteService(id, name){
-		$("input[name=service_id]").val(id);
-		$("#delete_service_confirm").text("Desea eliminar el servicio: "+name);
+		$("input[name=specialty_id]").val(id);
+		$("#delete_specialty_confirm").text("Desea eliminar el servicio: "+name);
 		$("#modal-delete-service").modal("show");
 	}
 </script>

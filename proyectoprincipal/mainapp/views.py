@@ -7,10 +7,10 @@ from django.views.generic import CreateView
 from django.contrib.auth.views import LoginView
 from django.db import transaction
 from django.db.models import Q
-from .models import Profile, Rol, Priority, Location, Service, Turn
+from .models import Profile, Rol, Service, Location, Specialty, Turn
 from django.contrib.auth.decorators import login_required
-from .forms import UserForm, ProfileForm, CreateRolForm, PriorityForm, LocationForm, ServiceForm
-from .serializers import UserListSerializer, PriorityListSerializer, LocationListSerializer, RolListSerializer, ServiceListSerializer
+from .forms import UserForm, ProfileForm, CreateRolForm, ServiceForm, LocationForm, SpecialtyForm
+from .serializers import UserListSerializer, ServiceListSerializer, LocationListSerializer, RolListSerializer, SpecialtyListSerializer
 from .pagination import CustomPageNumberPagination
 from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate, login
@@ -39,8 +39,6 @@ def home(request):
     else:
         return redirect('login/')
 
-
-
 @transaction.atomic
 def register(request):
     user_form = UserForm(request.POST or None)
@@ -52,7 +50,15 @@ def register(request):
                 if rr == 'a':
                     assign_role(new_user, 'administrador')
                 elif rr == 'b':
-                    assign_role(new_user, 'cajero')
+                    assign_role(new_user, 'cajero_g')
+                elif rr == 'c':
+                    assign_role(new_user, 'cajero_ie')
+                elif rr == 'd':
+                    assign_role(new_user, 'cajero_s')
+                elif rr == 'e':
+                    assign_role(new_user, 'cajero_d')
+                elif rr == 'f':
+                    assign_role(new_user, 'cajero_vip')
                 else:
                     assign_role(new_user, 'cliente')
             profile = profile_form.save(commit=False)
@@ -88,7 +94,6 @@ def users_list(request):
     data = paginator.get_paginated_response(serializer.data)
     return render(request, 'users/index.html', {'all_data': data})
 
-
 def user_edit(request, pk):
     user_instance = get_object_or_404(User, pk=pk)
     profile_instance = get_object_or_404(Profile, user_id=user_instance.id)
@@ -106,7 +111,15 @@ def user_edit(request, pk):
             if rol == 'a':
                 assign_role(updated_user, 'administrador')
             elif rol == 'b':
-                assign_role(updated_user, 'cajero')
+                assign_role(updated_user, 'cajero_g')
+            elif rol == 'c':
+                assign_role(updated_user, 'cajero_ie')
+            elif rol == 'd':
+                assign_role(updated_user, 'cajero_s')
+            elif rol == 'e':
+                assign_role(updated_user, 'cajero_d')
+            elif rol == 'f':
+                assign_role(updated_user, 'cajero_vip')
             else:
                 assign_role(updated_user, 'cliente')
             updated_user.save()
@@ -115,14 +128,12 @@ def user_edit(request, pk):
         return render(request, 'registration/signup.html', {'user_form': user_form, 'profile_form': profile_form, 'alert': alert})
     return render(request, 'registration/signup.html', {'user_form': user_form, 'profile_form': profile_form})
 
-
 def user_delete(request):
     if request.method == 'POST':
         user = get_object_or_404(User, pk=request.POST.get('user_id'))
         user.is_active = request.POST.get('option')
         user.save()
         return redirect('/mainapp/users')
-
 
 @login_required
 def edit_profile(request):
@@ -192,73 +203,80 @@ def destroy_rol(request):
 
 ###################### Prioridades #######################
 @api_view(['GET','POST'])
-def priorities(request):
+def services(request):
     #Informacion para la tabla
     request_from = request.GET.get('from', None)
     query = request.GET.get('search_text', None)
-    priority_objects = Priority.objects.all().order_by('id')
+    service_objects = Service.objects.all().order_by('id')
     if query:
-        priority_objects = priority_objects.filter( Q(name__contains=query) | 
+        service_objects = service_objects.filter( Q(name__contains=query) | 
                                                     Q(description__contains=query) | 
                                                     Q(weight__contains=query)).distinct().order_by('id')
     paginator = CustomPageNumberPagination()
-    result_page = paginator.paginate_queryset(priority_objects, request)
-    serializer = PriorityListSerializer(result_page, many=True)
+    result_page = paginator.paginate_queryset(service_objects, request)
+    serializer = ServiceListSerializer(result_page, many=True)
     if request_from:
         if request_from == 'search_input':
             return paginator.get_paginated_response(serializer.data)
     data = paginator.get_paginated_response(serializer.data)
     #Crear la prioridad
     if request.method =='POST':   
-        form = PriorityForm(request.POST) 
+        form = ServiceForm(request.POST) 
         if form.is_valid():    
             post = form.save(commit = False) 
             post.save()   
-            return redirect('/mainapp/priorities')
+            return redirect('/mainapp/services')
               
         else: 
-            return render(request, 'priorities/create.html', {'all_data': data, 'form': form})  
+            return render(request, 'services/create.html', {'all_data': data, 'form': form})  
     else: 
         #formulario la creación de nueva prioridad 
-        form = PriorityForm()
-        return render(request, 'priorities/create.html', {'all_data': data, 'form': form})
+        form = ServiceForm()
+        return render(request, 'services/create.html', {'all_data': data, 'form': form})
 
 @api_view(['POST'])
-def edit_priority(request):
+def edit_service(request):
     #Informacion para la tabla
     request_from = request.GET.get('from', None)
     query = request.GET.get('search_text', None)
-    priority_objects = Priority.objects.all().order_by('id')
+    service_objects = Service.objects.all().order_by('id')
     if query:
-        priority_objects = priority_objects.filter( Q(name__contains=query) | 
+        service_objects = service_objects.filter( Q(name__contains=query) | 
                                                     Q(description__contains=query) | 
                                                     Q(weight__contains=query)).distinct().order_by('id')
     paginator = CustomPageNumberPagination()
-    result_page = paginator.paginate_queryset(priority_objects, request)
-    serializer = PriorityListSerializer(result_page, many=True)
+    result_page = paginator.paginate_queryset(service_objects, request)
+    serializer = ServiceListSerializer(result_page, many=True)
     if request_from:
         if request_from == 'search_input':
             return paginator.get_paginated_response(serializer.data)
     data = paginator.get_paginated_response(serializer.data)
     #Editar la prioridad
-    instance = get_object_or_404(Priority, pk=request.POST.get('priority_id'))
+    instance = get_object_or_404(Service, pk=request.POST.get('service_id'))
     #return HttpResponse(escape(repr(instance)))
-    form = PriorityForm(request.POST, instance=instance)
+    form = ServiceForm(request.POST, instance=instance)
     if request.method == 'POST':
         if form.is_valid():
-            updated_priority = form.save(commit=False)
-            updated_priority.save()
+            updated_service = form.save(commit=False)
+            updated_service.save()
             form.save()
-            return redirect('/mainapp/priorities')
+            return redirect('/mainapp/services')
         else:
-            return render(request, 'priorities/create.html', {'form1': form, 'request': request, 'all_data': data})
-    return redirect('/mainapp/priorities')
+            specialties = Specialty.objects.all().order_by('pk')
+            return render(request, 'services/create.html', {
+                'form1': form, 
+                'request': request, 
+                'all_data': data, 
+                'specialties':specialties
+                }
+            )
+    return redirect('/mainapp/services')
 
-def destroy_priority(request):
+def destroy_service(request):
     if request.method == 'POST':
-        priority = get_object_or_404(Priority, pk=request.POST.get('priority_id'))
-        priority.delete()
-        return redirect('/mainapp/priorities')
+        service = get_object_or_404(Service, pk=request.POST.get('service_id'))
+        service.delete()
+        return redirect('/mainapp/services')
 
 ###################### Ubicaciones #######################
 @api_view(['GET','POST'])
@@ -312,15 +330,13 @@ def edit_location(request):
     form = LocationForm(request.POST, instance=instance)
     if request.method == 'POST':
         if form.is_valid():
-            updated_priority = form.save(commit=False)
-            updated_priority.save()
+            updated_service = form.save(commit=False)
+            updated_service.save()
             form.save()
             return redirect('/mainapp/locations')
         else:
             return render(request, 'locations/index.html', {'form1': form, 'request': request, 'all_data':data})
     return redirect('/mainapp/locations')
-
-
 
 def destroy_location(request):
     if request.method == 'POST':
@@ -330,70 +346,68 @@ def destroy_location(request):
 
 ###################### Servicios #######################
 @api_view(['GET','POST'])
-def services(request):
+def specialties(request):
     #Informacion para la tabla
     request_from = request.GET.get('from', None)
     query = request.GET.get('search_text', None)
-    location_objects = Service.objects.all().order_by('id')
+    specialty_objects = Specialty.objects.all().order_by('id')
     if query:
-        location_objects = location_objects.filter( Q(name__contains=query)).distinct().order_by('id')
+        specialty_objects = specialty_objects.filter( Q(name__contains=query)).distinct().order_by('id')
     paginator = CustomPageNumberPagination()
-    result_page = paginator.paginate_queryset(location_objects, request)
-    serializer = ServiceListSerializer(result_page, many=True)
+    result_page = paginator.paginate_queryset(specialty_objects, request)
+    serializer = SpecialtyListSerializer(result_page, many=True)
     if request_from:
         if request_from == 'search_input':
             return paginator.get_paginated_response(serializer.data)
     data = paginator.get_paginated_response(serializer.data)
     #Crear la prioridad
     if request.method =='POST':   
-        form = ServiceForm(request.POST) 
+        form = SpecialtyForm(request.POST) 
         if form.is_valid():    
             post = form.save(commit = False) 
             post.save()   
-            return redirect('/mainapp/services')
+            return redirect('/mainapp/specialties')
               
         else: 
-            return render(request, 'services/index.html', {'all_data': data, 'form': form})  
+            return render(request, 'specialties/index.html', {'all_data': data, 'form': form})  
     else: 
         #formulario la creación de nueva prioridad 
-        form = ServiceForm()
-        return render(request, 'services/index.html', {'all_data': data, 'form': form})
+        form = SpecialtyForm()
+        return render(request, 'specialties/index.html', {'all_data': data, 'form': form})
 
 @api_view(['POST'])
-def edit_service(request):
+def edit_specialty(request):
     #Informacion para la tabla
     request_from = request.GET.get('from', None)
     query = request.GET.get('search_text', None)
-    service_objects = Service.objects.all().order_by('id')
+    specialty_objects = Specialty.objects.all().order_by('id')
     if query:
-        service_objects = service_objects.filter( Q(name__contains=query)).distinct().order_by('id')
+        specialty_objects = specialty_objects.filter( Q(name__contains=query)).distinct().order_by('id')
     paginator = CustomPageNumberPagination()
-    result_page = paginator.paginate_queryset(service_objects, request)
-    serializer = ServiceListSerializer(result_page, many=True)
+    result_page = paginator.paginate_queryset(specialty_objects, request)
+    serializer = SpecialtyListSerializer(result_page, many=True)
     if request_from:
         if request_from == 'search_input':
             return paginator.get_paginated_response(serializer.data)
     data = paginator.get_paginated_response(serializer.data)
-    #Editar la prioridad
-    instance = get_object_or_404(Service, pk=request.POST.get('service_id'))
-    form = ServiceForm(request.POST, instance=instance)
+    #Editar la prioridad    
+    instance = get_object_or_404(Specialty, pk=request.POST.get('specialty_id'))
+    form = SpecialtyForm(request.POST, instance=instance)
     if request.method == 'POST':
         if form.is_valid():
-            updated_priority = form.save(commit=False)
-            updated_priority.save()
+            updated_service = form.save(commit=False)
+            updated_service.save()
             form.save()
-            return redirect('/mainapp/services')
+            return redirect('/mainapp/specialties')
         else:
-            return render(request, 'services/index.html', {'form1': form, 'request': request, 'all_data':data})
-    return redirect('/mainapp/services')
+            return render(request, 'specialties/index.html', {'form1': form, 'request': request, 'all_data':data})
+    return redirect('/mainapp/specialties')
 
-
-
-def destroy_service(request):
+def destroy_specialty(request):
     if request.method == 'POST':
-        service = get_object_or_404(Service, pk=request.POST.get('service_id'))
-        service.delete()
-        return redirect('/mainapp/services')
+        specialty = get_object_or_404(Specialty, pk=request.POST.get('specialty_id'))
+        specialty.delete()
+        return redirect('/mainapp/specialties')
 
 
 
@@ -468,30 +482,30 @@ def pedir_turno(request, turn=''):
             if user_id:
                 try:
                     profile = Profile.objects.get(id_card=user_id)
-                    services = Service.objects.all().order_by('name')
+                    specialties = Specialty.objects.all().order_by('name')
                     if profile:
                         return render(request, 'turnos/pedir_turno.html', {
                             'step2':True, 
                             'error':'', 
                             'profile':profile,
-                            'services':services})
+                            'specialties':specialties})
                 except Profile.DoesNotExist:
                     return render(request, 'turnos/pedir_turno.html', {'step1':True, 'error':'Usuario no encontrado'})
             else:
                 return render(request, 'turnos/pedir_turno.html', {'step1':True, 'error':'Debe Completar el campo identificación'})
         elif step == '2':
-            service_id = request.POST.get('service')
+            specialty_id = request.POST.get('')
             profile_id = request.POST.get('profile_id')
-            if service_id:
+            if specialty_id:
                 try:
-                    service = Service.objects.get(pk=service_id)
-                    if service:
-                        priorities = Priority.objects.all().order_by('name')
+                    specialty = Specialty.objects.get(pk=specialty_id)
+                    if specialty:
+                        services = service.objects.all().order_by('name')
                         return render(request, 'turnos/pedir_turno.html', {
                             'step3':True, 
                             'profile_id':profile_id, 
-                            'service': service,
-                            'priorities': priorities
+                            'specialty': specialty,
+                            'services': services
                             }
                         )
                 except Profile.DoesNotExist:
@@ -499,29 +513,29 @@ def pedir_turno(request, turn=''):
             else:
                 return render(request, 'turnos/pedir_turno.html', {'step1':True, 'error':''})
         elif step == '3':
-            service_id = request.POST.get('service_id')
+            specialty_id = request.POST.get('specialty_id')
             profile_id = request.POST.get('profile_id')
-            priority_id = request.POST.get('priority')
-            if priority_id:
+            service_id = request.POST.get('service')
+            if service_id:
                 try:
-                    priority = Priority.objects.get(pk=priority_id)
-                    if priority:
+                    service = Service.objects.get(pk=service_id)
+                    if service:
                         profile = Profile.objects.get(pk=profile_id)
-                        priority = Priority.objects.get(pk=priority_id)
                         service = Service.objects.get(pk=service_id)
+                        specialty = Specialty.objects.get(pk=specialty_id)
                         turn = Turn()
                         turn.status = '1'
                         turn.user = profile.user
-                        turn.priority = priority
                         turn.service = service
+                        turn.specialty = specialty
                         turn.save()
                         # fecha para reiniciar los códigod de los turnos diáriamente
                         input_date = str(datetime.datetime.now().date())
                         from_date = lib_date.strptime(input_date, '%Y-%m-%d').date()
                         from_date = datetime.datetime.combine(from_date, datetime.time.min)
                         to_date = datetime.datetime.combine(from_date, datetime.time.max)
-                        turns = Turn.objects.all().filter(service=service, priority=priority, created_at__range=(from_date, to_date)).count()
-                        character = turn.service.name[0]+turn.priority.name[0].upper()
+                        turns = Turn.objects.all().filter(specialty=specialty, service=service, created_at__range=(from_date, to_date)).count()
+                        character = turn.specialty.name[0]+turn.service.name[0].upper()
                         if turns <= 0:
                             code = character+str(1)
                         else:
