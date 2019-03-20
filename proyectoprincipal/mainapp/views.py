@@ -525,7 +525,7 @@ def pedir_turno(request, turn=''):
                         specialty = Specialty.objects.get(pk=specialty_id)
                         turn = Turn()
                         turn.status = '1'
-                        turn.user = profile.user
+                        turn.user1 = profile.user
                         turn.service = service
                         turn.specialty = specialty
                         turn.save()

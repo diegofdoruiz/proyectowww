@@ -107,11 +107,11 @@ class Turn(models.Model):
     )
     code = models.CharField(max_length=128, null=True, blank=False, unique=True)
     status = models.CharField(max_length=1, choices=MY_CHOICES)
-    user = models.ForeignKey(User, null=True, related_name='user_client', on_delete=models.SET_NULL)
+    user1 = models.ForeignKey(User, null=True, related_name='user_client', on_delete=models.SET_NULL)
     specialty = models.ForeignKey(Specialty, null=True, on_delete=models.SET_NULL)
     service = models.ForeignKey(Service, null=True, on_delete=models.SET_NULL)
     #Durante y después de la atención
-    user = models.ForeignKey(User, null=True, related_name='user_employee', on_delete=models.SET_NULL)
+    user2 = models.ForeignKey(User, null=True, related_name='user_employee', on_delete=models.SET_NULL)
     window = models.ForeignKey(Location, null=True, on_delete=models.SET_NULL)
     start_attend = models.DateTimeField(null=True)
     end_attend = models.DateTimeField(null=True)
