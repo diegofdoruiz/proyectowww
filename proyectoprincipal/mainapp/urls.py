@@ -34,4 +34,5 @@ urlpatterns = [
 
     # Pedir turno
     path('pedir_turno/', views.pedir_turno, name='pedir_turno'),
+    path('attending/', views.attending, name='attending'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

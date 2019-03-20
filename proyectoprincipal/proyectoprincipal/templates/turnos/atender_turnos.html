@@ -11,8 +11,8 @@
 			  <div class="card-body">
 			    <h1 class="card-title" style="text-align: center; font-size: 1.5rem">Ventanilla</h1>
 			    <h6 class="card-subtitle mb-2 text-muted" style="text-align: center;">Número de ventanilla</h6>
-			    <h1 class="display-1" style="text-align: center;">2</h1>
-			    <center><a href="#" class="card-link" >Tipo de turno</a></center>
+			    <h1 class="display-1" style="text-align: center;">--</h1>
+			    <center><button id="attending" class="btn btn-danger" >Cerrado <i class="fas fa-power-off"></i></button></center>
 			  </div>
 			</div>
 
@@ -69,25 +69,92 @@
 	</div>
 
 </div>
-
+<div class="modal" id="choose_window" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">En qué ventanilla te encuentras?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+        	 <form method="POST" >
+        {% csrf_token %}
+                <label>Ventaniilas</label>
+                {{ form.window}}
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Atender</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
 
 {% endblock %}
 {% block myjs %}
 
 <script>
 $(function(){
+	$('#next').on('click',function(){
+		$('#turn h1').html($('ul#next_list li:eq(1) span').text());
+		$('ul#next_list li:eq(1) span').html($('ul#next_list li:eq(2)').text());
+		$('ul#next_list li:eq(2)').remove();
+	});
+});
 
-$('#next').on('click',function(){
-	$('#turn h1').html($('ul#next_list li:eq(1) span').text());
-	$('ul#next_list li:eq(1) span').html($('ul#next_list li:eq(2)').text());
-	$('ul#next_list li:eq(2)').remove();
+function attending(){
+	$.ajaxSetup({
+	        headers: {
+	            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+	        }
+	    });
+	        
+$.ajax({
+    type:'GET',
+    url:'/getuser',
+    data: {'user_id':'user_id'},
+    dataType: 'json',
+    success: function(data){
+      if(data.success == false){
+       
+      }else if(data.success == true){
+      	          	
+    	}     
+		}  	          
+	});
 
+}
+
+$(function(){
+
+	var counter = 0;
+
+	$('#attending').on('click',function(){
+		counter++;
+		if (counter % 2 == 0) {
+			$(this).css('background-color','#FF0017');
+			$(this).css('border-color','#FF0017');
+			$(this).html('Cerrado <i class="fas fa-power-off"></i>');
+		} else {
+			$('#choose_window').modal();
+			$(this).css('background-color','#28a745');
+			$(this).css('border-color','#28a745');
+			$(this).html('Atendiendo <i class="fas fa-power-off"></i>');
+		}
+	
+	});
 
 });
 
+$(function(){
 
+	$('select[name=window]').addClass('form-control');
 });
-
 
 </script>
 
