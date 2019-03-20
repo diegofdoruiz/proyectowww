@@ -282,42 +282,36 @@
 
 
           <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#pestanas_usuarios" aria-expanded="false" aria-controls="pestanas_usuarios"><i
-              class="fa fa-user" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Usuarios</span><i class="menu-arrow"></i></a>
+            <a class="nav-link" data-toggle="collapse" href="#pestanas_usuarios" aria-expanded="false" aria-controls="pestanas_usuarios">
+              <i class="fa fa-users" style="color: #FFFFFF"></i>
+              <span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Usuarios</span><i class="menu-arrow"></i></a>
               <div class="collapse" id="pestanas_usuarios">
                 <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="{% url 'signup' %}" >Registrar Usuario</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{% url 'signup' %}" >Crear Usuario</a></li>
                   <li class="nav-item"> <a class="nav-link" href="{% url 'users' %}">Consultar Usuarios</a></li>
                 </ul>
               </div>
 
             </li>
-            <li class="nav-item">
-              <a class="nav-link" data-toggle="collapse" href="#pestanas_empleados" aria-expanded="false" aria-controls="pestanas_empleados"><i
-                class="fa fa-drivers-license-o" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Empleados</span><i class="menu-arrow"></i></a>
-                <div class="collapse" id="pestanas_empleados">
-                  <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="{% url 'signup' %}">Registrar Empleado</a></li>
-                    <li class="nav-item"> <a class="nav-link" href="{% url 'users' %}">Consultar Empleados</a></li>
-                  </ul>
-                </div>
-              </li> 
               <li class="nav-item">
-                <a class="nav-link" data-toggle="collapse" href="#pestanas_roles" aria-expanded="false" aria-controls="pestanas_roles"><i
-                  class="fa fa-users" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Roles</span><i class="menu-arrow"></i></a>
-                  <div class="collapse" id="pestanas_roles">
+                <a class="nav-link" data-toggle="collapse" href="#pestanas_especialidades" aria-expanded="false" aria-controls="pestanas_especialidades">
+                  <i class="fab fa-angellist" style="color: #FFFFFF"></i>
+                    <span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title">Especialidades</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                  <div class="collapse" id="pestanas_especialidades">
                     <ul class="nav flex-column sub-menu">
-                      <li class="nav-item"> <a class="nav-link" href="{% url 'roles' %}">Registrar Rol</a></li>
+                      <li class="nav-item"> <a class="nav-link" href="{% url 'specialties' %}">Crear Especialidad</a></li>
 
                     </ul>
                   </div>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" data-toggle="collapse" href="#pestanas_rep" aria-expanded="false" aria-controls="pestanas_rep" style="border-bottom-color: #1146CB">
-                    <i class="fa fa-file-text" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Prioridades</span><i class="menu-arrow"></i></a>
+                    <i class="fab fa-stripe-s" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Servicios</span><i class="menu-arrow"></i></a>
                     <div class="collapse" id="pestanas_rep">
                       <ul class="nav flex-column sub-menu">
-                        <li class="nav-item"> <a class="nav-link" href="{% url 'priorities' %}">Registrar Prioridades</a></li>
+                        <li class="nav-item"> <a class="nav-link" href="{% url 'services' %}">Crear Servicio</a></li>
                       </ul>
                     </div>
                   </li>

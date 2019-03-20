@@ -27,8 +27,12 @@ def path_profile_image(instance, filename):
 class Profile(models.Model):
     MY_CHOICES = (
         ('a', 'administrador'),
-        ('b', 'cajero'),
-        ('c', 'cliente'),
+        ('b', 'cajero_g'),
+        ('c', 'cajero_ie'),
+        ('d', 'cajero_s'),
+        ('e', 'cajero_d'),
+        ('f', 'cajero_vip'),
+        ('g', 'cliente'),
     )
     user = models.OneToOneField(User, on_delete=models.PROTECT)
     pic = models.ImageField(blank=True, null=True, upload_to=path_profile_image)
@@ -61,20 +65,8 @@ class Profile(models.Model):
             ('es_cajero_vip', _('Cajero VIP')),
         )
 
-
-class Priority(models.Model):
-    name = models.CharField(max_length=128, null=False, blank=False)
-    description = models.CharField(max_length=512, null=False, blank=False)
-    weight = models.IntegerField(null=False, blank=False)
-    status = models.BooleanField(null=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    def __str__(self):
-        return self.name
-
 # servicios disponible para atención
-class Service(models.Model):
+class Specialty(models.Model):
     name = models.CharField(max_length=128, null=False, blank=False)
     description = models.CharField(max_length=512, null=False, blank=False)
     status = models.BooleanField(null=False)
@@ -84,10 +76,21 @@ class Service(models.Model):
     
     def __str__(self):
         return self.name
+
+class Service(models.Model):
+    name = models.CharField(max_length=128, null=False, blank=False)
+    description = models.CharField(max_length=512, null=False, blank=False)
+    status = models.BooleanField(null=False)
+    specialty = models.ForeignKey(Specialty, related_name='specialty_r', null=False, blank=False, on_delete=models.CASCADE) # un servicio pertenece a una especialidad y una esp tien muchos ...
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return self.name
+
 # pueden ser las ventanillas
 class Location(models.Model):
     name = models.CharField(max_length=128, null=False, blank=False)
-    priority = models.ManyToManyField(Priority, blank=True) # una ubicación atiende muchas prioridades y una prioridad es atendida en mucha...
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -98,15 +101,20 @@ class Location(models.Model):
 class Turn(models.Model):
     MY_CHOICES = (
         ('1', 'waiting'),
-        ('2', 'attending'),
-        ('3', 'canceled'),
+        ('2', 'onservice'),
+        ('3', 'attended'),
+        ('4', 'canceled'),
     )
     code = models.CharField(max_length=128, null=True, blank=False, unique=True)
     status = models.CharField(max_length=1, choices=MY_CHOICES)
-    window = models.CharField(max_length=2, null=True, blank=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    priority = models.ForeignKey(Priority, on_delete=models.CASCADE)
-    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=True, related_name='user_client', on_delete=models.SET_NULL)
+    specialty = models.ForeignKey(Specialty, null=True, on_delete=models.SET_NULL)
+    service = models.ForeignKey(Service, null=True, on_delete=models.SET_NULL)
+    #Durante y después de la atención
+    user = models.ForeignKey(User, null=True, related_name='user_employee', on_delete=models.SET_NULL)
+    window = models.ForeignKey(Location, null=True, on_delete=models.SET_NULL)
+    start_attend = models.DateTimeField(null=True)
+    end_attend = models.DateTimeField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -120,6 +128,7 @@ class LocationOnService(models.Model):
         ('2', 'attending'),
         ('3', 'paused'),
     )
+    window = models.ForeignKey(Location, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=1, choices=MY_CHOICES)
     is_online = models.BooleanField(default = False)
