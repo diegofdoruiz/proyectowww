@@ -9,7 +9,7 @@ from django.db import transaction
 from django.db.models import Q
 from .models import Profile, Rol, Service, Location, Specialty, Turn, LocationOnService
 from django.contrib.auth.decorators import login_required
-from .forms import UserForm, ProfileForm, CreateRolForm, ServiceForm, LocationForm, SpecialtyForm
+from .forms import UserForm, ProfileForm, CreateRolForm, ServiceForm, LocationForm, SpecialtyForm, LocationOnServiceForm
 from .serializers import UserListSerializer, ServiceListSerializer, LocationListSerializer, RolListSerializer, SpecialtyListSerializer
 from .pagination import CustomPageNumberPagination
 from rest_framework.decorators import api_view
@@ -404,7 +404,20 @@ def destroy_specialty(request):
 
 @login_required
 def atencion_clientes(request):
-    return render(request, 'turnos/atender_turnos.html')
+    if request.POST:
+        form = LocationOnServiceForm(request.POST)
+        if form.is_valid():
+            locationOnService = LocationOnService.objects.get_or_create(
+                window=Location.objects.get(pk=form.data['window']),
+                user=User.objects.get(pk=request.user.pk),
+                status='1',
+                is_online=True,
+                )
+            return redirect('/mainapp/atencion_clientes')
+    else:
+
+        form = LocationOnServiceForm()
+        return render(request, 'turnos/atender_turnos.html',{'form': form})
 
 ### Vistas para channels ###
 class InboxView(LoginRequiredMixin, ListView):
@@ -547,6 +560,7 @@ def pedir_turno(request, turn=''):
 
     return render(request, 'turnos/pedir_turno.html', {'step1':True, 'error':''})
 
+<<<<<<< HEAD
 def tests(request):
     queue = Queue()
     all_queue = queue.get_all_queue()
@@ -643,4 +657,5 @@ def end_attend(request):
         return JsonResponse(data)
 
 
-
+def attending(request):
+    return render(request, 'chat/index.html', {})

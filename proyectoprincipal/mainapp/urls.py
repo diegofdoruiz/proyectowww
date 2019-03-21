@@ -42,4 +42,5 @@ urlpatterns = [
     path('borrar/', views.borrar, name='borrar'),
 
     # Borrar Cola
+    path('attending/', views.attending, name='attending'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
