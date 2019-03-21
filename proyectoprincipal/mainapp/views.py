@@ -602,34 +602,34 @@ def next_turn(request):
 @transaction.atomic
 def start_attend(request):
     if request.POST:
-        turn_id = request.POST.get('turn_id')
-        window_id = request.POST.get('window_id')
-        turn = Turn.objects.get(pk=turn_id)
-        window = Location.objects.get(pk=window_id)
-        turn.status = '3'
-        turn.start_attend = datetime.datetime.now()
-        turn.user2 = request.user
-        turn.window = window
-        turn.save()
         queue = Queue()
         all_queue = queue.get_all_queue()
         window_on_service = LocationOnService.objects.get(user=request.user)
-        window_on_service.status = '2'
-        window_on_service.save()
-        data = {
-            'success': True,
-            'turn_id': turn.pk,
-            'turn_code': turn.code,
-            'turn_status': turn.status,
-            'queue': all_queue,
-            'status':window_on_service.status
-        }
-        return JsonResponse(data)
-    else:
-        data = {
-            'success': False,
-        }
-        return JsonResponse(data)
+        turn_id = request.POST.get('turn_id')
+        if turn_id:
+            window_id = request.POST.get('window_id')
+            turn = Turn.objects.get(pk=turn_id)
+            window = Location.objects.get(pk=window_id)
+            turn.status = '3'
+            turn.start_attend = datetime.datetime.now()
+            turn.user2 = request.user
+            turn.window = window
+            turn.save()
+            window_on_service.status = '2'
+            window_on_service.save()
+            data = {
+                'success': True,
+                'queue': all_queue,
+                'status':window_on_service.status
+            }
+            return JsonResponse(data)
+        else:
+            data = {
+                'success': False,
+                'queue': all_queue,
+                'status':window_on_service.status
+            }
+            return JsonResponse(data)
 
 @transaction.atomic
 def end_attend(request):
