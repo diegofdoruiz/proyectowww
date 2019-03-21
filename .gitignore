@@ -5,3 +5,7 @@ proyectoprincipal/mainapp/migrations/*
 proyectoprincipal/mainapp/__pycache__/*
 proyectoprincipal/proyectoprincipal/__pycache__/*
 proyectoprincipal/settings.py
+mainapp/__pycache__/*
+__pycache__/*
+.settings.py
+settings.py
