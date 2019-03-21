@@ -560,7 +560,6 @@ def pedir_turno(request, turn=''):
 
     return render(request, 'turnos/pedir_turno.html', {'step1':True, 'error':''})
 
-<<<<<<< HEAD
 def tests(request):
     queue = Queue()
     all_queue = queue.get_all_queue()
