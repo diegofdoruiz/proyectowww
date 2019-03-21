@@ -49,11 +49,13 @@
 	//Imprimir la cola inicial
 	var queue_init = {{ queue|safe }};
 	var user_id = $("input[name=user_id]").val();
-	var turns = queue_init[user_id].turns;
-	$("#cola").empty();
-	$.each(turns, function (index, value) {
-		$("#cola").append("<span class='badge badge-primary'>"+value+"</span> ");
-	});
+	if(queue_init[user_id] != undefined){
+		$("#cola").empty();
+		var turns = queue_init[user_id].turns;
+		$.each(turns, function (index, value) {
+			$("#cola").append("<span class='badge badge-primary'>"+value+"</span> ");
+		});
+	}	
 
 	/**************************** Llamado del primer turno ************************/
 	$("#next-turn").submit(function(e){
@@ -66,9 +68,11 @@
 	    	url: url,
 	    	data: formData,
 	    	success: function(data){
-	    		$("#start-turn input[name=turn_id]").val(data.id);
-	    		$("#start-turn input[name=code]").val(data.code);
-	    		$("#end-turn input[name=turn_id]").val(data.id);
+	    		if(data.code != ""){
+	    			$("#start-turn input[name=turn_id]").val(data.id);
+		    		$("#start-turn input[name=code]").val(data.code);
+		    		$("#end-turn input[name=turn_id]").val(data.id);
+	    		}
 	    		switch(data.status){
 	    			case '1': 	$("#status").text("Estado: Libre");
 	    						break;
@@ -86,8 +90,10 @@
 	    		var queue = data.queue;
 	    		sendMessage(queue);
 
-	    		//Enviar Mensaje a pantalla
-	    		sendMessage2({'turn' :data.code, 'window' : 1});
+	    		if(data.code != ""){
+		    		//Enviar Mensaje a pantalla
+		    		sendMessage2({'turn' :data.code, 'window' : 1});
+		    	}
 	    	},
 	    	cache: false,
 	    	contentType: false,
@@ -167,11 +173,13 @@
         var data = JSON.parse(e.data);
         //Imprimir las colas en el tablero
 		var user_id = $("input[name=user_id]").val();
-		var turns = data.message[user_id].turns;
-		$("#cola").empty();
-		$.each(turns, function (index, value) {
-			$("#cola").append("<span class='badge badge-primary'>"+value+"</span> ");
-		});
+		if(data.message[user_id] != undefined){
+			$("#cola").empty();
+			var turns = data.message[user_id].turns;
+			$.each(turns, function (index, value) {
+				$("#cola").append("<span class='badge badge-primary'>"+value+"</span> ");
+			});
+		}
     };
 
     function sendMessage(message){
@@ -185,13 +193,6 @@
 	var chatSocketCajeraPantalla = new ReconnectingWebSocket('ws://' + window.location.host +'/ws/mainapp/notification/pantalla/');
 	chatSocketCajeraPantalla.onmessage = function(e) {
         var data = JSON.parse(e.data);
-        //Imprimir las colas en el tablero
-		var user_id = $("input[name=user_id]").val();
-		var turns = data.message[user_id].turns;
-		$("#cola").empty();
-		$.each(turns, function (index, value) {
-			$("#cola").append("<span class='badge badge-primary'>"+value+"</span> ");
-		});
     };
 
     function sendMessage2(message){
