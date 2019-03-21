@@ -59,8 +59,10 @@ def register(request):
             profile = profile_form.save(commit=False)
             profile.user = new_user
             profile.save()
-            for sp_id in request.POST.getlist('specialty'):
-                specialty = get_object_or_404(Specialty, pk=sp_id)
+            speciality_id = request.POST.get('specialty')
+            if speciality_id != '':
+                return HttpResponse(escape(repr(speciality_id)))
+                specialty = get_object_or_404(Specialty, pk=speciality_id)
                 added = profile.specialty.add(specialty)
             return render(request, 'registration/confirmation.html', {'alert': ' User created has been created'})
         else:
