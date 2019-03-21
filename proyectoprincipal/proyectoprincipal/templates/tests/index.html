@@ -93,6 +93,8 @@
 	    		if(data.code != ""){
 		    		//Enviar Mensaje a pantalla
 		    		sendMessage2({'turn' :data.code, 'window' : 1});
+		    	}else{
+		    		alert("No tienes más turnos pendientes");
 		    	}
 	    	},
 	    	cache: false,
@@ -112,17 +114,19 @@
 	    	url: url,
 	    	data: formData,
 	    	success: function(data){
-	    		switch(data.status){
-	    			case '1': 	$("#status").text("Estado: Libre");
+	    		if (data.success){
+	    			switch(data.status){
+	    				case '1': 	$("#status").text("Estado: Libre");
+	    							break;
+	    				case '2': 	$("#status").text("Estado: Ocupado");
+	    							break;
+	    				case '3': 	$("#status").text("Estado: Pausado");
+	    							break;
+	    				case '4': 	$("#status").text("Estado: Cerrado");
+	    							break;
+	    				default:
 	    						break;
-	    			case '2': 	$("#status").text("Estado: Ocupado");
-	    						break;
-	    			case '3': 	$("#status").text("Estado: Pausado");
-	    						break;
-	    			case '4': 	$("#status").text("Estado: Cerrado");
-	    						break;
-	    			default:
-	    					break;
+	    			}
 	    		}
 
 	    		//Enviar la cola a todos los cajeros
