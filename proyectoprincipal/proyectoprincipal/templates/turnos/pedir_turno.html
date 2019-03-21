@@ -16,8 +16,8 @@
     {% endif %}
     <!--<textarea id="chat-log" cols="50" rows="3"></textarea><br/>
     <input id="chat-message-input" type="text" size="50"/><br/>
-    <input id="chat-message-submit" type="button" value="Send"/>-->
-    <div class="container d-flex h-100">
+    <input id="chat-message-submit" type="button" value="Send"/>
+    <div class="container d-flex h-100">-->
         <div class="row align-self-center w-100">
             <div class="col-8 mx-auto" style="margin-top: 1%;">
                 {% if step1 %}
@@ -152,7 +152,7 @@
         window.location.href = "{% url 'pedir_turno' %}";
     }
 
-    var roomName = 'nada';
+    var roomName = 'cajero';
 
     var chatSocket = new ReconnectingWebSocket(
         'ws://' + window.location.host +

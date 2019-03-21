@@ -1,0 +1,210 @@
+{% extends "../template.html" %}
+
+{% block title %}New password{% endblock %}
+
+{% block main %}
+	<div>
+		<h1>Página de pruebas</h1>
+	</div>
+	<div class="form-group">
+		<label>Cola</label><br>
+		<div id="cola" style="min-height: 50px"></div>
+	</div>
+	<hr>
+	<h1 id="status">Estado: Libre</h1>
+	<hr>
+	<label>Formulario prueba siguiente turno</label>
+	<form method="POST" action="{% url 'next_turn' %}" id="next-turn">
+		{% csrf_token %}
+		<label>User id</label>
+		<input type="text" name="user_id" value="{{user.pk}}"><br>
+		<button type="submit">Enviar</button>
+	</form>
+	<hr>
+	<label>Formulario prueba empezar atención</label>
+	<form method="POST" action="{% url 'start_attend' %}" id="start-turn">
+		{% csrf_token %}
+		<label>Turn id</label>
+		<input type="text" name="turn_id" value=""><br>
+		<label>Turn code</label>
+		<input type="text" name="code" value=""><br>
+		<label>Ventanilla id</label>
+		<input type="text" name="window_id" value="1"><br>
+		<button type="submit">Enviar</button>
+	</form>
+	<hr>
+	<label>Formulario prueba finalizar atención</label>
+	<form method="POST" action="{% url 'end_attend' %}" id="end-turn">
+		{% csrf_token %}
+		<label>Turn id</label>
+		<input type="text" name="turn_id" value=""><br>
+		<button type="submit">Enviar</button>
+	</form>
+{% endblock %}
+
+
+{% block myjs %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.js"></script>
+<script type="text/javascript">
+	//Imprimir la cola inicial
+	var queue_init = {{ queue|safe }};
+	var user_id = $("input[name=user_id]").val();
+	if(queue_init[user_id] != undefined){
+		$("#cola").empty();
+		var turns = queue_init[user_id].turns;
+		$.each(turns, function (index, value) {
+			$("#cola").append("<span class='badge badge-primary'>"+value+"</span> ");
+		});
+	}	
+
+	/**************************** Llamado del primer turno ************************/
+	$("#next-turn").submit(function(e){
+		e.preventDefault();
+		var form = $(this);
+	    var url = form.attr('action');
+	    var formData = new FormData(this);
+	   	$.ajax({
+	    	type: "POST",
+	    	url: url,
+	    	data: formData,
+	    	success: function(data){
+	    		if(data.code != ""){
+	    			$("#start-turn input[name=turn_id]").val(data.id);
+		    		$("#start-turn input[name=code]").val(data.code);
+		    		$("#end-turn input[name=turn_id]").val(data.id);
+	    		}
+	    		switch(data.status){
+	    			case '1': 	$("#status").text("Estado: Libre");
+	    						break;
+	    			case '2': 	$("#status").text("Estado: Ocupado");
+	    						break;
+	    			case '3': 	$("#status").text("Estado: Pausado");
+	    						break;
+	    			case '4': 	$("#status").text("Estado: Cerrado");
+	    						break;
+	    			default:
+	    					break;
+	    		}
+
+	    		//Enviar la cola a todos los cajeros
+	    		var queue = data.queue;
+	    		sendMessage(queue);
+
+	    		if(data.code != ""){
+		    		//Enviar Mensaje a pantalla
+		    		sendMessage2({'turn' :data.code, 'window' : 1});
+		    	}else{
+		    		alert("No tienes más turnos pendientes");
+		    	}
+	    	},
+	    	cache: false,
+	    	contentType: false,
+	    	processData: false
+	    });
+	});
+	/**************************** /Llamado del primer turno ************************/
+
+	$("#start-turn").submit(function(e){
+		e.preventDefault();
+		var form = $(this);
+	    var url = form.attr('action');
+	    var formData = new FormData(this);
+	   	$.ajax({
+	    	type: "POST",
+	    	url: url,
+	    	data: formData,
+	    	success: function(data){
+	    		if (data.success){
+	    			switch(data.status){
+	    				case '1': 	$("#status").text("Estado: Libre");
+	    							break;
+	    				case '2': 	$("#status").text("Estado: Ocupado");
+	    							break;
+	    				case '3': 	$("#status").text("Estado: Pausado");
+	    							break;
+	    				case '4': 	$("#status").text("Estado: Cerrado");
+	    							break;
+	    				default:
+	    						break;
+	    			}
+	    		}
+
+	    		//Enviar la cola a todos los cajeros
+	    		var queue = data.queue;
+	    		sendMessage(queue);
+	    	},
+	    	cache: false,
+	    	contentType: false,
+	    	processData: false
+	    });
+	});
+
+	$("#end-turn").submit(function(e){
+		e.preventDefault();
+		var form = $(this);
+	    var url = form.attr('action');
+	    var formData = new FormData(this);
+	   	$.ajax({
+	    	type: "POST",
+	    	url: url,
+	    	data: formData,
+	    	success: function(data){
+	    		switch(data.status){
+	    			case '1': 	$("#status").text("Estado: Libre");
+	    						break;
+	    			case '2': 	$("#status").text("Estado: Ocupado");
+	    						break;
+	    			case '3': 	$("#status").text("Estado: Pausado");
+	    						break;
+	    			case '4': 	$("#status").text("Estado: Cerrado");
+	    						break;
+	    			default:
+	    					break;
+	    		}
+
+	    		var queue = data.queue;
+	    		sendMessage(queue);
+	    	},
+	    	cache: false,
+	    	contentType: false,
+	    	processData: false
+	    });
+	});
+
+	/*************************** Chat para cajeros *****************************/
+	var chatSocketCajero = new ReconnectingWebSocket('ws://' + window.location.host +'/ws/mainapp/notification/cajero/');
+	chatSocketCajero.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+        //Imprimir las colas en el tablero
+		var user_id = $("input[name=user_id]").val();
+		if(data.message[user_id] != undefined){
+			$("#cola").empty();
+			var turns = data.message[user_id].turns;
+			$.each(turns, function (index, value) {
+				$("#cola").append("<span class='badge badge-primary'>"+value+"</span> ");
+			});
+		}
+    };
+
+    function sendMessage(message){
+    	chatSocketCajero.send(JSON.stringify({
+            'message': message
+        }));
+    }
+    /*************************** /Chat para cajeros *****************************/
+
+    /*************************** Chat para cajeros ->-> pantalla *****************************/
+	var chatSocketCajeraPantalla = new ReconnectingWebSocket('ws://' + window.location.host +'/ws/mainapp/notification/pantalla/');
+	chatSocketCajeraPantalla.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+    };
+
+    function sendMessage2(message){
+    	chatSocketCajeraPantalla.send(JSON.stringify({
+            'message': message
+        }));
+    }
+    /*************************** /Chat para cajeros ->-> pantalla *****************************/
+
+</script>
+{% endblock %}
