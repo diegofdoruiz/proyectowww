@@ -11,67 +11,14 @@
     {% user_has_role user 'cajero' as cajero_flag %}
     {% user_has_role user 'administrador' as administrador_flag %}
     {% if cliente_flag %}
+    {% elif cajero_flag %}
+        <!--<p>Ud es un cajero</p>-->
+    {% elif administrador_flag %}
+
+    {% endif %}
     <div class="row">
-        <div class="col-12 col-md-4" style="background-color: blue;">
-            <div class="container" style="margin-top: 0.5rem;">
-                <div class="card">
-                    <div class="card-footer">
-                        <div class="row">
-                            <div class="col-12 col-md-8">
-                                <center>
-                                    <h3>Prioridad</h3>
-                                    <p style="font-size: 3rem;">C077</p>
-                                </center>
-                            </div>
-                            <div class="col-12 col-md-4">
-                                <center>
-                                    <h3>Vent</h3>
-                                    <p style="font-size: 3rem;">1</p>
-                                </center>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card" style="margin-top: 0.3rem;">
-                    <div class="card-footer">
-                        <div class="row">
-                            <div class="col-12 col-md-8">
-                                <center>
-                                    <h3>Prioridad</h3>
-                                    <p style="font-size: 3rem;">C078</p>
-                                </center>
-                            </div>
-                            <div class="col-12 col-md-4">
-                                <center>
-                                    <h3>Vent</h3>
-                                    <p style="font-size: 3rem;">2</p>
-                                </center>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card" style="margin-top: 0.3rem;">
-                    <div class="card-footer">
-                        <div class="row">
-                            <div class="col-12 col-md-8">
-                                <center>
-                                    <h3>Prioridad</h3>
-                                    <p style="font-size: 3rem;">C079</p>
-                                </center>
-                            </div>
-                            <div class="col-12 col-md-4">
-                                <center>
-                                    <h3>Vent</h3>
-                                    <p style="font-size: 3rem;">3</p>
-                                </center>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-8" style="background-color: red;">
-            <div class="container" style="margin-top: 0.5rem;">
+        <div class="col-12 col-md-6  my-auto" style="background-color: red;">
+            <div class="container" style="margin: 0.5rem 0 0.5rem 0 ;">
                 <!--<textarea id="chat-log" cols="50" rows="3"></textarea><br/>
                 <input id="chat-message-input" type="text" size="50"/><br/>
                 <input id="chat-message-submit" type="button" value="Send"/>-->
@@ -98,82 +45,169 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-12 col-md-4" style="background-color: blue;">
-            <div class="container">
-                <div class="card" style="margin-top: 0.3rem;">
-                    <div class="card-footer">
-                        <div class="row">
-                            <div class="col-12 col-md-8">
-                                <center>
-                                    <h3>Prioridad</h3>
-                                    <p style="font-size: 3rem;">C080</p>
-                                </center>
+        <div class="col-12 col-md-6 h-100" style="background-color: #fff;">
+            <div class="container h-100" style="margin-top: 0.5rem;">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="alert alert-success h-20" role="alert">
+                            <div class="row">
+                                <div class="col-12 col-md-8">
+                                    <center>
+                                        <h3>Prioridad</h3>
+                                        <label style="font-size: 2rem;">C079</label>
+                                    </center>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <center>
+                                        <h3>Vent</h3>
+                                        <label style="font-size: 2rem;">3</label>
+                                    </center>
+                                </div>
                             </div>
-                            <div class="col-12 col-md-4">
-                                <center>
-                                    <h3>Vent</h3>
-                                    <p style="font-size: 3rem;">4</p>
-                                </center>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <div class="alert alert-info h-20" role="alert">
+                            <div class="row">
+                                <div class="col-12 col-md-8">
+                                    <center>
+                                        <h3>Prioridad</h3>
+                                        <label style="font-size: 2rem;">C079</label>
+                                    </center>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <center>
+                                        <h3>Vent</h3>
+                                        <label style="font-size: 2rem;">3</label>
+                                    </center>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="alert alert-info h-20" role="alert">
+                            <div class="row">
+                                <div class="col-12 col-md-8">
+                                    <center>
+                                        <h3>Prioridad</h3>
+                                        <label style="font-size: 2rem;">C079</label>
+                                    </center>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <center>
+                                        <h3>Vent</h3>
+                                        <label style="font-size: 2rem;">3</label>
+                                    </center>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-4" style="background-color: blue;">
-            <div class="card" style="margin-top: 0.3rem;">
-                <div class="card-footer">
-                    <div class="row">
-                        <div class="col-12 col-md-8">
-                            <center>
-                                <h3>Prioridad</h3>
-                                <p style="font-size: 3rem;">C081</p>
-                            </center>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <div class="alert alert-info h-20" role="alert">
+                            <div class="row">
+                                <div class="col-12 col-md-8">
+                                    <center>
+                                        <h3>Prioridad</h3>
+                                        <label style="font-size: 2rem;">C079</label>
+                                    </center>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <center>
+                                        <h3>Vent</h3>
+                                        <label style="font-size: 2rem;">3</label>
+                                    </center>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-12 col-md-4">
-                            <center>
-                                <h3>Vent</h3>
-                                <p style="font-size: 3rem;">5</p>
-                            </center>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="alert alert-info h-20" role="alert">
+                            <div class="row">
+                                <div class="col-12 col-md-8">
+                                    <center>
+                                        <h3>Prioridad</h3>
+                                        <label style="font-size: 2rem;">C079</label>
+                                    </center>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <center>
+                                        <h3>Vent</h3>
+                                        <label style="font-size: 2rem;">3</label>
+                                    </center>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-4" style="background-color: blue;">
-            <div class="card" style="margin-top: 0.3rem;">
-                <div class="card-footer">
-                    <div class="row">
-                        <div class="col-12 col-md-8">
-                            <center>
-                                <h3>Prioridad</h3>
-                                <p style="font-size: 3rem;">C082</p>
-                            </center>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <div class="alert alert-info h-20" role="alert">
+                            <div class="row">
+                                <div class="col-12 col-md-8">
+                                    <center>
+                                        <h3>Prioridad</h3>
+                                        <label style="font-size: 2rem;">C079</label>
+                                    </center>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <center>
+                                        <h3>Vent</h3>
+                                        <label style="font-size: 2rem;">3</label>
+                                    </center>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-12 col-md-4">
-                            <center>
-                                <h3>Vent</h3>
-                                <p style="font-size: 3rem;">6</p>
-                            </center>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="alert alert-info h-20" role="alert">
+                            <div class="row">
+                                <div class="col-12 col-md-8">
+                                    <center>
+                                        <h3>Prioridad</h3>
+                                        <label style="font-size: 2rem;">C079</label>
+                                    </center>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <center>
+                                        <h3>Vent</h3>
+                                        <label style="font-size: 2rem;">3</label>
+                                    </center>
+                                </div>
+                            </div>
                         </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <div class="alert alert-info h-20" role="alert">
+                            <div class="row">
+                                <div class="col-12 col-md-8">
+                                    <center>
+                                        <h3>Prioridad</h3>
+                                        <label style="font-size: 2rem;">C079</label>
+                                    </center>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <center>
+                                        <h3>Vent</h3>
+                                        <label style="font-size: 2rem;">3</label>
+                                    </center>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    {% elif cajero_flag %}
-        <p>Ud es un cajero</p>
-    {% elif administrador_flag %}
-
-    {% endif %}
-
-    {% for rol in roles %}
-        {{ rol }}
-    {% endfor %}
     <!--  /Área de clientes -->
-    {% user_has_permission user 'can_add_user' %}
 {% endblock %}
 
 {% block footer %}
@@ -187,39 +221,19 @@
     $(".container-scroller").removeClass("container-scroller");
     $(".content-wrapper").removeClass("content-wrapper");
 
-    var roomName = {{ room_name_json }};
-
-    var chatSocket = new ReconnectingWebSocket(
-        'ws://' + window.location.host +
-        '/ws/mainapp/notification/' + roomName + '/');
-
-    chatSocket.onmessage = function(e) {
+    /*************************** Chat para cajeros ->-> pantalla *****************************/
+    var chatSocketCajeraPantalla = new ReconnectingWebSocket('ws://' + window.location.host +'/ws/mainapp/notification/pantalla/');
+    chatSocketCajeraPantalla.onmessage = function(e) {
         var data = JSON.parse(e.data);
+        //Imprimir las colas en el tablero
         console.log(data);
-        var message = data['message'];
-        var username = data['username'];
-        document.querySelector('#chat-log').value += (username+': '+message + '\n');
     };
 
-    chatSocket.onclose = function(e) {
-        console.error('Chat socket closed unexpectedly');
-    };
-
-    document.querySelector('#chat-message-input').focus();
-    document.querySelector('#chat-message-input').onkeyup = function(e) {
-        if (e.keyCode === 13) {  // enter, return
-            document.querySelector('#chat-message-submit').click();
-        }
-    };
-
-    document.querySelector('#chat-message-submit').onclick = function(e) {
-        var messageInputDom = document.querySelector('#chat-message-input');
-        var message = messageInputDom.value;
-        chatSocket.send(JSON.stringify({
+    function sendMessage(message){
+        chatSocketCajeraPantalla.send(JSON.stringify({
             'message': message
         }));
-
-        messageInputDom.value = '';
-    };
+    }
+    /*************************** /Chat para cajeros ->-> pantalla *****************************/
 </script>
 {% endblock %}

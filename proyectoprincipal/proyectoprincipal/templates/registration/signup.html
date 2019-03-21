@@ -179,7 +179,7 @@
             <div style="display: {% if profile_form.specialty.value or profile_form.rol.value == 'b' %} inline; {% else %} none; {% endif %} " id="specialties">
                 <div class="form-group">
                     <label>Especialidad</label>
-                    <select class="form-control selectpicker" name="specialty" multiple>
+                    <select class="form-control selectpicker" name="specialty">
                         {% for specilaty in profile_form.specialty %}
                             {{specilaty}}
                         {% endfor %}

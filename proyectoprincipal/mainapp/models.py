@@ -46,7 +46,7 @@ class Profile(models.Model):
     rol = models.CharField(max_length=1, choices=MY_CHOICES)
     id_card = models.CharField(max_length=20, blank=True, unique=True)
     telephone = models.CharField(max_length=20, blank=True)
-    specialty = models.ManyToManyField(Specialty, blank=True)
+    specialty = models.ForeignKey(Specialty, blank=True, null=True, on_delete=models.SET_NULL)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -96,9 +96,10 @@ class Location(models.Model):
 class Turn(models.Model):
     MY_CHOICES = (
         ('1', 'waiting'),
-        ('2', 'onservice'),
-        ('3', 'attended'),
-        ('4', 'canceled'),
+        ('2', 'calling'),
+        ('3', 'onservice'),
+        ('4', 'attended'),
+        ('5', 'canceled'),
     )
     code = models.CharField(max_length=128, null=True, blank=False, unique=True)
     status = models.CharField(max_length=1, choices=MY_CHOICES)
@@ -119,15 +120,14 @@ class Turn(models.Model):
 # Ubicación en servicio
 class LocationOnService(models.Model):
     MY_CHOICES = (
-        ('1', 'free'),
-        ('2', 'attending'),
-        ('3', 'paused'),
+        ('1', 'libre'),
+        ('2', 'atendiendo'),
+        ('3', 'pausado'),
+        ('4', 'cerrado')
     )
     window = models.ForeignKey(Location, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=1, choices=MY_CHOICES)
-    is_online = models.BooleanField(default = False)
-
 
 ### Models for channels ###
 class ThreadManager(models.Manager):

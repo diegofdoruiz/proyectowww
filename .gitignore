@@ -4,3 +4,4 @@ proyectoprincipal/media/user/profile
 proyectoprincipal/mainapp/migrations/*
 proyectoprincipal/mainapp/__pycache__/*
 proyectoprincipal/proyectoprincipal/__pycache__/*
+proyectoprincipal/settings.py
