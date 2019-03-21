@@ -25,7 +25,7 @@ SECRET_KEY = 'qg8gq0m*(5uo*za)g*o&uv$vr5!r4lx6-+ztb!ed7#8k+(-=%h'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['186.147.128.79', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -140,9 +140,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During devel
 # Para enviar un correo con el link de recuperación de contraseña, Diego tiene user y pass. Solicitar para probar
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'pruebas.univalle@gmail.com'
-EMAIL_HOST_PASSWORD = 'Desarrollo12'
+EMAIL_HOST = ''
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 
 
