@@ -597,6 +597,7 @@ def next_turn(request):
                     'code':'', 
                     'queue':'',
                     'status':window_on_service.status}
+            return JsonResponse(data, safe=True)
 
 @transaction.atomic
 def start_attend(request):
