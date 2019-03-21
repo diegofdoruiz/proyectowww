@@ -27,11 +27,19 @@ urlpatterns = [
     path('destroy_specialty/', views.destroy_specialty, name='destroy_specialty'),
 
     path('atencion_clientes/', views.atencion_clientes, name='atencion_clientes'),
-    # re_path(r"^(?P<username>[\w.@+-]+)", views.ThreadView.as_view()),
-    #url(r'^$', views.index, name='index'),
+    
     path('notification/', views.index, name='index'),
-    url(r'^notification/(?P<room_name>[^/]+)/$', views.room, name='room'),
+    # url(r'^notification/(?P<room_name>[^/]+)/$', views.room, name='room'),
 
     # Pedir turno
     path('pedir_turno/', views.pedir_turno, name='pedir_turno'),
+
+    path('tests/', views.tests, name='tests'),
+    path('next_turn/', views.next_turn, name='next_turn'),
+    path('start_attend/', views.start_attend, name='start_attend'),
+    path('end_attend/', views.end_attend, name='end_attend'),
+
+    path('borrar/', views.borrar, name='borrar'),
+
+    # Borrar Cola
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

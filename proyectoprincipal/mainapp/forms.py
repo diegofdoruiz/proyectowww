@@ -63,8 +63,8 @@ class ProfileForm(forms.ModelForm):
             del kwargs['request']
         super(ProfileForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
-        if instance and instance.pk:
-            del self.fields['id_card']
+        # if instance and instance.pk:
+            # del self.fields['id_card']
         if request:
             if not request.user.is_superuser:
                 # Si el usuario no es superusuario, no puede editar su rol

@@ -7,7 +7,7 @@ from django.views.generic import CreateView
 from django.contrib.auth.views import LoginView
 from django.db import transaction
 from django.db.models import Q
-from .models import Profile, Rol, Service, Location, Specialty, Turn
+from .models import Profile, Rol, Service, Location, Specialty, Turn, LocationOnService
 from django.contrib.auth.decorators import login_required
 from .forms import UserForm, ProfileForm, CreateRolForm, ServiceForm, LocationForm, SpecialtyForm
 from .serializers import UserListSerializer, ServiceListSerializer, LocationListSerializer, RolListSerializer, SpecialtyListSerializer
@@ -24,13 +24,15 @@ from django.views.generic.edit import FormMixin
 from django.views.generic import DetailView, ListView
 from django.utils.safestring import mark_safe
 import json
+from django.http import JsonResponse
 from datetime import datetime as lib_date
 import datetime
-from rolepermissions.roles import assign_role
+from rolepermissions.roles import assign_role, clear_roles
 
 from .forms import ComposeForm
 from .models import Thread, ChatMessage
 
+from .queue import Queue
 ########################### Usuarios ##########################
 
 def home(request):
@@ -103,6 +105,7 @@ def user_edit(request, pk):
             updated_user = user_form.save(commit=False)
             if new_pass == '':
                 updated_user.password = old_pass
+            clear_roles(updated_user)
             rol = request.POST.get('rol')
             if rol == 'a':
                 assign_role(updated_user, 'administrador')
@@ -450,7 +453,7 @@ class ThreadView(LoginRequiredMixin, FormMixin, DetailView):
 
 @login_required
 def index(request):
-    return render(request, 'chat/index.html', {})
+    return render(request, 'chat/room.html')
 
 @login_required
 def room(request, room_name):
@@ -543,4 +546,101 @@ def pedir_turno(request, turn=''):
                 return render(request, 'turnos/pedir_turno.html', {'step1':True, 'error':''})
 
     return render(request, 'turnos/pedir_turno.html', {'step1':True, 'error':''})
+
+def tests(request):
+    queue = Queue()
+    all_queue = queue.get_all_queue()
+    window_on_service = LocationOnService.objects.get(user=request.user)
+    window_on_service.status = '1'
+    window_on_service.save()
+    return render(request, 'tests/index.html', {
+        'queue':all_queue,
+        'status':window_on_service.status
+        })
+
+def borrar(request):
+    queue = Queue()
+    return HttpResponse(escape(repr(queue.get_all_queue())))
+
+@transaction.atomic
+def next_turn(request):
+    queue = Queue()
+    if request.POST:
+        user_id = request.POST.get('user_id')
+        user = User.objects.get(pk=user_id)
+        turn = queue.get_next(user)
+        all_queue = queue.get_all_queue()
+        window_on_service = LocationOnService.objects.get(user=request.user)
+        window_on_service.status = '1'
+        window_on_service.save()
+        if turn:
+            data = {'id' : turn.pk, 
+                    'code':turn.code, 
+                    'queue':all_queue,
+                    'status':window_on_service.status}
+            return JsonResponse(data, safe=True)
+        else:
+            data = {'id' : '', 
+                    'code':'', 
+                    'queue':'',
+                    'status':window_on_service.status}
+
+@transaction.atomic
+def start_attend(request):
+    if request.POST:
+        turn_id = request.POST.get('turn_id')
+        window_id = request.POST.get('window_id')
+        turn = Turn.objects.get(pk=turn_id)
+        window = Location.objects.get(pk=window_id)
+        turn.status = '3'
+        turn.start_attend = datetime.datetime.now()
+        turn.user2 = request.user
+        turn.window = window
+        turn.save()
+        queue = Queue()
+        all_queue = queue.get_all_queue()
+        window_on_service = LocationOnService.objects.get(user=request.user)
+        window_on_service.status = '2'
+        window_on_service.save()
+        data = {
+            'success': True,
+            'turn_id': turn.pk,
+            'turn_code': turn.code,
+            'turn_status': turn.status,
+            'queue': all_queue,
+            'status':window_on_service.status
+        }
+        return JsonResponse(data)
+    else:
+        data = {
+            'success': False,
+        }
+        return JsonResponse(data)
+
+@transaction.atomic
+def end_attend(request):
+    if request.POST:
+        turn_id = request.POST.get('turn_id')
+        turn = Turn.objects.get(pk=turn_id)
+        turn.status = '4'
+        turn.end_attend = datetime.datetime.now()
+        turn.save()
+        queue = Queue()
+        all_queue = queue.get_all_queue()
+        window_on_service = LocationOnService.objects.get(user=request.user)
+        window_on_service.status = '1'
+        window_on_service.save()
+        data = {
+            'success': True,
+            'queue': all_queue,
+            'status':window_on_service.status
+        }
+        return JsonResponse(data)
+    else:
+        data = {
+            'success': False,
+        }
+        return JsonResponse(data)
+
+
 
