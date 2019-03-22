@@ -208,10 +208,12 @@ function next_turn(user_pk){
 	/**************************** /Llamado del primer turno ************************/
 function call_again(){
 
+	
+
 	var code = $('#code').val();
+	{%if window %}
 	var window_name = {{ window }};
 
-	console.log(code);
 
 	if(code != ""){
 		console.log(code);
@@ -220,6 +222,8 @@ function call_again(){
 	    	}else{
 	    		alert("No tienes más turnos pendientes");
 	    	}
+
+	{% endif %}
 }
 
 function start_attend(){
