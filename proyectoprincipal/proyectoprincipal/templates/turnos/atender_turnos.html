@@ -11,8 +11,19 @@
 			  <div class="card-body">
 			    <h1 class="card-title" style="text-align: center; font-size: 1.5rem">Ventanilla</h1>
 			    <h6 class="card-subtitle mb-2 text-muted" style="text-align: center;">Número de ventanilla</h6>
-			    <h1 class="display-1" style="text-align: center;">--</h1>
-			    <center><button id="attending" class="btn btn-danger" >Cerrado <i class="fas fa-power-off"></i></button></center>
+			    <h1 class="display-1" style="text-align: center;">{% if status != '4' is True %} {{window}} {% else %}--{%endif%}</h1>
+			    <center>
+					{% if status != '4' is True %}
+					<button id="attending" class="btn btn-ligth" style="color: white" >
+			    		
+			    	</button>
+					{% else %}
+					<button id="attending" class="btn btn-danger" style="color: white" >
+			    		Cerrada <i class="fas fa-power-off"></i>
+			    	</button>
+			    
+			    	{%endif%}
+			    </center>
 			  </div>
 			</div>
 
@@ -22,7 +33,7 @@
 			    Turno Actual
 			  </div>
 			  <div class="card-body">
-			    <table class="table table-borderless">
+			    <table class="table table-borderless" id="current_turn">
 				  <thead>
 				    <tr>
 				      <th scope="col">Turno</th>
@@ -33,23 +44,29 @@
 				  </thead>
 				  <tbody>
 				    <tr>
-				      <th id="turn" scope="row"><h1 class="display-2">C05</h1></th>
-				      <td>Sacar Plata</td>
-				      <td>Otto Nule</td>
-				      <td>1143844395</td>
+				      <td id="turn" scope="row"><h1 class="display-2">{% if code %}{{code}}{% else %}--{% endif %}</h1></td>
+				      <td>{% if service_name %}{{service_name}}{% else %}--{% endif %}</td>
+				      <td>{% if name %} {{name}} {% else %}--{% endif %}</td>
+				      <td>{% if client_id %}{{client_id}}{% else %}--{% endif %}</td>
 				    </tr>
 				  </tbody>
 				</table>
 			  </div>
+
+			  
 			</div>
 
-			
+		
 	</div>
+		<input type="hidden" name="user_id" value="{{user.pk}}">
+		<input id="turn_id" type="hidden" name="turn_id" value="{{turn_id}}">
+		<input id="code" type="hidden" name="code" value="{{code}}">
+		<input id="window_id" type="hidden" name="window_id" value="{{window_id}}">	
 	<div  style="text-align: center; margin-top: 8rem;">
 		<div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
-		  <button type="button" class="btn btn-secondary" style="font-size: 1.5rem;"><i class="fa fa-bullhorn" style="color: #751AFF"></i>Llamar Nuevamente</button>
-		  <button type="button" class="btn btn-secondary" style="font-size: 1.5rem;"><i class="fas fa-play" style="color: #04befe"></i>Iniciar Atención</button>
-		  <button type="button" class="btn btn-secondary" style="font-size: 1.5rem;"><i class="fas fa-stop" style="color: #FF0017"></i>Terminar Turno</button>
+		  <button type="button" class="btn btn-secondary" style="font-size: 1.5rem;" onclick="call_again()"><i class="fa fa-bullhorn" style="color: #751AFF"></i>Llamar Nuevamente</button>
+		  <button type="button" class="btn btn-secondary" style="font-size: 1.5rem;" onclick="start_attend()"><i class="fas fa-play" style="color: #04befe" ></i>Iniciar Atención</button>
+		  <button type="button" class="btn btn-secondary" style="font-size: 1.5rem;" onclick="end_turn()"><i class="fas fa-stop" style="color: #FF0017"></i>Terminar Turno</button>
 		</div>
 		
 	</div>
@@ -58,11 +75,10 @@
 		<h2 for="next">Siguiente:</h2>
 		<div class="container" style="background-color:#dee2e6; padding-left: 0">
 			<ul class="list-group list-group-horizontal" id="next_list" style="flex-direction:row; ">
-				<li class="list-group-item" style="background-color: transparent;"><span class="btn btn-secondary" id="next" style="font-size: 3rem; color: #FF0017;" ><i class="fas fa-forward"></i></i></span></h1></li>
-			  	<li class="list-group-item" style="background-color: transparent;"><span style="font-size: 3rem; color: #FF0017;" >C06</span></h1></li>
-			  	<li class="list-group-item" style="background-color: transparent;border: none;"><span style="font-size: 2rem; color: #04befe;">C07</span></li>
-			  	<li class="list-group-item" style="background-color: transparent;border: none;"><span style="font-size: 2rem; color: #04befe;">C08</span></li>
-			  	<li class="list-group-item" style="background-color: transparent;border: none;"><span style="font-size: 2rem; color: #04befe;">C09</span></li>
+				<li class="list-group-item" style="background-color: transparent;"><button type="submit" class="btn btn-secondary" id="next" style="font-size: 3rem; color: #FF0017;" onclick="next_turn('{{user.pk}}')"><i class="fas fa-forward"></i></i></button></h1></li>
+				<ul id="turn_list" class="list-group list-group-horizontal" style="flex-direction:row; ">
+					
+				</ul>
 			</ul>
 			
 		</div>
@@ -81,7 +97,7 @@
       <div class="modal-body">
         <div class="form-group">
         	 <form method="POST" >
-        {% csrf_token %}
+        		{% csrf_token %}
                 <label>Ventaniilas</label>
                 {{ form.window}}
             </div>
@@ -97,46 +113,269 @@
 
 {% endblock %}
 {% block myjs %}
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.js"></script>
 <script>
+
+//Imprimir la cola inicial
+{% if status == '1' is True %}
+
 $(function(){
-	$('#next').on('click',function(){
-		$('#turn h1').html($('ul#next_list li:eq(1) span').text());
-		$('ul#next_list li:eq(1) span').html($('ul#next_list li:eq(2)').text());
-		$('ul#next_list li:eq(2)').remove();
-	});
+
+	var queue_init = {{ queue|safe }};
+	var user_id = $("input[name=user_id]").val();
+	var counter = 0;
+	if(queue_init[user_id] != undefined){
+		$("#turn_list").empty();
+		var turns = queue_init[user_id].turns;
+		$.each(turns, function (index, value) {
+			if (counter == 0) {
+				$("#turn_list").append('<li class="list-group-item" style="background-color: transparent;"><span style="font-size: 3rem; color: #FF0017;">'+value+'</span></h1></li>');
+			} else {
+				$("#turn_list").append('<li class="list-group-item" style="background-color: transparent;border: none;"><span style="font-size: 2rem; color: #04befe;">'+value+'</span></li>');
+			}
+
+			counter++;
+			
+		});
+	}
+
 });
 
-function attending(){
+{% endif %}	
+
+/**************************** Llamado del primer turno ************************/
+
+function next_turn(user_pk){
 	$.ajaxSetup({
-	        headers: {
-	            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-	        }
+        headers: {
+            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+        }
+    });
+   	$.ajax({
+    	type: "GET",
+    	url: "{% url 'next_turn' %}",
+    	data: {'user_id':user_pk},
+    	success: function(data){
+    		if(data.code != ""){
+    			$('#current_turn tbody').html('<tr>\
+				      <td id="turn" scope="row"><h1 class="display-2">'+data.code+'</h1></td>\
+				      <td>'+data.service_name+'</td>\
+				      <td>'+data.name+'</td>\
+				      <td>'+data.client_id+'</td>\
+				    </tr>');
+
+    			$("input[name=turn_id]").val(data.id);
+	    		$("input[name=window_id]").val(data.window_id);
+	    		$("input[name=code]").val(data.code);
+	    	
+    		}
+    		switch(data.status){
+    			case '1': 	$('#attending').css('background-color','#28a745');
+							$('#attending').css('border-color','#28a745');
+							$('#attending').html('Libre <i class="fas fa-power-off"></i>');
+    						break;
+    			case '2': 	$('#attending').css('background-color','#6c757d');
+							$('#attending').css('border-color','#6c757d');
+							$('#attending').html('Ocupado <i class="fas fa-power-off"></i>');
+    						break;
+    			case '3': 	$('#attending').css('background-color','#e0a800');
+							$('#attending').css('border-color','#d39e00');
+							$('#attending').html('Pausado <i class="fas fa-power-off"></i>');
+    						break;
+    			case '4': 	$('#attending').css('background-color','#FF0017');
+							$('#attending').css('border-color','#FF0017');
+							$('#attending').html('Cerrado <i class="fas fa-power-off"></i>');
+    						break;
+    			default:
+    					break;
+    		}
+
+    		//Enviar la cola a todos los cajeros
+    		var queue = data.queue;
+    		sendMessage(queue);
+
+    		if(data.code != ""){
+	    		//Enviar Mensaje a pantalla
+	    		sendMessage2({'turn' :data.code, 'window' : 1});
+	    	}else{
+	    		alert("No tienes más turnos pendientes");
+	    	}
+
+    	},
+    	
+    });
+}
+	/**************************** /Llamado del primer turno ************************/
+function call_again(){
+
+	var code = $('#code').val();
+	var window_name = {{ window }};
+
+	console.log(code);
+
+	if(code != ""){
+		console.log(code);
+	    		//Enviar Mensaje a pantalla
+	    		sendMessage2({'turn' :code, 'window' :window_name});
+	    	}else{
+	    		alert("No tienes más turnos pendientes");
+	    	}
+}
+
+function start_attend(){
+	var turn_id =$("#turn_id").val();
+	var window_id = $("#window_id").val();
+		$.ajaxSetup({
+        headers: {
+            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+        }
+    });
+	   	$.ajax({
+	    	type: "GET",
+	    	url: "{% url 'start_attend' %}",
+	    	data: {"window_id":window_id,'turn_id':turn_id},
+	    	dataType:'json',
+	    	success: function(data){
+	    		if (data.success){
+	    			switch(data.status){
+	    				case '1': 	$('#attending').css('background-color','#28a745');
+							$('#attending').css('border-color','#28a745');
+							$('#attending').html('Libre <i class="fas fa-power-off"></i>');
+    						break;
+			    			case '2': 	$('#attending').css('background-color','#6c757d');
+										$('#attending').css('border-color','#6c757d');
+										$('#attending').html('Ocupado <i class="fas fa-power-off"></i>');
+			    						break;
+			    			case '3': 	$('#attending').css('background-color','#e0a800');
+										$('#attending').css('border-color','#d39e00');
+										$('#attending').html('Pausado <i class="fas fa-power-off"></i>');
+			    						break;
+			    			case '4': 	$('#attending').css('background-color','#FF0017');
+										$('#attending').css('border-color','#FF0017');
+										$('#attending').html('Cerrado <i class="fas fa-power-off"></i>');
+			    						break;
+			    			default:
+	    						break;
+	    			}
+	    		}
+
+	    		//Enviar la cola a todos los cajeros
+	    		var queue = data.queue;
+	    		sendMessage(queue);
+	    	},
+	    	
 	    });
-	        
-$.ajax({
-    type:'GET',
-    url:'/getuser',
-    data: {'user_id':'user_id'},
-    dataType: 'json',
-    success: function(data){
-      if(data.success == false){
-       
-      }else if(data.success == true){
-      	          	
-    	}     
-		}  	          
-	});
+}
+	
+function end_turn(){
+
+	var turn_id = $("#turn_id").val();
+
+		$.ajaxSetup({
+        headers: {
+            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+        }
+    });
+	   	$.ajax({
+	    	type: "GET",
+	    	url: "{% url 'end_attend' %}",
+	    	data: {'turn_id':turn_id},
+	    	success: function(data){
+	    		switch(data.status){
+	    			case '1': 	$('#attending').css('background-color','#28a745');
+							$('#attending').css('border-color','#28a745');
+							$('#attending').html('Libre <i class="fas fa-power-off"></i>');
+    						break;
+	    			case '2': 	$('#attending').css('background-color','#6c757d');
+								$('#attending').css('border-color','#6c757d');
+								$('#attending').html('Ocupado <i class="fas fa-power-off"></i>');
+	    						break;
+	    			case '3': 	$('#attending').css('background-color','#e0a800');
+								$('#attending').css('border-color','#d39e00');
+								$('#attending').html('Pausado <i class="fas fa-power-off"></i>');
+	    						break;
+	    			case '4': 	$('#attending').css('background-color','#FF0017');
+								$('#attending').css('border-color','#FF0017');
+								$('#attending').html('Cerrado <i class="fas fa-power-off"></i>');
+	    						break;
+	    			default:
+	    					break;
+	    		}
+
+	    		var queue = data.queue;
+	    		sendMessage(queue);
+	    	},
+	    });
+	
 
 }
 
+	
+
+
+	/*************************** Chat para cajeros *****************************/
+	var chatSocketCajero = new ReconnectingWebSocket('ws://' + window.location.host +'/ws/mainapp/notification/cajero/');
+		var counter = 0;
+		chatSocketCajero.onmessage = function(e) {
+	        var data = JSON.parse(e.data);
+	        //Imprimir las colas en el tablero
+			var user_id = $("input[name=user_id]").val();
+			if(data.message[user_id] != undefined){
+				$("#turn_list").empty();
+				var turns = data.message[user_id].turns;
+				$.each(turns, function (index, value) {
+					if (counter == 0) {
+					$("#turn_list").append('<li class="list-group-item" style="background-color: transparent;"><span style="font-size: 3rem; color: #FF0017;">'+value+'</span></h1></li>');
+				} else {
+					$("#turn_list").append('<li class="list-group-item" style="background-color: transparent;border: none;"><span style="font-size: 2rem; color: #04befe;">'+value+'</span></li>');
+				}
+
+				counter++;
+				});
+				counter= 0;
+			}
+	    };
+
+   function sendMessage(message){
+    	chatSocketCajero.send(JSON.stringify({
+            'message': message
+        }));
+    }
+
+    	var chatSocketCajeraPantalla = new ReconnectingWebSocket('ws://' + window.location.host +'/ws/mainapp/notification/pantalla/');
+	chatSocketCajeraPantalla.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+    };
+
+    function sendMessage2(message){
+    	chatSocketCajeraPantalla.send(JSON.stringify({
+            'message': message
+        }));
+    }
+    /*************************** /Chat para cajeros *****************************/
+
+
 $(function(){
 
-	var counter = 0;
+	if ({{status}} == '4') {
+		$('#attending').css('background-color','#FF0017');
+		$('#attending').css('border-color','#FF0017');
+		$('#attending').html('Cerrado <i class="fas fa-power-off"></i>');
+	} else if({{status}} == '1') {
+		
+		$('#attending').css('background-color','#28a745');
+		$('#attending').css('border-color','#28a745');
+		$('#attending').html('Libre <i class="fas fa-power-off"></i>');
+	}
+
+});
+
+$(function(){
+
 
 	$('#attending').on('click',function(){
-		counter++;
-		if (counter % 2 == 0) {
+		
+		if ({{status}} != '4') {
 			$(this).css('background-color','#FF0017');
 			$(this).css('border-color','#FF0017');
 			$(this).html('Cerrado <i class="fas fa-power-off"></i>');
@@ -144,7 +383,7 @@ $(function(){
 			$('#choose_window').modal();
 			$(this).css('background-color','#28a745');
 			$(this).css('border-color','#28a745');
-			$(this).html('Atendiendo <i class="fas fa-power-off"></i>');
+			$(this).html('Libre <i class="fas fa-power-off"></i>');
 		}
 	
 	});

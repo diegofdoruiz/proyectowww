@@ -406,20 +406,58 @@ def destroy_specialty(request):
 
 @login_required
 def atencion_clientes(request):
+    user = request.user;
     if request.POST:
         form = LocationOnServiceForm(request.POST)
         if form.is_valid():
-            locationOnService = LocationOnService.objects.get_or_create(
-                window=Location.objects.get(pk=form.data['window']),
-                user=User.objects.get(pk=request.user.pk),
-                status='1',
-                is_online=True,
-                )
-            return redirect('/mainapp/atencion_clientes')
-    else:
+            current_turn = Turn.objects.filter(user2_id=user.pk,status='3',).first()
+            if current_turn:
+                service_id = current_turn.service_id
+                service = Service.objects.get(pk=service_id)
+                client_id = current_turn.user1_id
+                client= User.objects.get(pk=client_id);
+                print(client.first_name)
+                profile = Profile.objects.get(user=client)
+                locationOnService = LocationOnService.objects.get_or_create(
+                    window=Location.objects.get(pk=form.data['window']),
+                    user=User.objects.get(pk=request.user.pk),
+                    status='1',
+                    )
+                queue = Queue()
+                all_queue = queue.get_all_queue()
+                return render(request,'turnos/atender_turnos.html',{
+            'queue':all_queue,
+            'status':locationOnService[0].status,
+            'window':locationOnService[0].window,
+            'window_id':locationOnService[0].window_id,
+            'code': current_turn.code,
+            'name': client.first_name,
+            'client_id':profile.id_card,
+            'service_name':service.name,
+            'turn_id':current_turn.pk
 
+            })
+            else:
+                locationOnService = LocationOnService.objects.get_or_create(
+                    window=Location.objects.get(pk=form.data['window']),
+                    user=User.objects.get(pk=user.pk),
+                    status='1',
+                    )
+                queue = Queue()
+                all_queue = queue.get_all_queue()
+                return render(request,'turnos/atender_turnos.html',{
+            'queue':all_queue,
+            'status':locationOnService[0].status,
+            'window':locationOnService[0].window,
+            'window_id':locationOnService[0].window_id,
+            })
+
+    else:
+ 
         form = LocationOnServiceForm()
-        return render(request, 'turnos/atender_turnos.html',{'form': form})
+        return render(request, 'turnos/atender_turnos.html',{'form':form, 'status':'4'})
+
+        
 
 ### Vistas para channels ###
 class InboxView(LoginRequiredMixin, ListView):
@@ -580,10 +618,15 @@ def borrar(request):
 @transaction.atomic
 def next_turn(request):
     queue = Queue()
-    if request.POST:
-        user_id = request.POST.get('user_id')
+    if request.GET:
+        user_id = request.GET.get('user_id')
         user = User.objects.get(pk=user_id)
         turn = queue.get_next(user)
+        service_id = turn.service_id
+        service = Service.objects.get(pk=service_id)
+        client_id = turn.user1_id
+        client= User.objects.get(pk=client_id);
+        profile = Profile.objects.get(user=client)
         all_queue = queue.get_all_queue()
         window_on_service = LocationOnService.objects.get(user=request.user)
         window_on_service.status = '1'
@@ -592,7 +635,11 @@ def next_turn(request):
             data = {'id' : turn.pk, 
                     'code':turn.code, 
                     'queue':all_queue,
-                    'status':window_on_service.status}
+                    'status':window_on_service.status,
+                    'name': client.first_name,
+                    'client_id':profile.id_card,
+                    'service_name':service.name,
+                    'window_id':window_on_service.window_id}
             return JsonResponse(data, safe=True)
         else:
             data = {'id' : '', 
@@ -603,13 +650,14 @@ def next_turn(request):
 
 @transaction.atomic
 def start_attend(request):
-    if request.POST:
+    if request.GET:
+        print(request.GET.get('turn_id'))
         queue = Queue()
         all_queue = queue.get_all_queue()
         window_on_service = LocationOnService.objects.get(user=request.user)
-        turn_id = request.POST.get('turn_id')
+        turn_id = request.GET.get('turn_id')
         if turn_id:
-            window_id = request.POST.get('window_id')
+            window_id = request.GET.get('window_id')
             turn = Turn.objects.get(pk=turn_id)
             window = Location.objects.get(pk=window_id)
             turn.status = '3'
@@ -635,8 +683,8 @@ def start_attend(request):
 
 @transaction.atomic
 def end_attend(request):
-    if request.POST:
-        turn_id = request.POST.get('turn_id')
+    if request.GET:
+        turn_id = request.GET.get('turn_id')
         turn = Turn.objects.get(pk=turn_id)
         turn.status = '4'
         turn.end_attend = datetime.datetime.now()
