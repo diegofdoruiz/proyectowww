@@ -212,7 +212,7 @@ function call_again(){
 
 	var code = $('#code').val();
 	{%if window %}
-	var window_name = {{ window }};
+	var window_name = '{{ window }}';
 
 
 	if(code != ""){
