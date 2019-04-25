@@ -331,11 +331,16 @@
 	}
 
 	function editService(id){
+		var page = "{{request.GET.page}}";
+		if(page == undefined || page == ""){
+			page = "";
+		}else{
+			page = "page="+page+"&";
+		}
 		$.ajax({
-			url: '/mainapp/services/?from=search_input&search_text='+$('#search_service').val(),
+			url: '?'+page+'from=search_input&search_text='+$('#search_service').val(),
 			dataType: "json",
 			success : function (data) {
-				console.log(data);
                 var rows = data["rows"];
                 for(var i=0; i<rows.length; i++){
                 	if(rows[i].id == id){

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
-from .models import Profile, Rol, Service, Location, Specialty, LocationOnService
+from django.contrib.auth.models import User, Group as Rol
+from .models import Profile, Service, Location, Specialty, LocationOnService
 from rest_framework import serializers
 
 
@@ -50,6 +50,7 @@ class UserForm(UserCreationForm):
             'password2',
             'is_active',
             'is_superuser',
+            'groups'
         )
 
 
@@ -65,20 +66,16 @@ class ProfileForm(forms.ModelForm):
         instance = getattr(self, 'instance', None)
         # if instance and instance.pk:
             # del self.fields['id_card']
-        if request:
-            if not request.user.is_superuser:
-                # Si el usuario no es superusuario, no puede editar su rol
-                del self.fields['rol']
 
     class Meta:
         model = Profile
-        fields = ('pic', 'rol', 'id_card', 'telephone', 'specialty')
+        fields = ('pic', 'id_card', 'telephone', 'specialty')
 
 
 class CreateRolForm(forms.ModelForm):
     class Meta:
         model = Rol
-        fields = ('name', 'permission')
+        fields = ('id', 'name', 'permissions')
 
 
 
@@ -110,6 +107,17 @@ class ComposeForm(forms.Form):
 
 
 class LocationOnServiceForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(LocationOnServiceForm, self).__init__(*args, **kwargs)
+        #Ventanillas que están atendiendo, abiertas o pusadas
+        open_windows = LocationOnService.objects.exclude(status='4')
+        open_windows_ids = []
+        for open_window in open_windows:
+            open_windows_ids.append(open_window.window_id)
+        #Solo se listan ventanillas cerradas
+        windows =  Location.objects.exclude(id__in=open_windows_ids)
+        self.fields['window'].queryset = windows
+
     class Meta:
         model = LocationOnService
-        fields = ('window',)
+        fields = ('id', 'status', 'user', 'window')

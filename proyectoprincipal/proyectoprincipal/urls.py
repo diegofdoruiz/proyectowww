@@ -30,7 +30,7 @@ urlpatterns = [
     path('reset/<uidb64>/<token>/', PasswordResetConfirmView.as_view(template_name='users/password_reset_confirm.html'), name='password_reset_confirm'),
     path('password_reset_complete/', PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'), name='password_reset_complete'),
     path('signup/', views.register, name='signup'),
-    path('home/', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('home/', views.home, name='home'),
     path('admin/', admin.site.urls),
     path('mainapp/', include('mainapp.urls')),
     #path('mainapp/', include('django.contrib.auth.urls')),

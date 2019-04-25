@@ -19,11 +19,15 @@
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/css/bootstrap-select.min.css">
 
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
   <!-- endinject -->
   <!-- plugin css for this page -->
   <!-- End plugin css for this page -->
   <!-- inject:css -->
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/tagsinput.css' %}">
+  <link rel="stylesheet" href="{% static 'css/custom.css' %}">
   <!-- endinject -->
   {% endblock %}
   <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" />
@@ -44,40 +48,35 @@
         <ul class="navbar-nav navbar-nav-left header-links d-none d-md-flex">
           <li class="nav-item">
             <li class="nav-item dropdown d-none d-xl-inline-block">
-              <a class="nav-link dropdown-toggle" id="company-options" href="#" data-toggle="dropdown" aria-expanded="false">
-                <span class="profile-text">Empresa &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span>
-              </a>
-              <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="company-options" style="margin-top: 0.5rem;">
-                <a class="dropdown-item mt-2">
-                  Atención al Cliente
-                </a>
-                <a class="dropdown-item">
-                  Selección
-                </a>
-                <a class="dropdown-item">
-                  Configuración
-                </a>
-              </div>
-            </li>
-          </li>
-          <li class="nav-item">
-            <li class="nav-item dropdown d-none d-xl-inline-block">
               <a class="nav-link dropdown-toggle" id="general-options" href="#" data-toggle="dropdown" aria-expanded="false">
                 <span class="profile-text">General &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span>
               </a>
               <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="general-options" style="margin-top: 0.5rem;">
-                <a class="dropdown-item mt-2">
-                  Servicios
-                </a>
-                <a class="dropdown-item">
-                  Ubicaciones
-                </a>
-                <a class="dropdown-item">
-                  Prioridades
-                </a>
-                <a class="dropdown-item">
+                {% if perms.auth.view_user %}
+                <a class="dropdown-item" href="{% url 'users' %}">
                   Usuarios
                 </a>
+                {% endif %}
+                {% if perms.mainapp.add_rol %}
+                <a class="dropdown-item" href="{% url 'roles' %}">
+                  Roles
+                </a>
+                {% endif %}
+                {% if perms.mainapp.add_location %}
+                <a class="dropdown-item" href="{% url 'locations' %}">
+                  Localizaciones
+                </a>
+                {% endif %}
+                {% if perms.mainapp.add_specialty %}
+                <a class="dropdown-item" href="{% url 'specialties' %}">
+                  Especialidades
+                </a>
+                {% endif %}
+                {% if perms.mainapp.add_service %}
+                <a class="dropdown-item" href="{% url 'services' %}">
+                  Servicios
+                </a>
+                {% endif %}
               </div>
             </li>
           </li>
@@ -206,40 +205,28 @@
             </div>
           </li>-->
           <!-- Notificaciones2 -->
-          
-          <!--<li class="nav-item dropdown d-none d-xl-inline-block">
+          {% if user.is_authenticated %}
+          <li class="nav-item dropdown d-none d-xl-inline-block">
             <a class="nav-link dropdown-toggle" id="UserDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
-              <span class="profile-text">Hello, Richard V.Welsh !</span>
-              <img class="img-xs rounded-circle" src="images/faces/face1.jpg" alt="Profile image">
+              <span class="profile-text">Hola, {{user.first_name}}!</span>
+              {% if user.profile.pic %}
+                <img class="img-xs rounded-circle" src="{{ user.profile.pic.url}}" alt="Profile image">
+              {% else %}
+                <img class="img-xs rounded-circle" src="" alt="Profile image">
+              {% endif %}
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
-              <a class="dropdown-item p-0">
-                <div class="d-flex border-bottom">
-                  <div class="py-3 px-4 d-flex align-items-center justify-content-center">
-                    <i class="mdi mdi-bookmark-plus-outline mr-0 text-gray"></i>
-                  </div>
-                  <div class="py-3 px-4 d-flex align-items-center justify-content-center border-left border-right">
-                    <i class="mdi mdi-account-outline mr-0 text-gray"></i>
-                  </div>
-                  <div class="py-3 px-4 d-flex align-items-center justify-content-center">
-                    <i class="mdi mdi-alarm-check mr-0 text-gray"></i>
-                  </div>
-                </div>
+              {% if not user.is_superuser %}
+              <a class="dropdown-item mt-2" href="{% url 'edit_profile' %}">
+                Perfil
               </a>
-              <a class="dropdown-item mt-2">
-                Manage Accounts
-              </a>
-              <a class="dropdown-item">
-                Change Password
-              </a>
-              <a class="dropdown-item">
-                Check Inbox
-              </a>
-              <a class="dropdown-item">
-                Sign Out
+              {% endif %}
+              <a class="dropdown-item" href="{% url 'logout' %}">
+                Salida
               </a>
             </div>
-          </li>-->
+          </li>
+          {% endif %}
 
         </ul>
         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
@@ -264,14 +251,15 @@
               {% endif %}
               <div class="profile-name">
                 <p class="name" style="color: #FFFFFF">{{ user.first_name }} {{ user.last_name }}</p>
-                {% for rol in user.profile.rol.all%}
-                <p class="designation">{{ rol }}</p>
+                {% for rol in user.groups.all%}
+                <p class="designation">{{ rol.name }}</p>
                 {% endfor %}
                 <div class="badge badge-teal mx-auto mt-3">Online</div>
               </div>
             </div>
           </li>
           <!-- <li class="nav-item"><a class="nav-link" href="#"><img class="menu-icon" src="{% static 'images/menu_icons/01.png' %}" alt="menu icon"><span class="menu-title">Dashboard</span></a></li>-->
+          {% if not user.is_superuser %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'edit_profile' %}">
               <i class="menu-icon far fa-user-circle" style="color: #FFFFFF" ></i>
@@ -279,55 +267,84 @@
             </a>
           </li>
           {% endif %}
+          {% endif %}
 
-
+          {% if perms.auth.view_user %}
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#pestanas_usuarios" aria-expanded="false" aria-controls="pestanas_usuarios">
               <i class="fa fa-users" style="color: #FFFFFF"></i>
               <span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Usuarios</span><i class="menu-arrow"></i></a>
               <div class="collapse" id="pestanas_usuarios">
                 <ul class="nav flex-column sub-menu">
+                  {% if perms.auth.add_user %}
                   <li class="nav-item"> <a class="nav-link" href="{% url 'signup' %}" >Crear Usuario</a></li>
+                  {% endif %}
+                  {% if perms.auth.change_user %}
                   <li class="nav-item"> <a class="nav-link" href="{% url 'users' %}">Consultar Usuarios</a></li>
+                  {% endif %}
+                  {% if perms.mainapp.add_group %}
+                  <li class="nav-item"> <a class="nav-link" href="{% url 'roles' %}">Roles</a></li>
+                  {% endif %}
                 </ul>
               </div>
-
             </li>
-              <li class="nav-item">
-                <a class="nav-link" data-toggle="collapse" href="#pestanas_especialidades" aria-expanded="false" aria-controls="pestanas_especialidades">
-                  <i class="fab fa-angellist" style="color: #FFFFFF"></i>
-                    <span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title">Especialidades</span>
-                    <i class="menu-arrow"></i>
-                </a>
-                  <div class="collapse" id="pestanas_especialidades">
-                    <ul class="nav flex-column sub-menu">
-                      <li class="nav-item"> <a class="nav-link" href="{% url 'specialties' %}">Crear Especialidad</a></li>
-
-                    </ul>
-                  </div>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" data-toggle="collapse" href="#pestanas_rep" aria-expanded="false" aria-controls="pestanas_rep" style="border-bottom-color: #1146CB">
-                    <i class="fab fa-stripe-s" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Servicios</span><i class="menu-arrow"></i></a>
-                    <div class="collapse" id="pestanas_rep">
-                      <ul class="nav flex-column sub-menu">
-                        <li class="nav-item"> <a class="nav-link" href="{% url 'services' %}">Crear Servicio</a></li>
-                      </ul>
-                    </div>
-                  </li>
-                  <li class="nav-item">
-
-                    <a class="nav-link" data-toggle="collapse" href="#pestanas_publi" aria-expanded="false" aria-controls="pestanas_publi"><i
-                      class="fa fa-bullhorn" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Localizaciones</span><i class="menu-arrow"></i></a>
-                      <div class="collapse" id="pestanas_publi">
-
-                        <ul class="nav flex-column sub-menu">
-                          <li class="nav-item"> <a class="nav-link" href="{% url 'locations' %}">Agregar localización</a></li>
-                        </ul>
-                      </div>
-                    </li>
+          {% endif %}
+          {% if perms.mainapp.view_specialty %}
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="collapse" href="#pestanas_especialidades" aria-expanded="false" aria-controls="pestanas_especialidades">
+                <i class="fab fa-angellist" style="color: #FFFFFF"></i>
+                <span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title">Especialidades</span>
+                <i class="menu-arrow"></i>
+              </a>
+              <div class="collapse" id="pestanas_especialidades">
+                <ul class="nav flex-column sub-menu">
+                  {% if perms.mainapp.add_specialty %}
+                  <li class="nav-item"> <a class="nav-link" href="{% url 'specialties' %}">Crear Especialidad</a></li>
+                  {% endif %}
+                </ul>
+              </div>
+            </li>
+          {% endif %}
+            {% if perms.mainapp.view_service %}
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="collapse" href="#pestanas_rep" aria-expanded="false" aria-controls="pestanas_rep" style="border-bottom-color: #1146CB">
+                <i class="fab fa-stripe-s" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Servicios</span><i class="menu-arrow"></i></a>
+                <div class="collapse" id="pestanas_rep">
+                  <ul class="nav flex-column sub-menu">
+                    {% if perms.mainapp.add_service %}
+                    <li class="nav-item"> <a class="nav-link" href="{% url 'services' %}">Crear Servicio</a></li>
+                    {% endif %}
                   </ul>
-                </nav>
+                </div>
+              </li>
+            {% endif %}
+            {% if perms.mainapp.view_location %}
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="collapse" href="#pestanas_publi" aria-expanded="false" aria-controls="pestanas_publi"><i
+                class="fa fa-bullhorn" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Localizaciones</span><i class="menu-arrow"></i></a>
+                <div class="collapse" id="pestanas_publi">
+
+                  <ul class="nav flex-column sub-menu">
+                    {% if perms.mainapp.add_location %}
+                    <li class="nav-item"> <a class="nav-link" href="{% url 'locations' %}">Agregar localización</a></li>
+                    {% endif %}
+                  </ul>
+                </div>
+              </li>
+            {% endif %}
+
+            {% if perms.mainapp.change_turn %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'atencion_clientes' %}">
+                  <i class="fa fa-volume-up" style="color: #FFFFFF"></i>
+                  <span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Servicio al Cliente</span>
+                  <i class="menu-arrow"></i>
+                </a>
+              </li>
+            {% endif %}
+              </ul>
+            
+            </nav>
                 {% endblock %}
       <!-- partial -->
       <div class="main-panel">
@@ -374,6 +391,8 @@
   <!-- Latest compiled and minified JavaScript -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/js/bootstrap-select.min.js"></script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
   <!-- Plugin js for this page-->
   <script src="{% static 'node_modules/chart.js/dist/Chart.min.js' %}"></script>
   <!-- End plugin js for this page-->
@@ -389,6 +408,7 @@
 
   <!-- script's www -->
   <script src="{% static 'js/ajax_search_user.js' %}"></script>
+  <script src="{% static 'js/tagsinput.js' %}"></script>
 
   <!-- End script's www -->
   {% endblock %}

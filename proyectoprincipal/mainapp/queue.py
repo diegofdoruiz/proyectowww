@@ -1,4 +1,4 @@
-from .models import Profile, Rol, Service, Location, Specialty, Turn, LocationOnService
+from .models import Profile, Service, Location, Specialty, Turn, LocationOnService
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 import json
@@ -7,7 +7,7 @@ from django.db import transaction
 
 class Queue():
     # Usuarios de tipo cajeros, no se necesitan
-    users = User.objects.filter(groups__name='cajero').order_by('pk')
+    users = User.objects.filter(groups__name='Cajero').order_by('pk')
     # Ventanillas que están libres
     windows_on_service = LocationOnService.objects.all().filter(status=1)
     #Turnos esperando la atención, ordenados por hora de legada

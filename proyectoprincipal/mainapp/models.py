@@ -4,19 +4,6 @@ from django.utils.translation import gettext as _
 from django.conf import settings
 from django.db.models import Q
 
-
-class Rol(models.Model):
-
-    name = models.CharField(max_length=20, null=False, blank=False)
-
-    permission = models.ManyToManyField(Permission, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
-
-
 # Función para crear ruta de las imágenes de perfil
 def path_profile_image(instance, filename):
     ext = filename.split('.')[-1]
@@ -35,15 +22,8 @@ class Specialty(models.Model):
         return self.name
 
 class Profile(models.Model):
-    MY_CHOICES = (
-        ('a', 'Administrador'),
-        ('b', 'Cajero'),
-        ('c', 'Cliente'),
-    )
     user = models.OneToOneField(User, on_delete=models.PROTECT)
     pic = models.ImageField(blank=True, null=True, upload_to=path_profile_image)
-    # rol = models.ManyToManyField(Rol, blank=True)
-    rol = models.CharField(max_length=1, choices=MY_CHOICES)
     id_card = models.CharField(max_length=20, blank=True, unique=True)
     telephone = models.CharField(max_length=20, blank=True)
     specialty = models.ForeignKey(Specialty, blank=True, null=True, on_delete=models.SET_NULL)
@@ -60,17 +40,7 @@ class Profile(models.Model):
         super(Profile, self).save(*args, **kwargs)
 
     class Meta:
-        permissions = (
-            ('es_cliente', _('Cliente')),
-            ('es_proveedor', _('Proveedor')),
-            ('es_gerente', _('Gerente')),
-            ('es_administrador', _('Administrador')),
-            ('es_cajero_general', _('Cajero General')),
-            ('es_cajero_ie', _('Cajero de Importaciones y Exportaciones')),
-            ('es_cajero_s', _('Cajero de Seguros')),
-            ('es_cajero_d', _('Cajero de transacciones en Dólares')),
-            ('es_cajero_vip', _('Cajero VIP')),
-        )
+        permissions = ()
 
 class Service(models.Model):
     name = models.CharField(max_length=128, null=False, blank=False)
@@ -184,17 +154,3 @@ class ChatMessage(models.Model):
     user        = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='sender', on_delete=models.CASCADE)
     message     = models.TextField()
     timestamp   = models.DateTimeField(auto_now_add=True)
-
-
-'''
-@receiver(post_save, sender=User)
-def crear_usuario_perfil(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
-
-@receiver(post_save, sender=User)
-def guardar_usuario_perfil(sender, instance, **kwargs):
-    instance.profile.save()
-'''
-
