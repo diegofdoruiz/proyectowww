@@ -1,0 +1,12 @@
+.badge.badge.badge-info{
+	margin-top: 0;
+	height: 1.6rem;
+	margin-bottom: 0.2rem;
+}
+
+.badge.badge.badge-danger{
+	background-color: #FF0017;
+	margin-top: 0;
+	height: 1.6rem;
+	margin-bottom: 0.2rem;
+}

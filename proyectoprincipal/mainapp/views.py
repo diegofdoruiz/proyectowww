@@ -1,13 +1,13 @@
 from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.utils.html import escape
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User, Permission, Group as Rol
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import CreateView
 from django.contrib.auth.views import LoginView
 from django.db import transaction
 from django.db.models import Q
-from .models import Profile, Rol, Service, Location, Specialty, Turn, LocationOnService
+from .models import Profile, Service, Location, Specialty, Turn, LocationOnService
 from django.contrib.auth.decorators import login_required
 from .forms import UserForm, ProfileForm, CreateRolForm, ServiceForm, LocationForm, SpecialtyForm, LocationOnServiceForm
 from .serializers import UserListSerializer, ServiceListSerializer, LocationListSerializer, RolListSerializer, SpecialtyListSerializer
@@ -35,12 +35,14 @@ from .models import Thread, ChatMessage
 from .queue import Queue
 ########################### Usuarios ##########################
 
+@login_required
 def home(request):
     if request.user.is_authenticated:
-        return redirect('home/')
+        return render(request, 'home.html')
     else:
         return redirect('login/')
 
+@login_required
 @transaction.atomic
 def register(request):
     user_form = UserForm(request.POST or None)
@@ -48,23 +50,20 @@ def register(request):
     if request.method == 'POST':
         if user_form.is_valid() and profile_form.is_valid():
             new_user = user_form.save()
-            for rr in request.POST.getlist('rol'):
-                if rr == 'a':
-                    assign_role(new_user, 'administrador')
-                elif rr == 'b':
-                    assign_role(new_user, 'cajero')
-                else:
-                    assign_role(new_user, 'cliente')
-
+            for g in request.POST.getlist('groups'):
+                group = Rol.objects.get(pk=g)
+                new_user.groups.add(group)
             profile = profile_form.save(commit=False)
             profile.user = new_user
             profile.save()
-            speciality_id = request.POST.get('specialty')
-            if speciality_id != '':
-                return HttpResponse(escape(repr(speciality_id)))
-                specialty = get_object_or_404(Specialty, pk=speciality_id)
-                added = profile.specialty.add(specialty)
-            return render(request, 'registration/confirmation.html', {'alert': ' User created has been created'})
+            # speciality_id = request.POST.get('specialty')
+            # if speciality_id != '':
+            #     # return HttpResponse(escape(repr(speciality_id)))
+            #     specialty = get_object_or_404(Specialty, pk=speciality_id)
+            #     print(specialty)
+            #     added = profile.specialty.add(specialty)
+            # return render(request, 'registration/confirmation.html', {'alert': ' User created has been created'})
+            return redirect('/mainapp/users/')
         else:
             return render(request, 'registration/signup.html', {'user_form': user_form, 'profile_form': profile_form})
     else:
@@ -107,15 +106,11 @@ def user_edit(request, pk):
             updated_user = user_form.save(commit=False)
             if new_pass == '':
                 updated_user.password = old_pass
-            clear_roles(updated_user)
-            rol = request.POST.get('rol')
-            if rol == 'a':
-                assign_role(updated_user, 'administrador')
-            elif rol == 'b':
-                assign_role(updated_user, 'cajero')
-            else:
-                assign_role(updated_user, 'cliente')
             updated_user.save()
+            updated_user.groups.clear()
+            for g in request.POST.getlist('groups'):
+                group = Rol.objects.get(pk=g)
+                updated_user.groups.add(group)
             profile_form.save()
             alert = 'User update successfull'
         return render(request, 'registration/signup.html', {'user_form': user_form, 'profile_form': profile_form, 'alert': alert})
@@ -148,15 +143,16 @@ def edit_profile(request):
 
 #################### Roles ##############################
 @api_view(['GET','POST'])
-def roles(request):
+def roles(request, pk=None):
     #Informacion para la tabla
     request_from = request.GET.get('from', None)
     query = request.GET.get('search_text', None)
-    rol_id = request.GET.get('rol_id', None)
-    if rol_id:
-        rol_to_edit = get_object_or_404(Rol, pk=rol_id)
+    if pk:
+        rol_to_edit = get_object_or_404(Rol, pk=pk)
+        form = CreateRolForm(instance=rol_to_edit)
     else:
         rol_to_edit = None
+        form = CreateRolForm()
     rol_objects = Rol.objects.all().order_by('id')
     if query:
         rol_objects = rol_objects.filter(   Q(name__contains=query)).distinct().order_by('id')
@@ -170,21 +166,23 @@ def roles(request):
     #Almacenar rol
 
     if request.method == 'POST':
-        form = CreateRolForm(request.POST)
+        rol_id = request.POST.get('rol_id', None)
+        if rol_id:
+            rol_to_edit = get_object_or_404(Rol, pk=pk)
+            print(rol_to_edit)
+            form = CreateRolForm(request.POST or None, instance=rol_to_edit)
+        else:
+            form = CreateRolForm(request.POST)
+
         if form.is_valid():
             rol = form.save()
-            for permission_id in request.POST.getlist('permissions'):
-                permission = get_object_or_404(Permission, id=permission_id)
-                rol.permission.add(permission)
             return redirect('/mainapp/roles')
 
         else:
             return render(request, 'users/create_rol.html', {'form': form, 'all_data': data})
 
     else:
-        form = CreateRolForm()
         return render(request, 'users/create_rol.html', {'form': form, 'all_data': data, 'rol_to_edit': rol_to_edit})
-
 
 def destroy_rol(request):
     if request.method == 'POST':
@@ -402,60 +400,34 @@ def destroy_specialty(request):
         specialty.delete()
         return redirect('/mainapp/specialties')
 
-
-
 @login_required
 def atencion_clientes(request):
-    user = request.user;
+    # LocationOnService.objects.filter(user=request.user).update(status='4')
+    form = LocationOnServiceForm()
+    return render(request, 'turnos/atender_turnos.html',{'form':form})
+
+def select_window(request):
     if request.POST:
-        form = LocationOnServiceForm(request.POST)
-        if form.is_valid():
-            current_turn = Turn.objects.filter(user2_id=user.pk,status='3',).first()
-            if current_turn:
-                service_id = current_turn.service_id
-                service = Service.objects.get(pk=service_id)
-                client_id = current_turn.user1_id
-                client= User.objects.get(pk=client_id);
-                print(client.first_name)
-                profile = Profile.objects.get(user=client)
-                locationOnService = LocationOnService.objects.get_or_create(
-                    window=Location.objects.get(pk=form.data['window']),
-                    user=User.objects.get(pk=request.user.pk),
-                    status='1',
-                    )
-                queue = Queue()
-                all_queue = queue.get_all_queue()
-                return render(request,'turnos/atender_turnos.html',{
-            'queue':all_queue,
-            'status':locationOnService[0].status,
-            'window':locationOnService[0].window,
-            'window_id':locationOnService[0].window_id,
-            'code': current_turn.code,
-            'name': client.first_name,
-            'client_id':profile.id_card,
-            'service_name':service.name,
-            'turn_id':current_turn.pk
+        # Si ya alguien tiene la ventanilla abierta
+        open_windows = LocationOnService.objects.exclude(status='4')
+        same_open_window = open_windows.filter(window_id=request.POST.get('window'))
+        if len(same_open_window) > 0:
+            return JsonResponse({'success':False, 'error':'open'})
 
-            })
-            else:
-                locationOnService = LocationOnService.objects.get_or_create(
-                    window=Location.objects.get(pk=form.data['window']),
-                    user=User.objects.get(pk=user.pk),
-                    status='1',
-                    )
-                queue = Queue()
-                all_queue = queue.get_all_queue()
-                return render(request,'turnos/atender_turnos.html',{
-            'queue':all_queue,
-            'status':locationOnService[0].status,
-            'window':locationOnService[0].window,
-            'window_id':locationOnService[0].window_id,
-            })
+        LocationOnService.objects.filter(user=request.user).update(status='4')
+        window_on_service, created = LocationOnService.objects.get_or_create(
+            user_id=request.POST.get('user'),
+            status=request.POST.get('status'),
+            window_id=request.POST.get('window'),
+        )
+        if window_on_service or created == True:
+            queue = Queue()
+            all_queue = queue.get_all_queue()
+            return JsonResponse({'success':True, 'window':request.POST.get('window'), 'queue':all_queue})
+    return JsonResponse({'success':False, 'error':''})
 
-    else:
- 
-        form = LocationOnServiceForm()
-        return render(request, 'turnos/atender_turnos.html',{'form':form, 'status':'4'})
+def change_status(request):
+    return JsonResponse({'success':False, 'error':''})
 
         
 
@@ -586,9 +558,13 @@ def pedir_turno(request, turn=''):
                             code = character+str(turns)
                         turn.code = code
                         turn.save()
+
+                        queue = Queue()
+                        all_queue = queue.get_all_queue()
                         return render(request, 'turnos/pedir_turno.html', {
                             'step4':True,
                             'turn':code,
+                            'queue':all_queue
                             }
                         )
                     else:

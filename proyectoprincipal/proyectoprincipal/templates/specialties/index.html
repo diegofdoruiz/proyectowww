@@ -295,8 +295,14 @@
 	}
 
 	function editService(id){
+		var page = "{{request.GET.page}}";
+		if(page == undefined || page == ""){
+			page = "";
+		}else{
+			page = "page="+page+"&";
+		}
 		$.ajax({
-			url: '/mainapp/specialties/?from=search_input&search_text='+$('#search_priority').val(),
+			url: '?'+page+'from=search_input&search_text='+$('#search_priority').val(),
 			dataType: "json",
 			success : function (data) {
                 var rows = data["rows"];
