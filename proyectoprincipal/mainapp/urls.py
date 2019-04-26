@@ -31,10 +31,14 @@ urlpatterns = [
     path('atencion_clientes/', views.atencion_clientes, name='atencion_clientes'),
     path('change_status/', views.change_status, name='change_status'),
     path('notification/', views.index, name='index'),
+<<<<<<< HEAD
     url(r'^notification/(?P<room_name>[^/]+)/$', views.room, name='room'),
 
     #reports
     path('reports/', views.reports, name='reports'),
+=======
+    #url(r'^notification/(?P<room_name>[^/]+)/$', views.room, name='room'),
+>>>>>>> a8b48b08a12795b15db6617aae44e265a41336b9
 
     # Pedir turno
     path('pedir_turno/', views.pedir_turno, name='pedir_turno'),
@@ -46,7 +50,8 @@ urlpatterns = [
     path('end_attend/', views.end_attend, name='end_attend'),
 
     path('borrar/', views.borrar, name='borrar'),
-
+    path('publicidad/', views.publicidad, name='publicidad'),
+    path('destroy_publicidad/', views.destroy_publicidad, name='destroy_publicidad'),
     # Borrar Cola
     path('attending/', views.attending, name='attending'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

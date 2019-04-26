@@ -157,3 +157,16 @@ class ChatMessage(models.Model):
     user        = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='sender', on_delete=models.CASCADE)
     message     = models.TextField()
     timestamp   = models.DateTimeField(auto_now_add=True)
+
+#Imagenes de publicidad
+def path_publicity_image(instance, filename):
+    ext = filename.split('.')[-1]
+    new_filename = 'publicity'
+    return "user/publicity/{}/{}.{}".format(instance.nombre, new_filename, ext)
+
+class Publicidad(models.Model):
+    nombre = models.CharField(max_length=128, null=False, blank=False)
+    imagen = models.ImageField(blank=True, null=True, upload_to=path_publicity_image)
+    
+    def __str__(self):
+        return self.nombre

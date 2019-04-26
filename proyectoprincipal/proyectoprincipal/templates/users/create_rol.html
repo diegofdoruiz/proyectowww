@@ -3,6 +3,9 @@
 {% block title %}New password{% endblock %}
 
 {% block main %} 
+
+<div class="card" style="background-color: #fff">
+<div class="card-body">
 <div class="container">
     <div class="row">
         <div class="col-12 col-md-6">
@@ -49,7 +52,7 @@
 			<div>
 				<p>
 					{% csrf_token %}
-					<label>buscar: </label>
+					<label>Buscar: </label>
 					{% if all_data.data.search_text != None %}
 					<input type="text" name="search" id="search_rol" value="{{ all_data.data.search_text }}">
 					{% else %}
@@ -109,6 +112,8 @@
 		    {% endif %}
 		</div>
     </div>
+</div>
+</div>
 </div>
 
 {% if form.errors %}

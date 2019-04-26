@@ -321,7 +321,7 @@
             {% if perms.mainapp.view_location %}
             <li class="nav-item">
               <a class="nav-link" data-toggle="collapse" href="#pestanas_publi" aria-expanded="false" aria-controls="pestanas_publi"><i
-                class="fa fa-bullhorn" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Localizaciones</span><i class="menu-arrow"></i></a>
+                class="fa fa-linode" style="color: #FFFFFF"></i><span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Localizaciones</span><i class="menu-arrow"></i></a>
                 <div class="collapse" id="pestanas_publi">
 
                   <ul class="nav flex-column sub-menu">
@@ -336,12 +336,19 @@
             {% if perms.mainapp.change_turn %}
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'atencion_clientes' %}">
-                  <i class="fa fa-volume-up" style="color: #FFFFFF"></i>
+                  <i class="fa fa-headphones" style="color: #FFFFFF"></i>
                   <span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Servicio al Cliente</span>
-                  <i class="menu-arrow"></i>
                 </a>
               </li>
             {% endif %}
+
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'publicidad' %}">
+                  <i class="fa fa-bullhorn" style="color: #FFFFFF"></i>
+                  <span style="margin-left: 1.5rem; color:#FFFFFF" lass="menu-title"> Publicidad</span>
+                </a>
+              </li>
+
               </ul>
             
             </nav>
@@ -409,6 +416,7 @@
   <!-- script's www -->
   <script src="{% static 'js/ajax_search_user.js' %}"></script>
   <script src="{% static 'js/tagsinput.js' %}"></script>
+  <script src="{% static 'js/beep.js' %}"></script>
 
   <!-- End script's www -->
   {% endblock %}
