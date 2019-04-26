@@ -619,7 +619,7 @@ def next_turn(request):
         client= User.objects.get(pk=client_id);
         profile = Profile.objects.get(user=client)
         all_queue = queue.get_all_queue()
-        window_on_service = LocationOnService.objects.get(user_id=user_id, window_id=window_id, status='1')
+        window_on_service = LocationOnService.objects.get(user_id=user_id, window_id=window_id)
         window_on_service.status = '1'
         window_on_service.save()
         if turn:
@@ -642,10 +642,11 @@ def next_turn(request):
 @transaction.atomic
 def start_attend(request):
     if request.GET:
-        print(request.GET.get('turn_id'))
+        user_id = request.GET.get('user_id')
+        window_id = request.GET.get('window_id')
         queue = Queue()
         all_queue = queue.get_all_queue()
-        window_on_service = LocationOnService.objects.get(user=request.user)
+        window_on_service = LocationOnService.objects.get(user_id=user_id, window_id=window_id)
         turn_id = request.GET.get('turn_id')
         if turn_id:
             window_id = request.GET.get('window_id')
@@ -676,13 +677,15 @@ def start_attend(request):
 def end_attend(request):
     if request.GET:
         turn_id = request.GET.get('turn_id')
+        user_id = request.GET.get('user_id')
+        window_id = request.GET.get('window_id')
         turn = Turn.objects.get(pk=turn_id)
         turn.status = '4'
         turn.end_attend = datetime.datetime.now()
         turn.save()
         queue = Queue()
         all_queue = queue.get_all_queue()
-        window_on_service = LocationOnService.objects.get(user=request.user)
+        window_on_service = LocationOnService.objects.get(user_id=user_id, window_id=window_id)
         window_on_service.status = '1'
         window_on_service.save()
         data = {
