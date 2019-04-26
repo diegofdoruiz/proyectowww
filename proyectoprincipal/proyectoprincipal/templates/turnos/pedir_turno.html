@@ -1,0 +1,190 @@
+{% extends "../template.html" %}
+
+{% block title %}New password{% endblock %}
+{% block navigation %}
+
+{% endblock %}
+{% block front_client %}
+    <!--  Área de clientes -->
+    {% load extras %}
+    {% user_has_role user 'cliente' as cliente_flag %}
+    {% user_has_role user 'cajero' as cajero_flag %}
+    {% user_has_role user 'administrador' as administrador_flag %}
+    {% if cliente_flag %}
+    {% elif cajero_flag %}
+    {% elif administrador_flag %}
+    {% endif %}
+    <!--<textarea id="chat-log" cols="50" rows="3"></textarea><br/>
+    <input id="chat-message-input" type="text" size="50"/><br/>
+    <input id="chat-message-submit" type="button" value="Send"/>
+    <div class="container d-flex h-100">-->
+        <div class="row align-self-center w-100">
+            <div class="col-8 mx-auto" style="margin-top: 1%;">
+                {% if step1 %}
+                <div class="form-group">
+                    <form method="POST" action="{% url 'pedir_turno' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="step" value="1">
+                        <center style="color: blue; margin-top: 0.5rem;" ><h3>Identificación</h3></center>
+                        <input 
+                            type="text" 
+                            name="id_card" 
+                            class="form-control {% if error %} is-invalid {% endif %}" 
+                            style="text-align: center;">
+                        <span class="invalid-feedback" role="alert">
+                            <center><strong>{{ error }}</strong></center>
+                        </span>
+                        <br>
+                        <button type="submit" class="btn btn-primary btn-block">Siguiente</button>
+                    </form>
+                </div>
+                {% elif step2 %}
+                <center><h3>Bienvenido al Banco: {{profile.user.username}}</h3></center>
+                <center><small>Seleccione un servicio</small></center>
+                <form method="POST" action="{% url 'pedir_turno' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="step" value="2">
+                    <input type="hidden" name="profile_id" value="{{profile.pk}}">
+                    <input type="hidden" name="specialty" value="">
+                    {% for specialty in specialties %}
+                    <div class="form-group" style="margin-top: 0.3rem;">
+                        <div class="card specialty bg-dark" style="cursor: pointer;">
+                            <div class="card-body" style="color: #fff;font-size: 1.5rem;">
+                                <input type="hidden" value="{{specialty.pk}}">
+                                <center>{{specialty.name}}</center>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </form>
+                {% elif step3 %}
+                <center><h3>Servicio: {{specialty.name}}</h3></center>
+                <center><small>Seleccione una prioridad</small></center>
+                <form method="POST" action="{% url 'pedir_turno' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="step" value="3">
+                    <input type="hidden" name="profile_id" value="{{profile_id}}">
+                    <input type="hidden" name="specialty_id" value="{{specialty.pk}}">
+                    <input type="hidden" name="service" value="">
+                    {% for service in services %}
+                    <div class="form-group" style="margin-top: 0.3rem;">
+                        <div class="card service bg-light" style="cursor: pointer;">
+                            <div class="card-footer bg-dark" style="color: #fff; font-size: 1.5rem;">
+                                <input type="hidden" name="specialty" value="{{service.pk}}">
+                                <center>{{service.name}}</center>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </form>
+                {% elif step4 %}
+                <input type="hidden" name="turn" value="{{turn}}">
+                {% else %}
+                    <input type="hidden" name="turn" value="">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para mostrar el turno -->
+    <div class="modal" tabindex="-1" role="dialog" id="turn-cofirmation-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmación de turno</h5>
+                </div>
+                <div class="modal-body">
+                    <center>
+                        {% if step4 %}
+                        <p style="font-size: 5rem;">{{turn}}</p>
+                        {{from_date}}
+                        {% endif %}
+                    </center>
+                </div>
+                <div class="modal-footer">
+                    <button 
+                        type="button" 
+                        class="btn btn-success btn-block" 
+                        data-dismiss="modal"
+                        onclick="redirecToRequestTurn()">
+                        Entendido
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Modal para mostrar el turno --> 
+
+    <!--  /Área de clientes -->
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}
+
+{% block myjs %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.js"></script>
+<script>
+    $(".main-panel").removeClass("main-panel");
+    $(".container-scroller").removeClass("container-scroller");
+    $(".content-wrapper").removeClass("content-wrapper");
+
+    //Manejo de procesos iniciales del pedido de turno
+    $(".specialty").click(function(){
+        var specialty_id = $(this).children().eq(0).children().eq(0).val();
+        $("input[name='specialty']").val(specialty_id);
+        $(this).parent().parent().submit();
+    });
+
+    $(".service").click(function(){
+        var service_id = $(this).children().eq(0).children().eq(0).val();
+        $("input[name='service']").val(service_id);
+        $(this).parent().parent().submit();
+    });
+
+    var turn = $("input[name='turn']").val();
+    if (turn != undefined) {
+        $('#turn-cofirmation-modal').modal({backdrop: 'static', keyboard: false});
+        $("#turn-cofirmation-modal").modal("show");
+    }
+
+    function redirecToRequestTurn(){
+        window.location.href = "{% url 'pedir_turno' %}";
+    }
+
+    var roomName = 'cajero';
+
+    var chatSocket = new ReconnectingWebSocket(
+        'ws://' + window.location.host +
+        '/ws/mainapp/notification/' + roomName + '/');
+
+    chatSocket.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+        console.log(data);
+        var message = data['message'];
+        var username = data['username'];
+        document.querySelector('#chat-log').value += (username+': '+message + '\n');
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#chat-message-input').focus();
+    document.querySelector('#chat-message-input').onkeyup = function(e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+        var messageInputDom = document.querySelector('#chat-message-input');
+        var message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'message': message
+        }));
+
+        messageInputDom.value = '';
+    };
+</script>
+{% endblock %}

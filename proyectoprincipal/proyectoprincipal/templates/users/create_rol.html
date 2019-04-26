@@ -21,7 +21,10 @@
 	    		</div>
 	    		<div class="form-group">
 	    			<label>Permisos:</label>
-	    			<select class="form-control selectpicker" multiple="true">
+	    			<select 
+	    				class="form-control selectpicker" 
+	    				name="permissions" 
+	    				multiple="true">
 		    			{% for id,val in form.fields.permission.choices %}
 		    			<option value="{{ id }}"{% if form.fields.permission.value == id %} selected{% endif %}>{{ val }}</option>
 		    			{% endfor %}
