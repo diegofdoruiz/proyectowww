@@ -82,13 +82,14 @@ WSGI_APPLICATION = 'proyectoprincipal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'www2',
-        'USER': 'www',
-        'PASSWORD':'www',
+        'NAME': 'basedatoswww',
+        'USER': 'postgres',
+        'PASSWORD': '123',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': 5432,
     }
 }
+
 
 
 # Password validation
@@ -155,9 +156,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During devel
 # Para enviar un correo con el link de recuperación de contraseña, Diego tiene user y pass. Solicitar para probar
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'pruebas.univalle@gmail.com'
-EMAIL_HOST_PASSWORD = 'Desarrollo12'
+EMAIL_HOST = ''
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 
 

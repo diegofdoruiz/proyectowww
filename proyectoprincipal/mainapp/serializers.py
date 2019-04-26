@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from django.contrib.auth.models import User, Group as Rol
-from .models import Profile, Service, Location, Specialty
+from .models import Profile, Service, Location, Specialty, Publicidad
 
 
 
@@ -35,6 +35,15 @@ class LocationListSerializer(ModelSerializer):
         fields = [
             'id',
             'name'
+
+        ]
+
+class PublicidadListSerializer(ModelSerializer):
+    class Meta:
+        model = Publicidad
+        fields = [
+            'id',
+            'nombre'
 
         ]
 

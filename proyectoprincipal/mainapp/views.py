@@ -7,10 +7,10 @@ from django.views.generic import CreateView
 from django.contrib.auth.views import LoginView
 from django.db import transaction
 from django.db.models import Q
-from .models import Profile, Service, Location, Specialty, Turn, LocationOnService
+from .models import Profile, Service, Location, Specialty, Turn, LocationOnService, Publicidad
 from django.contrib.auth.decorators import login_required
-from .forms import UserForm, ProfileForm, CreateRolForm, ServiceForm, LocationForm, SpecialtyForm, LocationOnServiceForm
-from .serializers import UserListSerializer, ServiceListSerializer, LocationListSerializer, RolListSerializer, SpecialtyListSerializer
+from .forms import UserForm, ProfileForm, CreateRolForm, ServiceForm, LocationForm, SpecialtyForm, LocationOnServiceForm, PublicidadForm
+from .serializers import UserListSerializer, ServiceListSerializer, LocationListSerializer, RolListSerializer, SpecialtyListSerializer, PublicidadListSerializer
 from .pagination import CustomPageNumberPagination
 from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate, login
@@ -335,6 +335,8 @@ def destroy_location(request):
         location.delete()
         return redirect('/mainapp/locations')
 
+
+
 ###################### Servicios #######################
 @api_view(['GET','POST'])
 def specialties(request):
@@ -405,6 +407,40 @@ def atencion_clientes(request):
     LocationOnService.objects.filter(user=request.user).update(status='4')
     form = LocationOnServiceForm()
     return render(request, 'turnos/atender_turnos.html',{'form':form})
+
+@api_view(['GET','POST'])
+def publicidad(request):
+    request_from = request.GET.get('from', None)
+    query = request.GET.get('search_text', None)
+    publicidad_objects = Publicidad.objects.all().order_by('id')
+    if query:
+        publicidad_objects = publicidad_objects.filter(Q(nombre__contains=query)).distinct().order_by('id')
+
+    paginator = CustomPageNumberPagination()
+
+    result_page = paginator.paginate_queryset(publicidad_objects, request)
+    serializer = PublicidadListSerializer(result_page, many=True)
+
+    if request_from:
+        if request_from == 'search_input':
+            return paginator.get_paginated_response(serializer.data)
+
+    data = paginator.get_paginated_response(serializer.data)
+    if request.POST:
+        form = PublicidadForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('/mainapp/publicidad')
+    else:
+        form = PublicidadForm()
+    return render(request, 'publicity/publicidad.html',{'form':form,'all_data': data})
+
+def destroy_publicidad(request):
+    if request.method == 'POST':
+        publicidad = get_object_or_404(Publicidad, pk=request.POST.get('publicidad_id'))
+        publicidad.delete()
+        return redirect('/mainapp/publicidad')
+
 
 def select_window(request):
     if request.POST:
@@ -487,17 +523,19 @@ class ThreadView(LoginRequiredMixin, FormMixin, DetailView):
 
 @login_required
 def index(request):
-    return render(request, 'chat/room.html')
+    publicidad = Publicidad.objects.all().order_by('id')
+    print(publicidad)
+    return render(request, 'chat/room.html',{'publicidad':publicidad})
 
 @login_required
 def room(request, room_name):
+
     if request.user.is_authenticated:
         return render(request, 'chat/room.html', {
-            'room_name_json': mark_safe(json.dumps(room_name))})
+            'room_name_json': mark_safe(json.dumps(room_name)),'publicidad':publicidad})
     else:
         return render(request, 'chat/room.html', {
-            'room_name_json': mark_safe(json.dumps(room_name))
-        })
+            'room_name_json': mark_safe(json.dumps(room_name)),'publicidad':publicidad})
 
 def pedir_turno(request, turn=''):
     if request.POST:
