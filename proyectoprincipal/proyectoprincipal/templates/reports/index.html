@@ -1,0 +1,81 @@
+{% extends "../template.html" %}
+
+{% block title %}Reportes{% endblock %}
+
+{% block main %}
+<div class="container-fluid">
+	
+	<div class="card">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-3">
+					<label for="">Tipo de Reporte</label>
+					<select name="reporte" id="" class="form-control">
+					<option value="1">Usuarios atendidos</option>
+					<option value="2">Servicios atendidos</option>
+					</select>
+				</div>
+				<div class="col-md-3">
+					<label for="">fecha inicial:</label>
+					<input type="text" class="form-control " id="fecha1" name="fecha_inicio"  />
+				</div>
+				<div class="col-md-3">
+					<label for="">fecha final:</label>
+					<input type="text" class="form-control " id="fecha2" name="fecha_fin"  />
+				</div>
+				<div class="col-md-3" style="margin-top: 2rem; color: white">
+					<a class="form-control btn btn-primary" id="buscar">
+						Buscar
+					</a>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</div>
+		
+{% endblock %}
+
+
+{% block myjs %}
+
+
+  <script type="text/javascript">
+
+      $(function() {
+          $('#fecha1').datepicker(
+              { format: 'yyyy-mm-dd 10:23:54+02' }
+          );
+      });
+
+      $(function() {
+          $('#fecha2').datepicker(
+              { format: 'yyyy-mm-dd 10:23:54+02' }
+          );
+      });
+
+  $('#buscar').on('click',function(){
+  	var fecha1=$("#fecha1").val();
+	var fecha2= $("#fecha2").val();
+
+	if( (new Date(fecha1).getTime() > new Date(fecha2).getTime()))
+	{
+	    toastr.error('La fecha inicial debe ser anterior a la final.', 'Error');
+	}else{
+			$.ajax({
+				url: '/mainapp/get_report',
+				dataType: "json",
+				data:{fecha1:fecha1,fecha2:fecha2},
+				success : function (data) {
+	                console.log(data);
+	            }
+    		});
+	}
+
+
+  });
+
+
+</script>
+
+{% endblock %}

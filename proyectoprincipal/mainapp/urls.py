@@ -31,7 +31,9 @@ urlpatterns = [
     path('atencion_clientes/', views.atencion_clientes, name='atencion_clientes'),
     path('change_status/', views.change_status, name='change_status'),
     path('notification/', views.index, name='index'),
+    path('reports/', views.reports, name='reports'),
     #url(r'^notification/(?P<room_name>[^/]+)/$', views.room, name='room'),
+
 
     # Pedir turno
     path('pedir_turno/', views.pedir_turno, name='pedir_turno'),
@@ -41,6 +43,7 @@ urlpatterns = [
     path('next_turn/', views.next_turn, name='next_turn'),
     path('start_attend/', views.start_attend, name='start_attend'),
     path('end_attend/', views.end_attend, name='end_attend'),
+    path('get_report/', views.get_report, name = 'get_report'),
 
     path('borrar/', views.borrar, name='borrar'),
     path('publicidad/', views.publicidad, name='publicidad'),
