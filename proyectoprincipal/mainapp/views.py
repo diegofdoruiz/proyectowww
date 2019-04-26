@@ -642,10 +642,11 @@ def next_turn(request):
 @transaction.atomic
 def start_attend(request):
     if request.GET:
-        print(request.GET.get('turn_id'))
+        user_id = request.GET.get('user_id')
+        window_id = request.GET.get('window_id')
         queue = Queue()
         all_queue = queue.get_all_queue()
-        window_on_service = LocationOnService.objects.get(user=request.user)
+        window_on_service = LocationOnService.objects.get(user_id=user_id, window_id=window_id)
         turn_id = request.GET.get('turn_id')
         if turn_id:
             window_id = request.GET.get('window_id')
