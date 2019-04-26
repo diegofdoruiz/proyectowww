@@ -113,7 +113,7 @@
     </div>
   </div>
 </div>
-<audio  id="audio" autoplay muted>
+<audio  id="audio">
    <source src="/static/notifications/notificacion.mp3" type="audio/mp3"/>
 </audio>
     <!--  /Área de clientes -->
@@ -140,17 +140,17 @@
         var data = JSON.parse(e.data);
         //Imprimir las colas en el tablero
 
-        if (data.message.type == 1) {
-
+        if (data.message.type == "1") {
+            console.log(data.message);
             $('#turn_code').html('<label  style="font-size: 4rem;">'+data.message.turn+'</label>');
             $('#turn_location').html('<label  style="font-size: 4rem;">'+data.message.window+'</label>');
 
             $('#modal_turn').modal();
 
-            // setTimeout(function() {
-            //     $("#new_turn").fadeOut(200);
-            //     $("#audio")[0].play();
-            // },200);
+            setTimeout(function() {
+                $("#new_turn").fadeOut(200);
+                $("#audio")[0].play();
+            },200);
          
             setTimeout(function() {
                 $("#new_turn").fadeIn(200);
@@ -175,8 +175,8 @@
 
                 console.log(data.message.turn);
 
-        } else if(data.message.type == 2){
-
+        } else if(data.message.type == "2"){
+            console.log(data.message);
             $('#turns').append('<div class="col-12" id="'+data.message.turn+'" style="float: left;">\
                         <div class="alert alert-info h-20" role="alert">\
                             <div class="row">\
@@ -200,9 +200,9 @@
                 console.log(data);
 
             }else{
-
+                console.log(data.message);
                 $('#'+data.message.turn).hide();
-                console.log(data);
+                console.log(data.type);
             }
         };
 

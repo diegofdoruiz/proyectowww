@@ -3,8 +3,7 @@
 {% block title %}Atención al cliente{% endblock %}
 
 {% block main %}
-<div class="card" style="background-color: #fff">
-  <div class="card-body">
+
 
 <div class="container">
 	<div class="row">
@@ -110,8 +109,6 @@
 		
 	</div>
 </div>
-</div>
-</div>
 
 <div class="modal" id="choose_window" tabindex="-1" role="dialog">
 	<div class="modal-dialog" role="document">
@@ -173,6 +170,47 @@
 	  "hideMethod": "fadeOut"
 	}
 
+	/*************************** Chat para cajeros *****************************/
+	var chatSocketCajero = new ReconnectingWebSocket('ws://' + window.location.host +'/ws/mainapp/notification/cajero/');
+		var counter = 0;
+		chatSocketCajero.onmessage = function(e) {
+	        var data = JSON.parse(e.data);
+	        //Imprimir las colas en el tablero
+			var user_id = $("input[name=user_id]").val();
+			if(data.message[user_id] != undefined){
+				$(".bootstrap-tagsinput").empty();
+				var turns = data.message[user_id].turns;
+				$.each(turns, function (index, value) {
+					if (counter == 0) {
+						$(".bootstrap-tagsinput").append("<span class='badge badge badge-danger'>"+value+"</span>");
+					} else {
+						$(".bootstrap-tagsinput").append("<span class='badge badge badge-info'>"+value+"</span>");
+					}
+					counter++;
+				});
+				counter= 0;
+			}
+	    };
+
+   function sendMessage(message){
+    	chatSocketCajero.send(JSON.stringify({
+            'message': message
+        }));
+    }
+
+	var chatSocketCajeraPantalla = new ReconnectingWebSocket('ws://' + window.location.host +'/ws/mainapp/notification/pantalla/');
+	chatSocketCajeraPantalla.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+    };
+
+    function sendMessage2(message){
+    	chatSocketCajeraPantalla.send(JSON.stringify({
+            'message': message
+        }));
+    }
+    /*************************** /Chat para cajeros *****************************/
+
+
 /**************************** Llamado del primer turno ************************/
 
 function next_turn(user_pk){
@@ -226,14 +264,14 @@ function next_turn(user_pk){
     		}
 
     		//Enviar la cola a todos los cajeros
-    		var queue = data.queue;
-    		sendMessage(queue);
+    		// var queue = data.queue;
+    		// sendMessage(queue);
 
     		var window_name = $("#window_name").val();
 
     		if(data.code != ""){
 	    		//Enviar Mensaje a pantalla
-	    		sendMessage2({'turn' :data.code, 'window' : window_name, 'type': 1});
+	    		sendMessage2({'turn' :data.code, 'window' : window_name, 'type': "1"});
 	    	}else{
 	    		alert("No tienes más turnos pendientes");
 	    	}
@@ -244,22 +282,20 @@ function next_turn(user_pk){
 }
 	/**************************** /Llamado del primer turno ************************/
 function call_again(){
-
-	
 	var code = $('#code').val();
 	
 	var window_name = $("#window_name").val();
 
 	if(code != ""){
 	    		//Enviar Mensaje a pantalla
-	    		sendMessage2({'turn' :code, 'window' :window_name, 'type': 1});
+	    		sendMessage2({'turn':code, 'window':window_name, 'type':"1"});
 	    	}else{
 	    		alert("No tienes más turnos pendientes");
 	    	}
 
 }
 
-function start_attend(){
+function start_attend1(){
 	var turn_id =$("#turn_id").val();
 	var user_id = $("#user_id").val();
 	var window_id = $("#window_id").val();
@@ -272,8 +308,9 @@ function start_attend(){
 	    	type: "GET",
 	    	url: "{% url 'start_attend' %}",
 	    	data: {"window_id":window_id,"turn_id":turn_id, "user_id":user_id},
-	    	dataType:'json',
+	    	//dataType:'json',
 	    	success: function(data){
+	    		console.log(data);
 	    		if (data.success){
 	    			switch(data.status){
 	    				case '1': 	
@@ -305,14 +342,14 @@ function start_attend(){
 	    		var queue = data.queue;
 	    		sendMessage(queue);
 
-	    		var code = $('#code').val();
+	    		var code = $("#code").val();
 	
 				var window_name = $("#window_name").val();
 
     		if(code != ""){
 	    		//Enviar Mensaje a pantalla
-	    		console.log(code);
-	    		sendMessage2({'turn' :code, 'window' : window_name, 'type': 2});
+	    		console.log(code+"-"+window_name);
+	    		sendMessage2(JSON.stringify({'turn' :code, 'window' : window_name, 'type': "2"}));
 	    	}else{
 	    		alert("No tienes más turnos pendientes");
 	    	}
@@ -320,12 +357,74 @@ function start_attend(){
 	    	
 	    });
 }
+function start_attend(){
+	var turn_id =$("#turn_id").val();
+	var user_id = $("#user_id").val();
+	var window_id = $("#window_id").val();
+	var code = $("#code").val();
+	var window_name = $("#window_name").val();
+	if(code != ""){
+		console.log(code+"-"+window_name);
+		sendMessage2({"turn":code,"window":window_name,"type":"2"});
+	}
+$.when(
+	$.ajax({
+	    	type: "GET",
+	    	url: "{% url 'start_attend' %}",
+	    	data: {"window_id":window_id,"turn_id":turn_id, "user_id":user_id},
+	    	//dataType:'json',
+	    	success: function(data){
+		    	if (data.success){
+	    			switch(data.status){
+	    				case '1': 	
+	    					$('#user-status').css('background-color','#28a745');
+							$('#user-status').css('border-color','#28a745');
+							$('#user-status').html('Disponible');
+							break;
+		    			case '2': 	
+		    				$('#user-status').css('background-color','#6c757d');
+							$('#user-status').css('border-color','#6c757d');
+							$('#user-status').html('Ocupado');
+							break;
+		    			case '3': 	
+		    				$('#user-status').css('background-color','#e0a800');
+							$('#user-status').css('border-color','#d39e00');
+							$('#user-status').html('Pausado');
+							break;
+		    			case '4': 	
+		    				$('#user-status').css('background-color','#FF0017');
+							$('#user-status').css('border-color','#FF0017');
+							$('#user-status').html('Cerrado');
+							break;
+		    			default:
+							break;
+	    			}
+	    			$("#btn-aten-1").prop("disabled", true);
+					$("#btn-aten-2").prop("disabled", true);
+					$("#btn-aten-3").prop("disabled", false);
+					$("#next").prop("disabled", true);
+	    		}
+	    	},
+	    })).done(function(data) {
+        	//Enviar la cola a todos los cajeros
+    		var queue = data.queue;
+    		sendMessage(queue);
+	});
+}
+
+
 	
 function end_turn(){
 	var user_id = $("#user_id").val();
 	var window_id = $("#window_id").val();
 	var turn_id = $("#turn_id").val();
-		$.ajaxSetup({
+	var code = $("#code").val();
+	if(code != ""){
+		sendMessage2({'turn' :code,'type': "3"});
+	}else{
+		alert("No tienes más turnos pendientes");
+	}
+	$.ajaxSetup({
         headers: {
             'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
         }
@@ -335,89 +434,41 @@ function end_turn(){
 	    	url: "{% url 'end_attend' %}",
 	    	data: {'turn_id':turn_id, 'user_id':user_id, 'window_id':window_id},
 	    	success: function(data){
+	    		$('#current_turn tbody').html('<tr>\
+				      <td id="turn" scope="row"><h1 class="display-2">--</h1></td>\
+				      <td>--</td>\
+				      <td>--</td>\
+				      <td>--</td>\
+				    </tr>');
 	    		switch(data.status){
-    				case '1': 	
-    					$('#user-status').css('background-color','#28a745');
-						$('#user-status').css('border-color','#28a745');
-						$('#user-status').html('Disponible');
-						break;
-	    			case '2': 	
-	    				$('#user-status').css('background-color','#6c757d');
-						$('#user-status').css('border-color','#6c757d');
-						$('#user-status').html('Ocupado');
-						break;
-	    			case '3': 	
-	    				$('#user-status').css('background-color','#e0a800');
-						$('#user-status').css('border-color','#d39e00');
-						$('#user-status').html('Pausado');
-						break;
-	    			case '4': 	
-	    				$('#user-status').css('background-color','#FF0017');
-						$('#user-status').css('border-color','#FF0017');
-						$('#user-status').html('Cerrado');
-						break;
+	    			case '1': 	$('#user-status').css('background-color','#28a745');
+							$('#user-status').css('border-color','#28a745');
+							$('#user-status').html('Libre');
+    						break;
+	    			case '2': 	$('#user-status').css('background-color','#6c757d');
+								$('#user-status').css('border-color','#6c757d');
+								$('#user-status').html('Ocupado');
+	    						break;
+	    			case '3': 	$('#user-status').css('background-color','#e0a800');
+								$('#user-status').css('border-color','#d39e00');
+								$('#user-status').html('Pausado');
+	    						break;
+	    			case '4': 	$('#user-status').css('background-color','#FF0017');
+								$('#user-status').css('border-color','#FF0017');
+								$('#user-status').html('Cerrado');
+	    						break;
 	    			default:
-						break;
-    			}
-
+	    					break;
+	    		}
+	    		$("#btn-aten-1").prop("disabled", true);
+				$("#btn-aten-2").prop("disabled", true);
+				$("#btn-aten-3").prop("disabled", true);
+				$("#next").prop("disabled", false);
 	    		var queue = data.queue;
 	    		sendMessage(queue);
-
-	    		var code = $('#code').val();
-
-	    		if(code != ""){
-		    		//Enviar Mensaje a pantalla
-		    		sendMessage2({'turn' :code,'type': 3});
-		    	}else{
-		    		alert("No tienes más turnos pendientes");
-		    	}
 	    	},
 	    });
 }
-
-	
-
-
-	/*************************** Chat para cajeros *****************************/
-	var chatSocketCajero = new ReconnectingWebSocket('ws://' + window.location.host +'/ws/mainapp/notification/cajero/');
-		var counter = 0;
-		chatSocketCajero.onmessage = function(e) {
-	        var data = JSON.parse(e.data);
-	        //Imprimir las colas en el tablero
-			var user_id = $("input[name=user_id]").val();
-			if(data.message[user_id] != undefined){
-				$(".bootstrap-tagsinput").empty();
-				var turns = data.message[user_id].turns;
-				$.each(turns, function (index, value) {
-					if (counter == 0) {
-						$(".bootstrap-tagsinput").append("<span class='badge badge badge-danger'>"+value+"</span>");
-					} else {
-						$(".bootstrap-tagsinput").append("<span class='badge badge badge-info'>"+value+"</span>");
-					}
-					counter++;
-				});
-				counter= 0;
-			}
-	    };
-
-   function sendMessage(message){
-    	chatSocketCajero.send(JSON.stringify({
-            'message': message
-        }));
-    }
-
-	var chatSocketCajeraPantalla = new ReconnectingWebSocket('ws://' + window.location.host +'/ws/mainapp/notification/pantalla/');
-	chatSocketCajeraPantalla.onmessage = function(e) {
-        var data = JSON.parse(e.data);
-    };
-
-    function sendMessage2(message){
-    	chatSocketCajeraPantalla.send(JSON.stringify({
-            'message': message
-        }));
-    }
-
-    /*************************** /Chat para cajeros *****************************/
 
 
 //Seleccionar ventanilla y mostrar estado del cajero
@@ -494,18 +545,17 @@ function available(){
         		var counter = 0;
 				var user_id = $("#user_id").val();
 				if(queue[user_id] != undefined){
-					$(".bootstrap-tagsinput").empty();
-					var turns = queue[user_id].turns;
-					$.each(turns, function (index, value) {
-						if (counter == 0) {
-							$(".bootstrap-tagsinput").append("<span class='badge badge badge-danger'>"+value+"</span>");
-						} else {
-							$(".bootstrap-tagsinput").append("<span class='badge badge badge-info'>"+value+"</span>");
-						}
-						counter++;
-					});
+				$(".bootstrap-tagsinput").empty();
+				var turns = queue[user_id].turns;
+				$.each(turns, function (index, value) {
+					if (counter == 0) {
+						$(".bootstrap-tagsinput").append("<span class='badge badge badge-danger'>"+value+"</span>");
+					} else {
+						$(".bootstrap-tagsinput").append("<span class='badge badge badge-info'>"+value+"</span>");
+					}
+					counter++;
+				});
 				}
-    			sendMessage(queue);
         	}
         },
         error: function() {
@@ -551,8 +601,13 @@ function close(){
         data: {"user_id":user_id, "window_id":window_id, status:"4"},
         success: function(data) {
         	if(data.success){
-        		var queue = data.queue;
-    			sendMessage(queue);
+        		$("#w-status-1").removeClass("btn-success");
+				$("#w-status-1").addClass("btn-secondary");
+				$(".bootstrap-tagsinput").empty();
+				$("#w-status-2").removeClass("btn-warning");
+				$("#w-status-2").addClass("btn-secondary");
+				$("#w-status-3").removeClass("btn-secondary");
+				$("#w-status-3").addClass("btn-danger");
         	}
         },
         error: function() {
