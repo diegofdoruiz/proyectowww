@@ -9,7 +9,8 @@ urlpatterns = [
     path('user_edit/<int:pk>/', views.user_edit, name='user_edit'),
     path('user_delete/', views.user_delete, name='user_delete'),
     path('edit_profile/', views.edit_profile, name='edit_profile'),
-    path('roles', views.roles, name='roles'),
+    path('roles/', views.roles, name='roles'),
+    path('roles/edit/<pk>', views.roles, name='role_edit'),
     path('destroy_rol/', views.destroy_rol, name='destroy_rol'),
     #path('signup/', views.register, name='signup'),
     path('users/', views.users_list, name='users'),
@@ -26,8 +27,9 @@ urlpatterns = [
     path('edit_specialty/', views.edit_specialty, name='edit_specialty'),
     path('destroy_specialty/', views.destroy_specialty, name='destroy_specialty'),
 
+    path('select_window/', views.select_window, name='select_window'),
     path('atencion_clientes/', views.atencion_clientes, name='atencion_clientes'),
-    
+    path('change_status/', views.change_status, name='change_status'),
     path('notification/', views.index, name='index'),
     # url(r'^notification/(?P<room_name>[^/]+)/$', views.room, name='room'),
 

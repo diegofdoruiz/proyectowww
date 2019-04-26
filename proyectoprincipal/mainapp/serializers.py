@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
-from django.contrib.auth.models import User
-from .models import Profile, Rol, Service, Location, Specialty
+from django.contrib.auth.models import User, Group as Rol
+from .models import Profile, Service, Location, Specialty
 
 
 
@@ -54,5 +54,4 @@ class RolListSerializer(ModelSerializer):
         fields = [
             'id',
             'name'        
-
         ]
