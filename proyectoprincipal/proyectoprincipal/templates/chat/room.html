@@ -52,27 +52,29 @@
             <div class="container h-100" id="turns" style="margin-top: 0.5rem; " >
             
                     <div class="col-12" id="last_call" style="float: left;" hidden="">
-                        <div class="alert alert-success h-20" role="alert">
-                            <div class="row">
-                                <div class="col-12 col-md-8">
+                        <div class="alert alert-success h-20" style="background-color: #fff"role="alert">
+                             <div class="row" style="padding: 0.5rem">
+                                <div class="col-7 col-md-7">
                                     <center>
-                                        <h3>Código</h3>
+                                        <h3 style= "color: #7633FF; font-size: 1.5rem " >Código</h3>
                                         <div id="last_call_code">
                                             
                                         </div>
                                         
                                     </center>
                                 </div>
-                                <div class="col-12 col-md-4">
+                                <div class="col-3 col-md-3">
                                     <center>
-                                        <h3>Vent.</h3>
+                                        <h3 style= "color: #7633FF; font-size: 1.5rem ">Vent.</h3>
                                         <div id="last_call_location">
                                             
                                         </div>
                                         
                                     </center>
                                 </div>
-                            </div>
+                            </div>                               
+                           
+
                         </div>
                     </div>
                 
@@ -148,29 +150,29 @@
             $('#modal_turn').modal();
 
             setTimeout(function() {
-                $("#new_turn").fadeOut(200);
+                $("#new_turn").fadeOut(400);
                 $("#audio")[0].play();
-            },200);
-         
-            setTimeout(function() {
-                $("#new_turn").fadeIn(200);
             },400);
-            setTimeout(function() {
-                $("#new_turn").fadeOut(200);
-            },600);
          
             setTimeout(function() {
-                $("#new_turn").fadeIn(200);
-                
+                $("#new_turn").fadeIn(400);
             },800);
+            setTimeout(function() {
+                $("#new_turn").fadeOut(400);
+            },1200);
+         
+            setTimeout(function() {
+                $("#new_turn").fadeIn(400);
+                
+            },1600);
 
             setTimeout(function() {
                 
                 $('#modal_turn').modal('hide');
-            },1000);
+            },2000);
 
-            $('#last_call_code').html('<label  style="font-size: 2rem;">'+data.message.turn+'</label>');
-            $('#last_call_location').html('<label  style="font-size: 2rem;">'+data.message.window+'</label>');
+            $('#last_call_code').html('<label  style="font-size: 2rem; color: #7633FF">'+data.message.turn+'</label>');
+            $('#last_call_location').html('<label  style="font-size: 2rem; color: #7633FF">'+data.message.window+'</label>');
             $('#last_call').removeAttr('hidden');
 
                 console.log(data.message.turn);
@@ -179,17 +181,17 @@
 
             $('#turns').append('<div class="col-12" id="'+data.message.turn+'" style="float: left;">\
                         <div class="alert alert-info h-20" role="alert">\
-                            <div class="row">\
-                                <div class="col-12 col-md-8">\
+                            <div class="row" style="padding:0.5rem">\
+                                <div class="col-7 col-md-7">\
                                     <center>\
-                                        <h3>Código</h3>\
-                                        <label style="font-size: 2rem;">'+data.message.turn+'</label>\
+                                        <h3 style= "color: #7633FF; font-size: 1.5rem ">Código</h3>\
+                                        <label style="font-size: 2rem; color: #7633FF"  >'+data.message.turn+'</label>\
                                     </center>\
                                 </div>\
-                                <div class="col-12 col-md-4">\
+                                <div class="col-3 col-md-3">\
                                     <center>\
-                                        <h3>Vent</h3>\
-                                        <label style="font-size: 2rem;">'+data.message.window+'</label>\
+                                        <h3 style= "color: #7633FF; font-size: 1.5rem ">Vent.</h3>\
+                                        <label style="font-size:2rem; color: #7633FF ">'+data.message.window+'</label>\
                                     </center>\
                                 </div>\
                             </div>\
