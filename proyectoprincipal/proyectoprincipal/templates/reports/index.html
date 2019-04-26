@@ -1,0 +1,52 @@
+{% extends "../template.html" %}
+
+{% block title %}Reportes{% endblock %}
+
+{% block main %}
+<div class="container-fluid">
+	
+	<div class="card">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-4">
+					<label for="">Tipo de Reporte</label>
+					<select name="reporte" id="" class="form-control">
+					<option value="1">Usuarios atendidos</option>
+					<option value="2">Servicios atendidos</option>
+					</select>
+				</div>
+				<div class="col-md-4">
+					<label for="">fecha inicio:</label>
+					<input type="text" class="form-control fecha" name="fecha_inicio"  />
+				</div>
+				<div class="col-md-4">
+					<label for="">fecha fin:</label>
+					<input type="text" class="form-control fecha" name="fecha_fin"  />
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</div>
+		
+{% endblock %}
+
+
+{% block myjs %}
+
+
+  <script type="text/javascript">
+  $(document).ready(
+      function() {
+          $('.fecha').datepicker(
+              {
+                  onClose: function(dateText, inst) {
+                          alert("My date is: " + dateText);
+                      }
+              }
+          );
+      }
+  );
+</script>
+
+{% endblock %}

@@ -685,3 +685,8 @@ def end_attend(request):
 
 def attending(request):
     return render(request, 'chat/index.html', {})
+
+
+def reports(request):
+    # LocationOnService.objects.filter(user=request.user).update(status='4')
+    return render(request, 'reports/index.html')

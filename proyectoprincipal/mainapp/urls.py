@@ -31,7 +31,10 @@ urlpatterns = [
     path('atencion_clientes/', views.atencion_clientes, name='atencion_clientes'),
     path('change_status/', views.change_status, name='change_status'),
     path('notification/', views.index, name='index'),
-    # url(r'^notification/(?P<room_name>[^/]+)/$', views.room, name='room'),
+    url(r'^notification/(?P<room_name>[^/]+)/$', views.room, name='room'),
+
+    #reports
+    path('reports/', views.reports, name='reports'),
 
     # Pedir turno
     path('pedir_turno/', views.pedir_turno, name='pedir_turno'),
