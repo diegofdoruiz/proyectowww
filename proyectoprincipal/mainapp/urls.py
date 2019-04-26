@@ -43,6 +43,7 @@ urlpatterns = [
     path('next_turn/', views.next_turn, name='next_turn'),
     path('start_attend/', views.start_attend, name='start_attend'),
     path('end_attend/', views.end_attend, name='end_attend'),
+    path('get_report/', views.get_report, name = 'get_report'),
 
     path('borrar/', views.borrar, name='borrar'),
     path('publicidad/', views.publicidad, name='publicidad'),

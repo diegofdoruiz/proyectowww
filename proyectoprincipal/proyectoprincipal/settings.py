@@ -82,9 +82,9 @@ WSGI_APPLICATION = 'proyectoprincipal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'basedatoswww',
-        'USER': 'postgres',
-        'PASSWORD': '123',
+        'NAME': 'proyectowww',
+        'USER': 'www',
+        'PASSWORD': 'www',
         'HOST': 'localhost',
         'PORT': 5432,
     }

@@ -335,6 +335,13 @@ def destroy_location(request):
         location.delete()
         return redirect('/mainapp/locations')
 
+def get_report(request):
+    if request.method == 'GET':
+        fecha1 = request.GET.get('fecha1')
+        fecha2 = request.GET.get('fecha2')
+        turnos = Turn.objects.filter(Q(end_attend__gte=fecha1) | Q(end_attend__lte=fecha2))
+        print(turnos)
+        return HttpResponse(turnos, content_type="application/json")
 
 
 ###################### Servicios #######################
