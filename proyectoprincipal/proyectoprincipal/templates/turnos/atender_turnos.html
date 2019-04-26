@@ -308,6 +308,7 @@ function start_attend(){
 
     		if(code != ""){
 	    		//Enviar Mensaje a pantalla
+	    		console.log(code);
 	    		sendMessage2({'turn' :code, 'window' : window_name, 'type': 2});
 	    	}else{
 	    		alert("No tienes más turnos pendientes");
@@ -483,6 +484,20 @@ function available(){
 				$("#next").prop("disabled", false);
 
         		var queue = data.queue;
+        		var counter = 0;
+				var user_id = $("#user_id").val();
+				if(queue[user_id] != undefined){
+					$(".bootstrap-tagsinput").empty();
+					var turns = queue[user_id].turns;
+					$.each(turns, function (index, value) {
+						if (counter == 0) {
+							$(".bootstrap-tagsinput").append("<span class='badge badge badge-danger'>"+value+"</span>");
+						} else {
+							$(".bootstrap-tagsinput").append("<span class='badge badge badge-info'>"+value+"</span>");
+						}
+						counter++;
+					});
+				}
     			sendMessage(queue);
         	}
         },
@@ -511,6 +526,7 @@ function pause(){
 				$("#btn-aten-2").prop("disabled", true);
 				$("#btn-aten-3").prop("disabled", true);
         		var queue = data.queue;
+        		console.log(queue);
     			sendMessage(queue);
         	}
         },
