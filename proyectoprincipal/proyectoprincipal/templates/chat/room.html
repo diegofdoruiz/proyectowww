@@ -142,26 +142,26 @@
             $('#modal_turn').modal();
 
             setTimeout(function() {
-                $("#new_turn").fadeOut(500);
+                $("#new_turn").fadeOut(200);
                 $("#audio")[0].play();
+            },200);
+         
+            setTimeout(function() {
+                $("#new_turn").fadeIn(200);
             },400);
+            setTimeout(function() {
+                $("#new_turn").fadeOut(200);
+            },600);
          
             setTimeout(function() {
-                $("#new_turn").fadeIn(500);
-            },800);
-            setTimeout(function() {
-                $("#new_turn").fadeOut(500);
-            },1200);
-         
-            setTimeout(function() {
-                $("#new_turn").fadeIn(500);
+                $("#new_turn").fadeIn(200);
                 
-            },1600);
+            },800);
 
             setTimeout(function() {
                 
                 $('#modal_turn').modal('hide');
-            },10000);
+            },1000);
 
             $('#last_call_code').html('<label  style="font-size: 2rem;">'+data.message.turn+'</label>');
             $('#last_call_location').html('<label  style="font-size: 2rem;">'+data.message.window+'</label>');
