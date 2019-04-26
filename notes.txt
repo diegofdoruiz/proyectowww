@@ -27,3 +27,8 @@ LOGOUT_REDIRECT_URL = '/'
 # *********** Link Para recuperar Password ***********/
 # Para ver el link de recuperación de contraseña en la consola
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
+
+SELECT pg_terminate_backend(pg_stat_activity.pid)
+    FROM pg_stat_activity
+    WHERE pg_stat_activity.datname = 'www'
+      AND pid <> pg_backend_pid();

@@ -5,7 +5,7 @@
 {% block main %}
 <div class="row">
 	<div class="col-12 col-md-6">
-		<h1>Agregar Prioridad</h1>
+		<h1>Agregar Especialidad</h1>
 		<hr>
 		<form method="post">
         	{% csrf_token %}
@@ -32,18 +32,6 @@
 	            </span>
 	        </div>
 	        <div class="form-group">
-	            <label>Peso:</label>
-	            <input 
-	                type="number" 
-	                name="weight" 
-	                class="form-control {% if form.weight.errors %} is-invalid {% endif %}" 
-	                value="{{ form.weight.value|default_if_none:'0' }}"
-	                min="0">
-	            <span class="invalid-feedback" role="alert">
-	                <strong>{{ form.weight.errors }}</strong>
-	            </span>
-	        </div>
-	        <div class="form-group">
 	            <p>
 	            	<label>Estado:</label>
 	            	{{ form.status }}
@@ -59,7 +47,7 @@
 	    </form>
 	</div>
 	<div class="col-12 col-md-6">
-		<h1>Prioridades</h1>
+		<h1>Especialidades</h1>
 		<hr>
 		<div>
 			<p>
@@ -77,28 +65,26 @@
 	            <tr>
 	                <th>id</th>
 	                <th>Nombre</th>
-	                <th>peso</th>
 	                <th>estado</th>
 	                <th>Opciones</th>
 	            </tr>
 	        </thead>
 	        <tbody>
 	            {% if all_data.data.rows %}
-	                {% for priority in all_data.data.rows %}
+	                {% for service in all_data.data.rows %}
 	                <tr id="table-rows">
-	                    <td>{{ priority.id }}</td>
-	                    <td>{{ priority.name }}</td>
-	                    <td>{{ priority.weight }}</td>
-	                    <td>{{ priority.status }}</td>
+	                    <td>{{ service.id }}</td>
+	                    <td>{{ service.name }}</td>
+	                    <td>{{ service.status }}</td>
 	                    <td>
 	                        <button 
 	                        	class="btn btn-primary btn-sm" 
-	                        	onclick="editPriority('{{ priority.id }}')" >
+	                        	onclick="editService('{{ service.id }}')" >
 	                        	<i class="fas fa-edit"></i>
 	                        </button>
                             <button 
                             	class="btn btn-danger btn-sm" 
-                            	onclick="deletePriority( '{{ priority.id }}', '{{ priority.name }}' )">
+                            	onclick="deleteService( '{{ service.id }}', '{{ service.name }}' )">
                             	<i class="fas fa-trash-alt"></i>
                             </button>
 	                    </td>
@@ -133,22 +119,22 @@
 
 
 <!-- Modal para editar priority -->
-<div class="modal" tabindex="-1" role="dialog"  aria-hidden="true" id="modal-edit-priority">
+<div class="modal" tabindex="-1" role="dialog"  aria-hidden="true" id="modal-edit-service">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Edición de prioridad</h4>
+				<h4 class="modal-title">Edición de Especialidad</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
 			<div class="modal-body">
-				<form method="post" action="{% url 'edit_priority' %}" id="form-edit-priority">
+				<form method="post" action="{% url 'edit_specialty' %}" id="form-edit-service">
 					{% csrf_token %}
 					{% if request %}
-					<input type="hidden" name="priority_id" value="{{ request.POST.priority_id }}" class="form-control">
+					<input type="hidden" name="specialty_id" value="{{ request.POST.specialty_id }}" class="form-control">
 					{% else %}
-					<input type="hidden" name="priority_id" value="" class="form-control">
+					<input type="hidden" name="specialty_id" value="" class="form-control">
 					{% endif %}
 					<div class="form-group">
 						<label>Nombre:</label>
@@ -162,26 +148,14 @@
 						</span>
 					</div>
 					<div class="form-group">
-						<label>Descripción:</label>
+						<label>Descripción: {{ form1.description.value }}</label>
 						<input
 						type="text"
 						name="description" 
 						class="form-control {% if form1.description.errors %} is-invalid {% endif %}"
-						value="{{ form1.description.value|default_if_none:'' }}">
+						value="{{ form1.description.value|default_if_none:'sss' }}">
 						<span class="invalid-feedback" role="alert">
 							<strong>{{ form1.description.errors }}</strong>
-						</span>
-					</div>
-					<div class="form-group">
-						<label>Peso:</label>
-						<input 
-						type="number" 
-						name="weight" 
-						class="form-control {% if form1.weight.errors %} is-invalid {% endif %}" 
-						value="{{ form1.weight.value|default_if_none:'0' }}"
-						min="0">
-						<span class="invalid-feedback" role="alert">
-							<strong>{{ form1.weight.errors }}</strong>
 						</span>
 					</div>
 					<div class="form-group">
@@ -201,15 +175,16 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-				<button type="submit" class="btn btn-danger" form="form-edit-priority">Confirmar</button>
+				<button type="submit" class="btn btn-danger" form="form-edit-service">Confirmar</button>
 			</div>
 		</div>
 	</div>
 </div>
+{{form1}}
 <!-- /Modal para editar priority -->
 
 <!-- Modal para eliminar priority -->
-<div class="modal" tabindex="-1" role="dialog"  aria-hidden="true" id="modal-delete-priority">
+<div class="modal" tabindex="-1" role="dialog"  aria-hidden="true" id="modal-delete-service">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -219,10 +194,10 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<div> <p id="delete_priority_confirm"></p></div>
-				<form method="post" action="{% url 'destroy_priority' %}" id="form-delete-priority">
+				<div> <p id="delete_specialty_confirm"></p></div>
+				<form method="post" action="{% url 'destroy_specialty' %}" id="form-delete-priority">
 					{% csrf_token %}
-					<input type="hidden" name="priority_id" value="">
+					<input type="hidden" name="specialty_id" value="">
 				</form>
 			</div>
 			<div class="modal-footer">
@@ -240,13 +215,13 @@
 <script type="text/javascript">
 
 	{% if form1.name.errors or form1.description.errors %}
-		$("#modal-edit-priority").modal("show");
+		$("#modal-edit-service").modal("show");
 	{% endif %}
 
 	$(function () {
 		$('#search_priority').keyup(function () {
 			$.ajax({
-				url: '/mainapp/priorities/?from=search_input&search_text='+$('#search_priority').val(),
+				url: '/mainapp/specialties/?from=search_input&search_text='+$('#search_priority').val(),
 				dataType: "json",
 				success : function (data) {
 	                //console.log(data);
@@ -304,12 +279,12 @@
 			html += "<td>" + objects[i].status + "</td>";
 			html += "<td>"+
 					"<button class='btn btn-primary btn-sm'"+
-						"onclick=\"editPriority('" + objects[i].id + "')\">"+
+						"onclick=\"editService('" + objects[i].id + "')\">"+
 						"<i class='fas fa-edit'></i>"+
 					"</button> "+
 					"<button "+
 						"class='btn btn-danger btn-sm'"+
-						"onclick=\"deletePriority('" + objects[i].id + "','" + objects[i].name + "')\">"+
+						"onclick=\"deleteService('" + objects[i].id + "','" + objects[i].name + "')\">"+
 						"<i class='fas fa-trash-alt'></i>"+
 					"</button>"+
 					"</td>";
@@ -319,37 +294,38 @@
 		}
 	}
 
-	function editPriority(id){
+	function editService(id){
+		var page = "{{request.GET.page}}";
+		if(page == undefined || page == ""){
+			page = "";
+		}else{
+			page = "page="+page+"&";
+		}
 		$.ajax({
-			url: '/mainapp/priorities/?from=search_input&search_text='+$('#search_priority').val(),
+			url: '?'+page+'from=search_input&search_text='+$('#search_priority').val(),
 			dataType: "json",
 			success : function (data) {
                 var rows = data["rows"];
                 for(var i=0; i<rows.length; i++){
                 	if(rows[i].id == id){
-                		$("#form-edit-priority input[name=priority_id]").val(rows[i].id);
-                		$("#form-edit-priority input[name=name]").val(rows[i].name);
-                		$("#form-edit-priority input[name=description]").val(rows[i].description);
-                		$("#form-edit-priority input[name=weight]").val(rows[i].weight);
+                		$("#form-edit-service input[name='specialty_id']").val(rows[i].id);
+                		$("#form-edit-service input[name='name']").val(rows[i].name);
+                		$("#form-edit-service input[name='description']").val(rows[i].description);
                 		if(rows[i].status){
-                			$("#form-edit-priority input[name=status]").prop("checked", true);
+                			$("#form-edit-service input[name='status']").prop("checked", true);
                 		}
                 		break;
                 	}
                 }
-                $("#modal-edit-priority").modal("show");
+                $("#modal-edit-service").modal("show");
             }
 		});
 	}
 
-	function deletePriority(id, name){
-		$("input[name=priority_id]").val(id);
-		$("#delete_priority_confirm").text("Desea eliminar la prioridad: "+name);
-		$("#modal-delete-priority").modal("show");
+	function deleteService(id, name){
+		$("input[name=specialty_id]").val(id);
+		$("#delete_specialty_confirm").text("Desea eliminar el servicio: "+name);
+		$("#modal-delete-service").modal("show");
 	}
 </script>
 {% endblock %}
-
-
-
-

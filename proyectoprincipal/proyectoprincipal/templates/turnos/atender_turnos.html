@@ -7,89 +7,483 @@
 
 <div class="container">
 	<div class="row">
-		<div class="card col-sm-3" style="margin-left: 2rem" >
-			  <div class="card-body">
-			    <h1 class="card-title" style="text-align: center; font-size: 1.5rem">Ventanilla</h1>
-			    <h6 class="card-subtitle mb-2 text-muted" style="text-align: center;">Número de ventanilla</h6>
-			    <h1 class="display-1" style="text-align: center;">2</h1>
-			    <center><a href="#" class="card-link" >Tipo de turno</a></center>
-			  </div>
+		<div class="card col-sm-3">
+			<div class="card-body">
+				<h2 class="card-subtitle mb-2 text-muted" style="text-align: center;">Ubicación</h2>
+				<h3 style="text-align: center;">{% if status != '4' is True %} {{window}} {% else %}--{%endif%}</h3>
+				<center>
+					<button class="btn btn-secondary" value="0" id="user-status">
+						Seleccionar
+					</button>
+				</center>
 			</div>
-
-
-			<div class="card col-sm-8" style="margin-left: 1rem" >
-			  <div class="card-header">
-			    Turno Actual
-			  </div>
-			  <div class="card-body">
-			    <table class="table table-borderless">
-				  <thead>
-				    <tr>
-				      <th scope="col">Turno</th>
-				      <th scope="col">Servicio</th>
-				      <th scope="col">Cliente</th>
-				      <th scope="col">Identificación</th>
-				    </tr>
-				  </thead>
-				  <tbody>
-				    <tr>
-				      <th id="turn" scope="row"><h1 class="display-2">C05</h1></th>
-				      <td>Sacar Plata</td>
-				      <td>Otto Nule</td>
-				      <td>1143844395</td>
-				    </tr>
-				  </tbody>
-				</table>
-			  </div>
+			<center>
+				Estado de Ventanilla
+			</center>
+			<div class="row">
+				<div class="btn-group" role="group" aria-label="Basic example" style="width: 100%;">
+					<button type="button" class="btn btn-secondary" style="width: 33.3333%; padding: 0.5rem 0 0.5rem 0;" onclick="available()">
+						<i class="fas fa-play"></i>
+					</button>
+					<button type="button" class="btn btn-secondary " style="width: 33.3333%;" onclick="pause()">
+						<i class="fas fa-pause"></i>
+					</button>
+					<button type="button" class="btn btn-secondary" style="width: 33.3333%;" onclick="close()">
+						<i class="fas fa-stop-circle"></i>
+					</button>
+				</div>
 			</div>
-
-			
-	</div>
-	<div  style="text-align: center; margin-top: 8rem;">
-		<div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
-		  <button type="button" class="btn btn-secondary" style="font-size: 1.5rem;"><i class="fa fa-bullhorn" style="color: #751AFF"></i>Llamar Nuevamente</button>
-		  <button type="button" class="btn btn-secondary" style="font-size: 1.5rem;"><i class="fas fa-play" style="color: #04befe"></i>Iniciar Atención</button>
-		  <button type="button" class="btn btn-secondary" style="font-size: 1.5rem;"><i class="fas fa-stop" style="color: #FF0017"></i>Terminar Turno</button>
 		</div>
+		<div class="card col-sm-1 bg-light">
+		</div>
+		<div class="card col-sm-8">
+			<div class="card-header">
+				<center>
+					Turno Actual
+				</center>
+			</div>
+			<div class="card-body">
+				<table class="table table-borderless" id="current_turn">
+					<thead>
+						<tr>
+							<th scope="col">Turno</th>
+							<th scope="col">Servicio</th>
+							<th scope="col">Cliente</th>
+							<th scope="col">Identificación</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td id="turn" scope="row"><h1 class="display-2">{% if code %}{{code}}{% else %}--{% endif %}</h1></td>
+							<td>{% if service_name %}{{service_name}}{% else %}--{% endif %}</td>
+							<td>{% if name %} {{name}} {% else %}--{% endif %}</td>
+							<td>{% if client_id %}{{client_id}}{% else %}--{% endif %}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<input type="hidden" name="user_id" value="{{user.pk}}">
+	<input id="turn_id" type="hidden" name="turn_id" value="{{turn_id}}">
+	<input id="code" type="hidden" name="code" value="{{code}}">
+	<input id="window_id" type="hidden" name="window_id" value="">	
+	<input id="user_id" type="hidden" name="user_id" value="">	
+	<br>
+	<div class="row">
+		<div class="btn-group" role="group" aria-label="Basic example" style="width: 100%;">
+			<button type="button" class="btn btn-secondary" style="width: 33.3%; padding: 1.5rem 0 1.5rem 0;" onclick="call_again()">
+				<i class="fa fa-bullhorn" style="color: #751AFF"></i>
+				Llamar Nuevamente
+			</button>
+			<button type="button" class="btn btn-secondary" style="width: 33.3%;" onclick="start_attend()">
+				<i class="fas fa-play" style="color: #04befe" ></i>
+				Iniciar Atención
+			</button>
+			<button type="button" class="btn btn-secondary" style="width: 33.3%;" onclick="end_turn()">
+				<i class="fas fa-stop" style="color: #FF0017"></i>
+				Terminar Turno
+			</button>
+		</div>
+	</div>
+	<br>
+	<h2 for="next">Siguiente:</h2>
+	<div class="row" style="border: 1px #ccc solid; min-height: 4.2rem;">
+		<div class="col-sm-1" style="padding-left: 0; height: 4.2rem;">
+			<button 
+			type="submit" 
+			class="btn btn-secondary" 
+			id="next" 
+			style="font-size: 2.5rem; color: #FF0017; height: 4.2rem !important;" 
+			onclick="next_turn('{{user.pk}}')">
+			<i class="fas fa-forward"></i>
+			</button>
+		</div>
+		<div class="col-sm-11" style="width: 100%;">
+			<input type="text" data-role="tagsinput" id="turns1">
+		</div>
+	</div>
+	<div class="row">
 		
 	</div>
-
-	<div class="container-fluid" style="margin-top: 5rem;"  >
-		<h2 for="next">Siguiente:</h2>
-		<div class="container" style="background-color:#dee2e6; padding-left: 0">
-			<ul class="list-group list-group-horizontal" id="next_list" style="flex-direction:row; ">
-				<li class="list-group-item" style="background-color: transparent;"><span class="btn btn-secondary" id="next" style="font-size: 3rem; color: #FF0017;" ><i class="fas fa-forward"></i></i></span></h1></li>
-			  	<li class="list-group-item" style="background-color: transparent;"><span style="font-size: 3rem; color: #FF0017;" >C06</span></h1></li>
-			  	<li class="list-group-item" style="background-color: transparent;border: none;"><span style="font-size: 2rem; color: #04befe;">C07</span></li>
-			  	<li class="list-group-item" style="background-color: transparent;border: none;"><span style="font-size: 2rem; color: #04befe;">C08</span></li>
-			  	<li class="list-group-item" style="background-color: transparent;border: none;"><span style="font-size: 2rem; color: #04befe;">C09</span></li>
-			</ul>
-			
-		</div>
-	</div>
-
 </div>
 
+<div class="modal" id="choose_window" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Selecciona una Ubicación</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form method="POST" action="{% url 'select_window' %}" id="select-window-form">
+					{% csrf_token %}
+					<label>Ubicaciones Disponibles</label>
+					<input type="hidden" name="user" value="{{user.id}}">
+					<input type="hidden" name="status" value="3">
+					<div class="form-group">
+						<select class="form-control" name="window">
+							{% for window in form.window %}
+								{{window}}
+							{%endfor%}
+						</select>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="submit" class="btn btn-primary" form="select-window-form">Atender</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+{{queue}}
 
 {% endblock %}
 {% block myjs %}
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.js"></script>
 <script>
-$(function(){
+	//Configurar mensajes de alerta
+	toastr.options = {
+	  "closeButton": false,
+	  "debug": false,
+	  "newestOnTop": false,
+	  "progressBar": true,
+	  "positionClass": "toast-top-right",
+	  "preventDuplicates": false,
+	  "onclick": null,
+	  "showDuration": "300",
+	  "hideDuration": "1000",
+	  "timeOut": "3000",
+	  "extendedTimeOut": "1000",
+	  "showEasing": "swing",
+	  "hideEasing": "linear",
+	  "showMethod": "fadeIn",
+	  "hideMethod": "fadeOut"
+	}
 
-$('#next').on('click',function(){
-	$('#turn h1').html($('ul#next_list li:eq(1) span').text());
-	$('ul#next_list li:eq(1) span').html($('ul#next_list li:eq(2)').text());
-	$('ul#next_list li:eq(2)').remove();
+/**************************** Llamado del primer turno ************************/
+
+function next_turn(user_pk){
+	$.ajaxSetup({
+        headers: {
+            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+        }
+    });
+   	$.ajax({
+    	type: "GET",
+    	url: "{% url 'next_turn' %}",
+    	data: {'user_id':user_pk},
+    	success: function(data){
+    		if(data.code != ""){
+    			$('#current_turn tbody').html('<tr>\
+				      <td id="turn" scope="row"><h1 class="display-2">'+data.code+'</h1></td>\
+				      <td>'+data.service_name+'</td>\
+				      <td>'+data.name+'</td>\
+				      <td>'+data.client_id+'</td>\
+				    </tr>');
+
+    			$("input[name=turn_id]").val(data.id);
+	    		$("input[name=window_id]").val(data.window_id);
+	    		$("input[name=code]").val(data.code);
+	    	
+    		}
+    		switch(data.status){
+    			case '1': 	$('#attending').css('background-color','#28a745');
+							$('#attending').css('border-color','#28a745');
+							$('#attending').html('Libre <i class="fas fa-power-off"></i>');
+    						break;
+    			case '2': 	$('#attending').css('background-color','#6c757d');
+							$('#attending').css('border-color','#6c757d');
+							$('#attending').html('Ocupado <i class="fas fa-power-off"></i>');
+    						break;
+    			case '3': 	$('#attending').css('background-color','#e0a800');
+							$('#attending').css('border-color','#d39e00');
+							$('#attending').html('Pausado <i class="fas fa-power-off"></i>');
+    						break;
+    			case '4': 	$('#attending').css('background-color','#FF0017');
+							$('#attending').css('border-color','#FF0017');
+							$('#attending').html('Cerrado <i class="fas fa-power-off"></i>');
+    						break;
+    			default:
+    					break;
+    		}
+
+    		//Enviar la cola a todos los cajeros
+    		var queue = data.queue;
+    		sendMessage(queue);
+
+    		var window_name = '{{ window }}';
+
+    		if(data.code != ""){
+	    		//Enviar Mensaje a pantalla
+	    		sendMessage2({'turn' :data.code, 'window' : window_name, 'type': 1});
+	    	}else{
+	    		alert("No tienes más turnos pendientes");
+	    	}
+
+    	},
+    	
+    });
+}
+	/**************************** /Llamado del primer turno ************************/
+function call_again(){
+
+	
+	var code = $('#code').val();
+	
+	var window_name = '{{ window }}';
+
+	if(code != ""){
+	    		//Enviar Mensaje a pantalla
+	    		sendMessage2({'turn' :code, 'window' :window_name, 'type': 1});
+	    	}else{
+	    		alert("No tienes más turnos pendientes");
+	    	}
+
+}
+
+function start_attend(){
+	var turn_id =$("#turn_id").val();
+	var window_id = $("#window_id").val();
+		$.ajaxSetup({
+	        headers: {
+	            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+	        }
+    	});
+	   	$.ajax({
+	    	type: "GET",
+	    	url: "{% url 'start_attend' %}",
+	    	data: {"window_id":window_id,'turn_id':turn_id},
+	    	dataType:'json',
+	    	success: function(data){
+	    		if (data.success){
+	    			switch(data.status){
+	    				case '1': 	$('#attending').css('background-color','#28a745');
+							$('#attending').css('border-color','#28a745');
+							$('#attending').html('Libre <i class="fas fa-power-off"></i>');
+    						break;
+			    			case '2': 	$('#attending').css('background-color','#6c757d');
+										$('#attending').css('border-color','#6c757d');
+										$('#attending').html('Ocupado <i class="fas fa-power-off"></i>');
+			    						break;
+			    			case '3': 	$('#attending').css('background-color','#e0a800');
+										$('#attending').css('border-color','#d39e00');
+										$('#attending').html('Pausado <i class="fas fa-power-off"></i>');
+			    						break;
+			    			case '4': 	$('#attending').css('background-color','#FF0017');
+										$('#attending').css('border-color','#FF0017');
+										$('#attending').html('Cerrado <i class="fas fa-power-off"></i>');
+			    						break;
+			    			default:
+	    						break;
+	    			}
+	    		}
+
+	    		//Enviar la cola a todos los cajeros
+	    		var queue = data.queue;
+	    		sendMessage(queue);
+
+	    		var code = $('#code').val();
+	
+				var window_name = '{{ window }}';
+
+    		if(code != ""){
+	    		//Enviar Mensaje a pantalla
+	    		sendMessage2({'turn' :code, 'window' : window_name, 'type': 2});
+	    	}else{
+	    		alert("No tienes más turnos pendientes");
+	    	}
+	    	},
+	    	
+	    });
+}
+	
+function end_turn(){
+
+	var turn_id = $("#turn_id").val();
+
+		$.ajaxSetup({
+        headers: {
+            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+        }
+    });
+	   	$.ajax({
+	    	type: "GET",
+	    	url: "{% url 'end_attend' %}",
+	    	data: {'turn_id':turn_id},
+	    	success: function(data){
+	    		switch(data.status){
+	    			case '1': 	$('#attending').css('background-color','#28a745');
+							$('#attending').css('border-color','#28a745');
+							$('#attending').html('Libre <i class="fas fa-power-off"></i>');
+    						break;
+	    			case '2': 	$('#attending').css('background-color','#6c757d');
+								$('#attending').css('border-color','#6c757d');
+								$('#attending').html('Ocupado <i class="fas fa-power-off"></i>');
+	    						break;
+	    			case '3': 	$('#attending').css('background-color','#e0a800');
+								$('#attending').css('border-color','#d39e00');
+								$('#attending').html('Pausado <i class="fas fa-power-off"></i>');
+	    						break;
+	    			case '4': 	$('#attending').css('background-color','#FF0017');
+								$('#attending').css('border-color','#FF0017');
+								$('#attending').html('Cerrado <i class="fas fa-power-off"></i>');
+	    						break;
+	    			default:
+	    					break;
+	    		}
+
+	    		var queue = data.queue;
+	    		sendMessage(queue);
+
+	    		var code = $('#code').val();
+
+	    		if(code != ""){
+		    		//Enviar Mensaje a pantalla
+		    		sendMessage2({'turn' :code,'type': 3});
+		    	}else{
+		    		alert("No tienes más turnos pendientes");
+		    	}
+	    	},
+	    });
+	
+
+}
+
+	
 
 
+	/*************************** Chat para cajeros *****************************/
+	var chatSocketCajero = new ReconnectingWebSocket('ws://' + window.location.host +'/ws/mainapp/notification/cajero/');
+		var counter = 0;
+		chatSocketCajero.onmessage = function(e) {
+	        var data = JSON.parse(e.data);
+	        //Imprimir las colas en el tablero
+			var user_id = $("input[name=user_id]").val();
+			if(data.message[user_id] != undefined){
+				$(".bootstrap-tagsinput").empty();
+				var turns = data.message[user_id].turns;
+				$.each(turns, function (index, value) {
+					if (counter == 0) {
+						$(".bootstrap-tagsinput").append("<span class='badge badge badge-danger'>"+value+"</span>");
+					} else {
+						$(".bootstrap-tagsinput").append("<span class='badge badge badge-info'>"+value+"</span>");
+					}
+					counter++;
+				});
+				counter= 0;
+			}
+	    };
+
+   function sendMessage(message){
+    	chatSocketCajero.send(JSON.stringify({
+            'message': message
+        }));
+    }
+
+	var chatSocketCajeraPantalla = new ReconnectingWebSocket('ws://' + window.location.host +'/ws/mainapp/notification/pantalla/');
+	chatSocketCajeraPantalla.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+    };
+
+    function sendMessage2(message){
+    	chatSocketCajeraPantalla.send(JSON.stringify({
+            'message': message
+        }));
+    }
+
+    /*************************** /Chat para cajeros *****************************/
+
+
+//Seleccionar ventanilla y mostrar estado del cajero
+$("#user-status").click(function(){
+	$('#choose_window').modal("show");
 });
 
-
+//Seleccionar la ventana una sola vez
+$("#select-window-form").submit(function(e){
+	e.preventDefault();
+	var form = $(this);
+    var url = form.attr('action');
+    var formData = new FormData(this);
+    $.ajax({
+    	type: "POST",
+    	url: url,
+    	data: formData,
+    	success: function(data){
+    		$('#choose_window').modal("toggle");
+    		$(this).remove();
+    		$("#user-status").prop("disabled", true);
+    		if(!data.success){
+    			if(data.error == "open"){
+    				toastr.error("La ventanilla ya está ocupada", "Ventanilla");
+    				setTimeout(function(){ 
+    					location.reload();
+    				}, 3000);
+    			}
+    		}else{
+    			$("#window_id").val(data.window);
+    			$("#user-status").css('background-color','#28a745');
+				$("#user-status").css('border-color','#fff');
+				$("#user-status").html('Disponible');
+				var queue = data.queue;
+    			sendMessage(queue);
+    		}
+    	},
+    	cache: false,
+    	contentType: false,
+    	processData: false
+    });
 });
 
+function available(){
+	var window_id = $("#window_id").val();
+	var user_id = $("#user_id").val();
+	$.ajax({
+        url: 'change_status/',
+        data: {"user_id":user_id, "window_id":window_id, "status":"1"},
+        success: function(data) {
+        
+        },
+        error: function() {
+            console.log("No se ha podido obtener la información");
+        }
+    });
+}
 
+function pause(){
+	var window_id = $("#window_id").val();
+	var user_id = $("#user_id").val();
+	$.ajax({
+        url: 'change_status/',
+        data: {"user_id":user_id, "window_id":window_id, "status":"3"},
+        success: function(data) {
+        
+        },
+        error: function() {
+            console.log("No se ha podido obtener la información");
+        }
+    });
+}
+
+function close(){
+	var window_id = $("#window_id").val();
+	var user_id = $("#user_id").val();
+	$.ajax({
+        url: 'change_status/',
+        data: {"user_id":user_id, "window_id":window_id, status:"4"},
+        success: function(data) {
+        
+        },
+        error: function() {
+            console.log("No se ha podido obtener la información");
+        }
+    });
+}
 </script>
-
 
 {% endblock %}

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
-from .models import Profile, Rol, Priority, Location
+from django.contrib.auth.models import User, Group as Rol
+from .models import Profile, Service, Location, Specialty, LocationOnService
 from rest_framework import serializers
 
 
@@ -16,7 +16,6 @@ class UserForm(UserCreationForm):
     email = forms.EmailField(required=True)
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
-
     def __init__(self, *args, **kwargs):
         # Variable que indica que el form se está llamando desde la actualización del perfil
         from_update_profile = kwargs.pop('from_update_profile', False)
@@ -51,6 +50,7 @@ class UserForm(UserCreationForm):
             'password2',
             'is_active',
             'is_superuser',
+            'groups'
         )
 
 
@@ -64,35 +64,60 @@ class ProfileForm(forms.ModelForm):
             del kwargs['request']
         super(ProfileForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
-        if instance and instance.pk:
-            del self.fields['id_card']
-        if request:
-            if not request.user.is_superuser:
-                # Si el usuario no es superusuario, no puede editar su rol
-                del self.fields['rol']
+        # if instance and instance.pk:
+            # del self.fields['id_card']
 
     class Meta:
         model = Profile
-        fields = ('pic', 'rol', 'id_card', 'telephone')
+        fields = ('pic', 'id_card', 'telephone', 'specialty')
 
 
 class CreateRolForm(forms.ModelForm):
     class Meta:
         model = Rol
-        fields = ('name', 'permission')
+        fields = ('id', 'name', 'permissions')
 
 
 
 # Se usa el mismo formulario para crear y editar una prioridad
-class PriorityForm(forms.ModelForm):
+class ServiceForm(forms.ModelForm):
+    specialty = forms.ModelChoiceField(Specialty.objects.all())
     class Meta:
-        model = Priority
-        fields = ('id', 'name', 'description', 'weight', 'status')
+        model = Service
+        fields = ('id', 'name', 'description', 'status', 'specialty')
 
-# Se usa el mismo formulario para crear y editar una prioridad
+# Se usa el mismo formulario para crear y editar una localización
 class LocationForm(forms.ModelForm):
     class Meta:
         model = Location
         fields = ('id', 'name')
 
+class SpecialtyForm(forms.ModelForm):
+    class Meta:
+        model = Specialty
+        fields = ('id', 'name', 'description', 'status')
 
+### Form for channels ###
+class ComposeForm(forms.Form):
+    message = forms.CharField(
+            widget=forms.TextInput(
+                attrs={"class": "form-control"}
+                )
+            )
+
+
+class LocationOnServiceForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(LocationOnServiceForm, self).__init__(*args, **kwargs)
+        #Ventanillas que están atendiendo, abiertas o pusadas
+        open_windows = LocationOnService.objects.exclude(status='4')
+        open_windows_ids = []
+        for open_window in open_windows:
+            open_windows_ids.append(open_window.window_id)
+        #Solo se listan ventanillas cerradas
+        windows =  Location.objects.exclude(id__in=open_windows_ids)
+        self.fields['window'].queryset = windows
+
+    class Meta:
+        model = LocationOnService
+        fields = ('id', 'status', 'user', 'window')

@@ -164,21 +164,30 @@
         </div>
         <div class="col-12 col-md-6">
             <div class="form-group">
-
                 <label>Rol</label>
                 <select 
-                    class="form-control {% if profile_form.rol.errors %} is-invalid {% endif %}"
-                    name="rol">
-                    <option value="0">Seleccione:</option>
-                    {% for rol in profile_form.rol %}
-                        {{ rol }}
+                    class="form-control {% if user_form.groups.errors %} is-invalid {% endif %} selectpicker1"
+                    name="groups"
+                    multiple="true"
+                    data-live-search="true">
+                    {% for role in user_form.groups %}
+                        {{ role }}
                     {% endfor %}
                 </select>
                 <span class="invalid-feedback" role="alert">
-                    <strong>{{ profile_form.rol.errors }}</strong>
+                    <strong>{{ user_form.groups.errors }}</strong>
                 </span>
             </div>
-     
+            <div style="display: none;" id="specialties">
+                <div class="form-group">
+                    <label>Especialidad</label>
+                    <select class="form-control selectpicker" name="specialty">
+                        {% for specilaty in profile_form.specialty %}
+                            {{specilaty}}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
             <div class="form-group">
                 <label>Imagen</label>
 
@@ -194,7 +203,22 @@
             
             </div>
            
+            <div class="form-group">
+                <label style="display: inline;">Estado</label>
 
+                <input 
+                    type="checkbox" 
+                    name="is_active" 
+                    class="form-control {% if profile_form.is_active.errors %} is-invalid {% endif %}"
+                    style="display: inline;" 
+                    {% if user_form.is_active.value %} checked {% endif %}>
+
+                <span class="invalid-feedback" role="alert">
+
+                    <strong>{{ profile_form.is_active.errors }}</strong>
+                </span>
+            
+            </div>
             <div class="form-group">
                 <label>Contraseña</label>
                 <input 
@@ -226,6 +250,61 @@
         </form>
 
 </div>
-        </div>
+</div>
 
+{% if user_form.errors %}
+    <!-- Error messaging -->
+    <div id="errors">
+        <div class="inner">
+            <p>There were some errors in the information you entered. Please correct the following:</p>
+            {{ user_form.non_field_errors }}
+            <ul>
+                {% for field in form %}
+                    {% if field.errors %}<li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <!-- /Error messaging -->
+{% endif %}
+
+{% endblock %}
+
+{% block myjs %}
+<script type="text/javascript">
+    $('.selectpicker1').selectpicker({
+        style: 'btn-light',
+        size: 4,
+        noneSelectedText: 'Seleccione',
+    });
+
+    $('.selectpicker').selectpicker({
+        style: 'btn-light',
+        size: 4,
+        noneSelectedText: 'Seleccione',
+    });
+
+    function showSpecialtySelect(){
+        var roles = $(".selectpicker1 option:selected");
+        var cajero = false;
+        for(var i=0; i<roles.length; i++){
+            if(roles[i].text == "Cajero"){
+                cajero = true;
+            }
+        }
+        if(cajero){
+            $("#specialties").attr("style","display:inline;");  
+        }else{
+            $(".selectpicker").selectpicker("val", "");
+            $(".selectpicker").selectpicker("refresh");
+            $("#specialties").attr("style","display:none;");
+        }
+    }
+
+    showSpecialtySelect();
+
+    $("select[name=groups]").change(function(){
+        showSpecialtySelect();
+    });
+</script>
 {% endblock %}
