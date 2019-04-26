@@ -72,15 +72,15 @@
 	<br>
 	<div class="row">
 		<div class="btn-group" role="group" aria-label="Basic example" style="width: 100%;">
-			<button type="button" class="btn btn-secondary" style="width: 33.3%; padding: 1.5rem 0 1.5rem 0;" onclick="call_again()" disabled>
+			<button type="button" class="btn btn-secondary" style="width: 33.3%; padding: 1.5rem 0 1.5rem 0;" onclick="call_again()"  id="btn-aten-1" disabled>
 				<i class="fa fa-bullhorn" style="color: #751AFF"></i>
 				Llamar Nuevamente
 			</button>
-			<button type="button" class="btn btn-secondary" style="width: 33.3%;" onclick="start_attend()" disabled>
+			<button type="button" class="btn btn-secondary" style="width: 33.3%;" onclick="start_attend()" id="btn-aten-2" disabled>
 				<i class="fas fa-play" style="color: #04befe" ></i>
 				Iniciar Atención
 			</button>
-			<button type="button" class="btn btn-secondary" style="width: 33.3%;" onclick="end_turn()" disabled>
+			<button type="button" class="btn btn-secondary" style="width: 33.3%;" onclick="end_turn()" id="btn-aten-3" disabled>
 				<i class="fas fa-stop" style="color: #FF0017"></i>
 				Terminar Turno
 			</button>
@@ -195,6 +195,9 @@ function next_turn(user_pk){
     			$("input[name=turn_id]").val(data.id);
 	    		$("input[name=window_id]").val(data.window_id);
 	    		$("input[name=code]").val(data.code);
+	    		$("#btn-aten-1").prop("disabled", false);
+				$("#btn-aten-2").prop("disabled", false);
+				$("#btn-aten-3").prop("disabled", false);
 	    	
     		}
     		switch(data.status){
@@ -309,6 +312,8 @@ function start_attend(){
 }
 	
 function end_turn(){
+	var user_id = $("#user_id").val();
+	var window_id = $("#window_id").val();
 	var turn_id = $("#turn_id").val();
 		$.ajaxSetup({
         headers: {
@@ -318,7 +323,7 @@ function end_turn(){
 	   	$.ajax({
 	    	type: "GET",
 	    	url: "{% url 'end_attend' %}",
-	    	data: {'turn_id':turn_id},
+	    	data: {'turn_id':turn_id, 'user_id':user_id, 'window_id':window_id},
 	    	success: function(data){
 	    		switch(data.status){
 	    			case '1': 	$('#attending').css('background-color','#28a745');
@@ -467,7 +472,9 @@ function available(){
 				$("#w-status-2").removeClass("btn-warning");
 				$("#w-status-2").addClass("btn-secondary");
 				$(".bootstrap-tagsinput").empty();
+
 				$("#next").prop("disabled", false);
+
         		var queue = data.queue;
     			sendMessage(queue);
         	}
@@ -493,6 +500,9 @@ function pause(){
 				$("#w-status-2").addClass("btn-warning");
 				$(".bootstrap-tagsinput").empty();
 				$("#next").prop("disabled", true);
+				$("#btn-aten-1").prop("disabled", true);
+				$("#btn-aten-2").prop("disabled", true);
+				$("#btn-aten-3").prop("disabled", true);
         		var queue = data.queue;
     			sendMessage(queue);
         	}
