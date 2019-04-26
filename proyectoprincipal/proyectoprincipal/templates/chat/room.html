@@ -107,7 +107,7 @@
     </div>
   </div>
 </div>
-<audio  id="audio">
+<audio  id="audio" autoplay muted>
    <source src="/static/notifications/notificacion.mp3" type="audio/mp3"/>
 </audio>
     <!--  /Área de clientes -->
@@ -141,10 +141,10 @@
 
             $('#modal_turn').modal();
 
-            setTimeout(function() {
-                $("#new_turn").fadeOut(200);
-                $("#audio")[0].play();
-            },200);
+            // setTimeout(function() {
+            //     $("#new_turn").fadeOut(200);
+            //     $("#audio")[0].play();
+            // },200);
          
             setTimeout(function() {
                 $("#new_turn").fadeIn(200);

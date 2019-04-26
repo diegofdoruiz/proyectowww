@@ -333,25 +333,29 @@ function end_turn(){
 	    	data: {'turn_id':turn_id, 'user_id':user_id, 'window_id':window_id},
 	    	success: function(data){
 	    		switch(data.status){
-	    			case '1': 	$('#attending').css('background-color','#28a745');
-							$('#attending').css('border-color','#28a745');
-							$('#attending').html('Libre <i class="fas fa-power-off"></i>');
-    						break;
-	    			case '2': 	$('#attending').css('background-color','#6c757d');
-								$('#attending').css('border-color','#6c757d');
-								$('#attending').html('Ocupado <i class="fas fa-power-off"></i>');
-	    						break;
-	    			case '3': 	$('#attending').css('background-color','#e0a800');
-								$('#attending').css('border-color','#d39e00');
-								$('#attending').html('Pausado <i class="fas fa-power-off"></i>');
-	    						break;
-	    			case '4': 	$('#attending').css('background-color','#FF0017');
-								$('#attending').css('border-color','#FF0017');
-								$('#attending').html('Cerrado <i class="fas fa-power-off"></i>');
-	    						break;
+    				case '1': 	
+    					$('#user-status').css('background-color','#28a745');
+						$('#user-status').css('border-color','#28a745');
+						$('#user-status').html('Disponible');
+						break;
+	    			case '2': 	
+	    				$('#user-status').css('background-color','#6c757d');
+						$('#user-status').css('border-color','#6c757d');
+						$('#user-status').html('Ocupado');
+						break;
+	    			case '3': 	
+	    				$('#user-status').css('background-color','#e0a800');
+						$('#user-status').css('border-color','#d39e00');
+						$('#user-status').html('Pausado');
+						break;
+	    			case '4': 	
+	    				$('#user-status').css('background-color','#FF0017');
+						$('#user-status').css('border-color','#FF0017');
+						$('#user-status').html('Cerrado');
+						break;
 	    			default:
-	    					break;
-	    		}
+						break;
+    			}
 
 	    		var queue = data.queue;
 	    		sendMessage(queue);
