@@ -79,14 +79,14 @@ WSGI_APPLICATION = 'proyectoprincipal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-
-        'NAME': 'proyectowww',
-        'USER': 'www',
-        'PASSWORD':'www',
+        'NAME': 'basedatoswww',
+        'USER': 'postgres',
+        'PASSWORD': '123',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': 5432,
     }
 }
+
 
 
 # Password validation
