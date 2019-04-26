@@ -1,0 +1,15 @@
+.badge.badge.badge-info{
+	margin-top: 0;
+	min-height: 2rem;
+	font-size: 1.3rem;
+	font-weight: bold;
+}
+
+.badge.badge.badge-danger{
+	background-color: #FF0017;
+	margin-top: 0;
+	min-height: 2rem;
+	font-size: 1.3rem;
+	font-weight: bold;
+}
+

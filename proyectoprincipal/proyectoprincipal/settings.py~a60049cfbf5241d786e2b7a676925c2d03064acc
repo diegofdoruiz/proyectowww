@@ -25,12 +25,14 @@ SECRET_KEY = 'qg8gq0m*(5uo*za)g*o&uv$vr5!r4lx6-+ztb!ed7#8k+(-=%h'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ['186.147.128.79', 'localhost', '127.0.0.1']
 ALLOWED_HOSTS = ['*']
+
 
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
+    'mainapp',
     'proyectoprincipal',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,10 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'channels',
-    'mainapp',
-    'rolepermissions',
 ]
 
 MIDDLEWARE = [
@@ -55,7 +53,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'proyectoprincipal.urls'
-ASGI_APPLICATION = "proyectoprincipal.routing.application"
 
 TEMPLATES = [
     {
@@ -82,7 +79,8 @@ WSGI_APPLICATION = 'proyectoprincipal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'www2',
+
+        'NAME': 'proyectowww',
         'USER': 'www',
         'PASSWORD':'www',
         'HOST': 'localhost',
@@ -128,25 +126,12 @@ USE_TZ = True
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/home/'
 LOGOUT_REDIRECT_URL = '/'
-
-# Redis
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("localhost", 6379)],
-            # "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
-        },
-    },
-}
-
-ROLEPERMISSIONS_MODULE = 'proyectoprincipal.roles'
 
 # *********** Link Para recuperar Password ***********/
 # Para ver el link de recuperación de contraseña en la consola
@@ -155,9 +140,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During devel
 # Para enviar un correo con el link de recuperación de contraseña, Diego tiene user y pass. Solicitar para probar
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'pruebas.univalle@gmail.com'
-EMAIL_HOST_PASSWORD = 'Desarrollo12'
+EMAIL_HOST = ''
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 
 

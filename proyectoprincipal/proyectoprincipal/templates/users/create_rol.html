@@ -6,11 +6,17 @@
 <div class="container">
     <div class="row">
         <div class="col-12 col-md-6">
-        	<h1>Información de Perfil</h1>
+        	{% if form.name.value %}
+        	<h1>Actualizar Rol {{form.name.value}}</h1>
+        	{% else %}
+        	<h1>Crear Rol</h1>
+        	{% endif %}
         	<hr>
-        	{{rol_to_edit.permission}}
         	<form method="POST">
         		{% csrf_token %}
+        		{% if form.name.value %}
+	        	<input type="hidden" name="rol_id" value="{{form.instance.id}}">
+	        	{% endif %}
 	    		<div class="form-group">
 	    			<label>Nombre:</label>
 	    			<input
@@ -21,9 +27,13 @@
 	    		</div>
 	    		<div class="form-group">
 	    			<label>Permisos:</label>
-	    			<select class="form-control selectpicker" multiple="true">
-		    			{% for id,val in form.fields.permission.choices %}
-		    			<option value="{{ id }}"{% if form.fields.permission.value == id %} selected{% endif %}>{{ val }}</option>
+	    			<select 
+	    				class="form-control selectpicker" 
+	    				name="permissions" 
+	    				multiple="true"
+	    				data-live-search="true">
+		    			{% for permission in form.permissions %}
+		    			{{ permission }}
 		    			{% endfor %}
 	    			</select>
 	    		</div>
@@ -62,11 +72,9 @@
 		                    <td>{{ rol.id }}</td>
 		                    <td>{{ rol.name }}</td>
 		                    <td>
-		                        <a 
-		                        	class="btn btn-primary btn-sm" 
-		                        	href="#" >
-		                        	<i class="fas fa-edit"></i>
-		                        </a>
+	                        	<a href="/mainapp/roles/edit/{{ rol.id }}" class="btn btn-primary btn-sm">
+	                        		<i class="fas fa-edit"></i>
+	                        	</a>
 	                            <button 
 	                            	class="btn btn-danger btn-sm" 
 	                            	onclick="deleteRol( '{{ rol.id }}', '{{ rol.name }}' )">
@@ -103,45 +111,21 @@
     </div>
 </div>
 
-<!-- Modal para editar location -->
-<div class="modal" tabindex="-1" role="dialog"  aria-hidden="true" id="modal-edit-rol">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title">Edición de ubicación</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<form method="post" action="{% url 'edit_location' %}" id="form-edit-location">
-					{% csrf_token %}
-					{% if request %}
-					<input type="hidden" name="location_id" value="{{ request.POST.location_id }}" class="form-control">
-					{% else %}
-					<input type="hidden" name="location_id" value="" class="form-control">
-					{% endif %}
-					<div class="form-group">
-						<label>Nombre:</label>
-						<input 
-						type="text" 
-						name="name" 
-						class="form-control {% if form1.name.errors %} is-invalid {% endif %}" 
-						value="{{ form1.name.value|default_if_none:'' }}">
-						<span class="invalid-feedback" role="alert">
-							<strong>{{ form1.name.errors }}</strong>
-						</span>
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-				<button type="submit" class="btn btn-danger" form="form-edit-location">Confirmar</button>
-			</div>
-		</div>
-	</div>
-</div>
-<!-- /Modal para editar location -->
+{% if form.errors %}
+    <!-- Error messaging -->
+    <div id="errors">
+        <div class="inner">
+            <p>There were some errors in the information you entered. Please correct the following:</p>
+            {{ form.non_field_errors }}
+            <ul>
+                {% for field in form %}
+                    {% if field.errors %}<li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <!-- /Error messaging -->
+{% endif %}
 
 <!-- Modal para eliminar rol -->
 <div class="modal" tabindex="-1" role="dialog"  aria-hidden="true" id="modal-delete-rol">
@@ -169,6 +153,9 @@
 </div>
 <!-- /Modal para eliminar rol -->
 
+{% for rol in rr %}
+	{{rol.permissions.all}} <br>
+{% endfor %}
 
 {% endblock %}
 
