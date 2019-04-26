@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User, Group as Rol
-from .models import Profile, Service, Location, Specialty, LocationOnService
+from .models import Profile, Service, Location, Specialty, LocationOnService, Publicidad
 from rest_framework import serializers
 
 
@@ -105,6 +105,11 @@ class ComposeForm(forms.Form):
                 )
             )
 
+class PublicidadForm(forms.ModelForm):
+
+    class Meta:
+        model = Publicidad
+        fields = ['nombre','imagen']
 
 class LocationOnServiceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

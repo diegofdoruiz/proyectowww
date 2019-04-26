@@ -3,6 +3,9 @@
 {% block title %}New password{% endblock %}
 
 {% block main %}
+
+<div class="card" style="background-color: #fff">
+<div class="card-body">
 <div class="row">
 	<div class="col-12 col-md-6">
 		<h1>Agregar Especialidad</h1>
@@ -52,7 +55,7 @@
 		<div>
 			<p>
 				{% csrf_token %}
-				<label>buscar: </label>
+				<label>Buscar: </label>
 				{% if all_data.data.search_text != None %}
 				<input type="text" name="search" id="search_priority" value="{{ all_data.data.search_text }}">
 				{% else %}
@@ -115,6 +118,8 @@
 	    </ul>
 	    {% endif %}
 	</div>
+</div>
+</div>
 </div>
 
 

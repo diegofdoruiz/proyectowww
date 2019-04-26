@@ -3,84 +3,89 @@
 {% block title %}New password{% endblock %}
 
 {% block main %}
-    <div class="row">
-      <div class="col-12 col-md-6">
-        <p>
-            {% csrf_token %}
-            <label>buscar: </label>
-            {% if all_data.data.search_text != None %}
-                <input type="text" name="search" id="search" value="{{ all_data.data.search_text }}">
-            {% else %}
-                <input type="text" name="search" id="search">
-            {% endif %}
-        </p>
+<div class="card" style="background-color: #fff">
+  <div class="card-body">
+    
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <p>
+              {% csrf_token %}
+              <label>Buscar: </label>
+              {% if all_data.data.search_text != None %}
+                  <input type="text" name="search" id="search" value="{{ all_data.data.search_text }}">
+              {% else %}
+                  <input type="text" name="search" id="search">
+              {% endif %}
+          </p>
+        </div>
+        <div class="col-12 col-md-6" style="text-align: right;">
+          <a class="btn btn-secondary" href="{% url 'signup' %}">Agregar Usuario</a>
+        </div>
       </div>
-      <div class="col-12 col-md-6" style="text-align: right;">
-        <a class="btn btn-secondary" href="{% url 'signup' %}">Agregar Usuario</a>
-      </div>
-    </div>
-    <table class="table table-bordered" id="table-users-list">
-        <thead>
-            <tr>
+      <table class="table table-bordered" id="table-users-list">
+          <thead>
+              <tr>
 
-                <td>id</td>
-                <td>Username</td>
-                <td>Nombres</td>
-                <td>Apellidos</td>
-                <td>Email</td>
-                <td>Estado</td>
-                <td>Opciones</td>
-            </tr>
-        </thead>
-        <tbody>
-            {% if all_data.data.rows %}
-                {% for user in all_data.data.rows %}
+                  <td>id</td>
+                  <td>Username</td>
+                  <td>Nombres</td>
+                  <td>Apellidos</td>
+                  <td>Email</td>
+                  <td>Estado</td>
+                  <td>Opciones</td>
+              </tr>
+          </thead>
+          <tbody>
+              {% if all_data.data.rows %}
+                  {% for user in all_data.data.rows %}
 
-                <tr id="table-rows">
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.first_name }}</td>
-                    <td>{{ user.last_name }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.is_active }}</td>
-                    <td>
-                        <a class="btn btn-primary" href="{% url 'user_edit' user.id %}" >Editar</a>
-                        {% if not user.is_superuser %}
-                            {% if user.is_active %}
+                  <tr id="table-rows">
+                      <td>{{ user.id }}</td>
+                      <td>{{ user.username }}</td>
+                      <td>{{ user.first_name }}</td>
+                      <td>{{ user.last_name }}</td>
+                      <td>{{ user.email }}</td>
+                      <td>{{ user.is_active }}</td>
+                      <td>
+                          <a class="btn btn-primary" href="{% url 'user_edit' user.id %}" >Editar</a>
+                          {% if not user.is_superuser %}
+                              {% if user.is_active %}
 
-                                <a class="btn btn-danger" onclick="open_modal( '{{ user.id }}', '{{ user.first_name }}', '{{ user.last_name }}', '{{ False }}' )">Deacti</a>
-                            {% else %}
-                                <a class="btn btn-info" onclick="open_modal( '{{ user.id }}', '{{ user.first_name }}', '{{ user.last_name }}',  '{{ True }}')">Active</a>
-                            {% endif %}
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            {% endif %}
-        </tbody>
-    </table>
+                                  <a class="btn btn-danger" onclick="open_modal( '{{ user.id }}', '{{ user.first_name }}', '{{ user.last_name }}', '{{ False }}' )">Borrar</a>
+                              {% else %}
+                                  <a class="btn btn-info" onclick="open_modal( '{{ user.id }}', '{{ user.first_name }}', '{{ user.last_name }}',  '{{ True }}')">Active</a>
+                              {% endif %}
+                          {% endif %}
+                      </td>
+                  </tr>
+                  {% endfor %}
+              {% endif %}
+          </tbody>
+      </table>
 
-    {% if all_data.data.pag_links.next_url != None or all_data.data.pag_links.previous_url != None %}
-      <ul class="pagination" id="ul-pagination">
-        {% if all_data.data.pag_links.previous_url != None %}
-          <li><a href="{{ all_data.data.pag_links.previous_url }}">&laquo;</a></li>
-        {% else %}
-          <li class="disabled"><span>&laquo;</span></li>
-        {% endif %}
-        {% for link in all_data.data.pag_links.page_links %}
-          {% if link.2 %}
-            <li class="active"><span>{{ link.1 }} <span class="sr-only">(current)</span></span></li>
+      {% if all_data.data.pag_links.next_url != None or all_data.data.pag_links.previous_url != None %}
+        <ul class="pagination" id="ul-pagination">
+          {% if all_data.data.pag_links.previous_url != None %}
+            <li><a href="{{ all_data.data.pag_links.previous_url }}">&laquo;</a></li>
           {% else %}
-            <li><a href="{{ link.0 }}">{{ link.1 }}</a></li>
+            <li class="disabled"><span>&laquo;</span></li>
           {% endif %}
-        {% endfor %}
-        {% if all_data.data.pag_links.next_url != None %}
-          <li><a href="{{ all_data.data.pag_links.next_url }}">&raquo;</a></li>
-        {% else %}
-          <li class="disabled"><span>&raquo;</span></li>
-        {% endif %}
-      </ul>
-    {% endif %}
+          {% for link in all_data.data.pag_links.page_links %}
+            {% if link.2 %}
+              <li class="active"><span>{{ link.1 }} <span class="sr-only">(current)</span></span></li>
+            {% else %}
+              <li><a href="{{ link.0 }}">{{ link.1 }}</a></li>
+            {% endif %}
+          {% endfor %}
+          {% if all_data.data.pag_links.next_url != None %}
+            <li><a href="{{ all_data.data.pag_links.next_url }}">&raquo;</a></li>
+          {% else %}
+            <li class="disabled"><span>&raquo;</span></li>
+          {% endif %}
+        </ul>
+      {% endif %}
+  </div>
+</div>
 
 <!-- Modal -->
 <div class="modal fade" id="delete_confirm" tabindex="-1" role="dialog"  aria-hidden="true">

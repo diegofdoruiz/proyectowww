@@ -25,14 +25,14 @@ SECRET_KEY = 'qg8gq0m*(5uo*za)g*o&uv$vr5!r4lx6-+ztb!ed7#8k+(-=%h'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
-# ALLOWED_HOSTS = ['186.147.128.79', 'localhost', '127.0.0.1']
 ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
+    'mainapp',
     'proyectoprincipal',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -40,10 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'channels',
-    'mainapp',
-    'rolepermissions',
 ]
 
 MIDDLEWARE = [
@@ -57,7 +53,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'proyectoprincipal.urls'
-ASGI_APPLICATION = "proyectoprincipal.routing.application"
 
 TEMPLATES = [
     {
@@ -137,19 +132,6 @@ STATIC_URL = '/static/'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/home/'
 LOGOUT_REDIRECT_URL = '/'
-
-# Redis
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("localhost", 6379)],
-            # "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
-        },
-    },
-}
-
-ROLEPERMISSIONS_MODULE = 'proyectoprincipal.roles'
 
 # *********** Link Para recuperar Password ***********/
 # Para ver el link de recuperación de contraseña en la consola
