@@ -80,7 +80,7 @@
                 {% elif step4 %}
                 <input type="hidden" name="turn" value="{{turn}}">
                 {% else %}
-                    <input type="hidden" name="turn" value="">
+                <input type="hidden" name="turn" value="">
                 {% endif %}
             </div>
         </div>
@@ -116,6 +116,12 @@
     <!-- /Modal para mostrar el turno --> 
 
     <!--  /Área de clientes -->
+
+    {% if step4 %}
+
+        {{queue}}
+
+    {% endif %}
 {% endblock %}
 
 {% block footer %}
@@ -145,7 +151,7 @@
     var turn = $("input[name='turn']").val();
     if (turn != undefined) {
         $('#turn-cofirmation-modal').modal({backdrop: 'static', keyboard: false});
-        $("#turn-cofirmation-modal").modal("show");
+        //$("#turn-cofirmation-modal").modal("show");
     }
 
     function redirecToRequestTurn(){
@@ -161,12 +167,29 @@
         }));
     }
 
-    var step4 = "{{step4}}";
-    if(step4 != ""){
-        var queue = "{{ queue|safe }}";
-        console.log(queue);
-        sendMessage(queue);
-    }
+    {% if step4 %}
+        $.ajax({
+            url: '/mainapp/get_queue/',
+            success: function(data) {
+                if(data.success){
+                    var queue = data.queue;
+                    sendMessage(queue);
+                }
+            },
+            error: function() {
+                console.log("No se ha podido obtener la información");
+            }
+        });
+    {% endif %}
+
+
+    // if(step4 != ""){
+    //     var queue = '{{ queue|safe }}';
+    //     console.log(JSON.parse(queue));
+    //     sendMessage(queue);
+    // }
+
+
     /*************************** /Chat para cajeros *****************************/
 
     // document.querySelector('#chat-message-input').focus();

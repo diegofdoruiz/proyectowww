@@ -38,6 +38,7 @@ urlpatterns = [
 
     # Pedir turno
     path('pedir_turno/', views.pedir_turno, name='pedir_turno'),
+    path('get_queue/', views.get_queue, name='get_queue'),
 
     path('tests/', views.tests, name='tests'),
     path('next_turn/', views.next_turn, name='next_turn'),

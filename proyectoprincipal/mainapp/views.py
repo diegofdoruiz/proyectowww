@@ -402,7 +402,7 @@ def destroy_specialty(request):
 
 @login_required
 def atencion_clientes(request):
-    # LocationOnService.objects.filter(user=request.user).update(status='4')
+    LocationOnService.objects.filter(user=request.user).update(status='4')
     form = LocationOnServiceForm()
     return render(request, 'turnos/atender_turnos.html',{'form':form})
 
@@ -417,17 +417,26 @@ def select_window(request):
         LocationOnService.objects.filter(user=request.user).update(status='4')
         window_on_service, created = LocationOnService.objects.get_or_create(
             user_id=request.POST.get('user'),
-            status=request.POST.get('status'),
             window_id=request.POST.get('window'),
         )
         if window_on_service or created == True:
+            window_on_service.status = request.POST.get('status')
             queue = Queue()
             all_queue = queue.get_all_queue()
-            return JsonResponse({'success':True, 'window':request.POST.get('window'), 'queue':all_queue})
+            window = Location.objects.get(id=request.POST.get('window'))
+            return JsonResponse({'success':True, 'w_id':window.id, 'w_name':window.name, 'queue':all_queue})
     return JsonResponse({'success':False, 'error':''})
 
 def change_status(request):
-    return JsonResponse({'success':False, 'error':''})
+    user = request.GET.get('user_id')
+    window = request.GET.get('window_id')
+    status = request.GET.get('status')
+    los = LocationOnService.objects.filter(user_id=user, window_id=window).update(status=status)
+    if los:
+        queue = Queue()
+        all_queue = queue.get_all_queue()
+        return JsonResponse({'success':True, 'queue':all_queue})    
+    return JsonResponse({'success':False})
 
         
 
@@ -551,7 +560,7 @@ def pedir_turno(request, turn=''):
                         from_date = datetime.datetime.combine(from_date, datetime.time.min)
                         to_date = datetime.datetime.combine(from_date, datetime.time.max)
                         turns = Turn.objects.all().filter(specialty=specialty, service=service, created_at__range=(from_date, to_date)).count()
-                        character = turn.specialty.name[0]+turn.service.name[0].upper()
+                        character = turn.service.name[0]+turn.service.name[1].upper()
                         if turns <= 0:
                             code = character+str(1)
                         else:
@@ -564,7 +573,6 @@ def pedir_turno(request, turn=''):
                         return render(request, 'turnos/pedir_turno.html', {
                             'step4':True,
                             'turn':code,
-                            'queue':all_queue
                             }
                         )
                     else:
@@ -575,6 +583,12 @@ def pedir_turno(request, turn=''):
                 return render(request, 'turnos/pedir_turno.html', {'step1':True, 'error':''})
 
     return render(request, 'turnos/pedir_turno.html', {'step1':True, 'error':''})
+
+def get_queue(request):
+    queue = Queue()
+    all_queue = queue.get_all_queue()
+    return JsonResponse({'success':True, 'queue':all_queue})
+
 
 def tests(request):
     queue = Queue()
@@ -596,6 +610,7 @@ def next_turn(request):
     queue = Queue()
     if request.GET:
         user_id = request.GET.get('user_id')
+        window_id = request.GET.get('window_id')
         user = User.objects.get(pk=user_id)
         turn = queue.get_next(user)
         service_id = turn.service_id
@@ -604,7 +619,7 @@ def next_turn(request):
         client= User.objects.get(pk=client_id);
         profile = Profile.objects.get(user=client)
         all_queue = queue.get_all_queue()
-        window_on_service = LocationOnService.objects.get(user=request.user)
+        window_on_service = LocationOnService.objects.get(user_id=user_id, window_id=window_id)
         window_on_service.status = '1'
         window_on_service.save()
         if turn:
@@ -627,10 +642,11 @@ def next_turn(request):
 @transaction.atomic
 def start_attend(request):
     if request.GET:
-        print(request.GET.get('turn_id'))
+        user_id = request.GET.get('user_id')
+        window_id = request.GET.get('window_id')
         queue = Queue()
         all_queue = queue.get_all_queue()
-        window_on_service = LocationOnService.objects.get(user=request.user)
+        window_on_service = LocationOnService.objects.get(user_id=user_id, window_id=window_id)
         turn_id = request.GET.get('turn_id')
         if turn_id:
             window_id = request.GET.get('window_id')
@@ -661,13 +677,15 @@ def start_attend(request):
 def end_attend(request):
     if request.GET:
         turn_id = request.GET.get('turn_id')
+        user_id = request.GET.get('user_id')
+        window_id = request.GET.get('window_id')
         turn = Turn.objects.get(pk=turn_id)
         turn.status = '4'
         turn.end_attend = datetime.datetime.now()
         turn.save()
         queue = Queue()
         all_queue = queue.get_all_queue()
-        window_on_service = LocationOnService.objects.get(user=request.user)
+        window_on_service = LocationOnService.objects.get(user_id=user_id, window_id=window_id)
         window_on_service.status = '1'
         window_on_service.save()
         data = {
