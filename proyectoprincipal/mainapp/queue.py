@@ -84,7 +84,8 @@ class Queue():
     def get_all_queue(self):
         window_detail = {}
         windows_detail = {}
-        for window in self.windows_on_service:
+        windows_on_service = LocationOnService.objects.all().filter(status=1)
+        for window in windows_on_service:
             window_detail['turns'] = self.build_queue_for_user(window.user)
             windows_detail[window.user.pk] = window_detail 
             window = None

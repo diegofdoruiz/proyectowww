@@ -99,6 +99,9 @@ class LocationOnService(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=1, choices=MY_CHOICES)
 
+    def __str__(self):
+        return self.user
+
 ### Models for channels ###
 class ThreadManager(models.Manager):
     def by_user(self, user):

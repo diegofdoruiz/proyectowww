@@ -11,9 +11,9 @@
 		<div class="card col-sm-3">
 			<div class="card-body">
 				<h2 class="card-subtitle mb-2 text-muted" style="text-align: center;">Ubicación</h2>
-				<h3 style="text-align: center;">{% if status != '4' is True %} {{window}} {% else %}--{%endif%}</h3>
 				<center>
-					<button class="btn btn-secondary" value="0" id="user-status">
+					<h3 id="window_title"></h3>
+					<button class="btn btn-danger" value="0" id="user-status">
 						Seleccionar
 					</button>
 				</center>
@@ -23,13 +23,13 @@
 			</center>
 			<div class="row">
 				<div class="btn-group" role="group" aria-label="Basic example" style="width: 100%;">
-					<button type="button" class="btn btn-secondary" style="width: 33.3333%; padding: 0.5rem 0 0.5rem 0;" onclick="available()">
+					<button type="button" class="btn btn-secondary" style="width: 33.3333%; padding: 0.5rem 0 0.5rem 0;" onclick="available()" disabled id="w-status-1">
 						<i class="fas fa-play"></i>
 					</button>
-					<button type="button" class="btn btn-secondary " style="width: 33.3333%;" onclick="pause()">
+					<button type="button" class="btn btn-secondary " style="width: 33.3333%;" onclick="pause()" disabled id="w-status-2">
 						<i class="fas fa-pause"></i>
 					</button>
-					<button type="button" class="btn btn-secondary" style="width: 33.3333%;" onclick="close()">
+					<button type="button" class="btn btn-secondary" style="width: 33.3333%;" onclick="close()" disabled id="w-status-3">
 						<i class="fas fa-stop-circle"></i>
 					</button>
 				</div>
@@ -66,23 +66,23 @@
 		</div>
 	</div>
 
-	<input type="hidden" name="user_id" value="{{user.pk}}">
-	<input id="turn_id" type="hidden" name="turn_id" value="{{turn_id}}">
+	<input type="hidden" name="user_id" value="{{user.pk}}" id="user_id">
+	<input id="turn_id" type="hidden" name="turn_id" value="">
 	<input id="code" type="hidden" name="code" value="{{code}}">
 	<input id="window_id" type="hidden" name="window_id" value="">	
-	<input id="user_id" type="hidden" name="user_id" value="">	
+	<input id="window_name" type="hidden" name="window_name" value="">	
 	<br>
 	<div class="row">
 		<div class="btn-group" role="group" aria-label="Basic example" style="width: 100%;">
-			<button type="button" class="btn btn-secondary" style="width: 33.3%; padding: 1.5rem 0 1.5rem 0;" onclick="call_again()">
+			<button type="button" class="btn btn-secondary" style="width: 33.3%; padding: 1.5rem 0 1.5rem 0;" onclick="call_again()"  id="btn-aten-1" disabled>
 				<i class="fa fa-bullhorn" style="color: #751AFF"></i>
 				Llamar Nuevamente
 			</button>
-			<button type="button" class="btn btn-secondary" style="width: 33.3%;" onclick="start_attend()">
+			<button type="button" class="btn btn-secondary" style="width: 33.3%;" onclick="start_attend()" id="btn-aten-2" disabled>
 				<i class="fas fa-play" style="color: #04befe" ></i>
 				Iniciar Atención
 			</button>
-			<button type="button" class="btn btn-secondary" style="width: 33.3%;" onclick="end_turn()">
+			<button type="button" class="btn btn-secondary" style="width: 33.3%;" onclick="end_turn()" id="btn-aten-3" disabled>
 				<i class="fas fa-stop" style="color: #FF0017"></i>
 				Terminar Turno
 			</button>
@@ -90,14 +90,15 @@
 	</div>
 	<br>
 	<h2 for="next">Siguiente:</h2>
-	<div class="row" style="border: 1px #ccc solid; min-height: 4.2rem;">
-		<div class="col-sm-1" style="padding-left: 0; height: 4.2rem;">
+	<div class="row" style="border: 1px #ccc solid; min-height: 5rem;">
+		<div class="col-sm-1" style="padding-left: 0; height: 5rem;">
 			<button 
 			type="submit" 
 			class="btn btn-secondary" 
 			id="next" 
-			style="font-size: 2.5rem; color: #FF0017; height: 4.2rem !important;" 
-			onclick="next_turn('{{user.pk}}')">
+			style="font-size: 2.5rem; color: #FF0017; height: 5rem !important;" 
+			onclick="next_turn()"
+			disabled>
 			<i class="fas fa-forward"></i>
 			</button>
 		</div>
@@ -149,6 +150,10 @@
 {% block myjs %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.js"></script>
 <script>
+	$( document ).ready(function() {
+		$(".bootstrap-tagsinput").css("min-height","2.5rem");
+	});
+
 	//Configurar mensajes de alerta
 	toastr.options = {
 	  "closeButton": false,
@@ -171,6 +176,8 @@
 /**************************** Llamado del primer turno ************************/
 
 function next_turn(user_pk){
+	var user_id = $("#user_id").val();
+	var window_id = $("#window_id").val();
 	$.ajaxSetup({
         headers: {
             'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
@@ -179,7 +186,7 @@ function next_turn(user_pk){
    	$.ajax({
     	type: "GET",
     	url: "{% url 'next_turn' %}",
-    	data: {'user_id':user_pk},
+    	data: {'user_id':user_id, 'window_id':window_id},
     	success: function(data){
     		if(data.code != ""){
     			$('#current_turn tbody').html('<tr>\
@@ -192,24 +199,27 @@ function next_turn(user_pk){
     			$("input[name=turn_id]").val(data.id);
 	    		$("input[name=window_id]").val(data.window_id);
 	    		$("input[name=code]").val(data.code);
+	    		$("#btn-aten-1").prop("disabled", false);
+				$("#btn-aten-2").prop("disabled", false);
+				$("#btn-aten-3").prop("disabled", false);
 	    	
     		}
     		switch(data.status){
-    			case '1': 	$('#attending').css('background-color','#28a745');
-							$('#attending').css('border-color','#28a745');
-							$('#attending').html('Libre <i class="fas fa-power-off"></i>');
+    			case '1': 	$('#user-status').css('background-color','#28a745');
+							$('#user-status').css('border-color','#28a745');
+							$('#user-status').html('Disponible');
     						break;
-    			case '2': 	$('#attending').css('background-color','#6c757d');
-							$('#attending').css('border-color','#6c757d');
-							$('#attending').html('Ocupado <i class="fas fa-power-off"></i>');
+    			case '2': 	$('#user-status').css('background-color','#6c757d');
+							$('#user-status').css('border-color','#6c757d');
+							$('#user-status').html('Ocupado');
     						break;
-    			case '3': 	$('#attending').css('background-color','#e0a800');
-							$('#attending').css('border-color','#d39e00');
-							$('#attending').html('Pausado <i class="fas fa-power-off"></i>');
+    			case '3': 	$('#user-status').css('background-color','#e0a800');
+							$('#user-status').css('border-color','#d39e00');
+							$('#user-status').html('Pausado');
     						break;
-    			case '4': 	$('#attending').css('background-color','#FF0017');
-							$('#attending').css('border-color','#FF0017');
-							$('#attending').html('Cerrado <i class="fas fa-power-off"></i>');
+    			case '4': 	$('#user-status').css('background-color','#FF0017');
+							$('#user-status').css('border-color','#FF0017');
+							$('#user-status').html('Cerrado');
     						break;
     			default:
     					break;
@@ -219,7 +229,7 @@ function next_turn(user_pk){
     		var queue = data.queue;
     		sendMessage(queue);
 
-    		var window_name = '{{ window }}';
+    		var window_name = $("#window_name").val();
 
     		if(data.code != ""){
 	    		//Enviar Mensaje a pantalla
@@ -238,7 +248,7 @@ function call_again(){
 	
 	var code = $('#code').val();
 	
-	var window_name = '{{ window }}';
+	var window_name = $("#window_name").val();
 
 	if(code != ""){
 	    		//Enviar Mensaje a pantalla
@@ -251,6 +261,7 @@ function call_again(){
 
 function start_attend(){
 	var turn_id =$("#turn_id").val();
+	var user_id = $("#user_id").val();
 	var window_id = $("#window_id").val();
 		$.ajaxSetup({
 	        headers: {
@@ -260,29 +271,33 @@ function start_attend(){
 	   	$.ajax({
 	    	type: "GET",
 	    	url: "{% url 'start_attend' %}",
-	    	data: {"window_id":window_id,'turn_id':turn_id},
+	    	data: {"window_id":window_id,"turn_id":turn_id, "user_id":user_id},
 	    	dataType:'json',
 	    	success: function(data){
 	    		if (data.success){
 	    			switch(data.status){
-	    				case '1': 	$('#attending').css('background-color','#28a745');
-							$('#attending').css('border-color','#28a745');
-							$('#attending').html('Libre <i class="fas fa-power-off"></i>');
+	    				case '1': 	
+	    					$('#user-status').css('background-color','#28a745');
+							$('#user-status').css('border-color','#28a745');
+							$('#user-status').html('Disponible');
     						break;
-			    			case '2': 	$('#attending').css('background-color','#6c757d');
-										$('#attending').css('border-color','#6c757d');
-										$('#attending').html('Ocupado <i class="fas fa-power-off"></i>');
-			    						break;
-			    			case '3': 	$('#attending').css('background-color','#e0a800');
-										$('#attending').css('border-color','#d39e00');
-										$('#attending').html('Pausado <i class="fas fa-power-off"></i>');
-			    						break;
-			    			case '4': 	$('#attending').css('background-color','#FF0017');
-										$('#attending').css('border-color','#FF0017');
-										$('#attending').html('Cerrado <i class="fas fa-power-off"></i>');
-			    						break;
-			    			default:
-	    						break;
+		    			case '2': 	
+		    				$('#user-status').css('background-color','#6c757d');
+							$('#user-status').css('border-color','#6c757d');
+							$('#user-status').html('Ocupado');
+    						break;
+		    			case '3': 	
+		    				$('#user-status').css('background-color','#e0a800');
+							$('#user-status').css('border-color','#d39e00');
+							$('#user-status').html('Pausado');
+    						break;
+		    			case '4': 	
+		    				$('#user-status').css('background-color','#FF0017');
+							$('#user-status').css('border-color','#FF0017');
+							$('#user-status').html('Cerrado');
+    						break;
+		    			default:
+    						break;
 	    			}
 	    		}
 
@@ -292,7 +307,7 @@ function start_attend(){
 
 	    		var code = $('#code').val();
 	
-				var window_name = '{{ window }}';
+				var window_name = $("#window_name").val();
 
     		if(code != ""){
 	    		//Enviar Mensaje a pantalla
@@ -306,9 +321,9 @@ function start_attend(){
 }
 	
 function end_turn(){
-
+	var user_id = $("#user_id").val();
+	var window_id = $("#window_id").val();
 	var turn_id = $("#turn_id").val();
-
 		$.ajaxSetup({
         headers: {
             'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
@@ -317,7 +332,7 @@ function end_turn(){
 	   	$.ajax({
 	    	type: "GET",
 	    	url: "{% url 'end_attend' %}",
-	    	data: {'turn_id':turn_id},
+	    	data: {'turn_id':turn_id, 'user_id':user_id, 'window_id':window_id},
 	    	success: function(data){
 	    		switch(data.status){
 	    			case '1': 	$('#attending').css('background-color','#28a745');
@@ -353,8 +368,6 @@ function end_turn(){
 		    	}
 	    	},
 	    });
-	
-
 }
 
 	
@@ -429,10 +442,21 @@ $("#select-window-form").submit(function(e){
     				}, 3000);
     			}
     		}else{
-    			$("#window_id").val(data.window);
+    			$("#window_id").val(data.w_id);
+    			$("#window_name").val(data.w_name);
+    			$("#window_title").text(data.w_name);
+
     			$("#user-status").css('background-color','#28a745');
 				$("#user-status").css('border-color','#fff');
 				$("#user-status").html('Disponible');
+
+				$("#w-status-1").prop("disabled", false);
+				$("#w-status-2").prop("disabled", false);
+				$("#w-status-3").prop("disabled", false);
+
+				$("#w-status-2").removeClass("btn-secondary");
+				$("#w-status-2").addClass("btn-warning");
+
 				var queue = data.queue;
     			sendMessage(queue);
     		}
@@ -447,10 +471,23 @@ function available(){
 	var window_id = $("#window_id").val();
 	var user_id = $("#user_id").val();
 	$.ajax({
-        url: 'change_status/',
+        url: '/mainapp/change_status/',
         data: {"user_id":user_id, "window_id":window_id, "status":"1"},
         success: function(data) {
-        
+        	if(data.success){
+
+				$("#w-status-1").removeClass("btn-secondary");
+				$("#w-status-1").addClass("btn-success");
+
+				$("#w-status-2").removeClass("btn-warning");
+				$("#w-status-2").addClass("btn-secondary");
+				$(".bootstrap-tagsinput").empty();
+
+				$("#next").prop("disabled", false);
+
+        		var queue = data.queue;
+    			sendMessage(queue);
+        	}
         },
         error: function() {
             console.log("No se ha podido obtener la información");
@@ -462,10 +499,23 @@ function pause(){
 	var window_id = $("#window_id").val();
 	var user_id = $("#user_id").val();
 	$.ajax({
-        url: 'change_status/',
+        url: '/mainapp/change_status/',
         data: {"user_id":user_id, "window_id":window_id, "status":"3"},
         success: function(data) {
-        
+        	if(data.success){
+        		$("#w-status-1").removeClass("btn-success");
+				$("#w-status-1").addClass("btn-secondary");
+				$(".bootstrap-tagsinput").empty();
+				$("#w-status-2").removeClass("btn-secondary");
+				$("#w-status-2").addClass("btn-warning");
+				$(".bootstrap-tagsinput").empty();
+				$("#next").prop("disabled", true);
+				$("#btn-aten-1").prop("disabled", true);
+				$("#btn-aten-2").prop("disabled", true);
+				$("#btn-aten-3").prop("disabled", true);
+        		var queue = data.queue;
+    			sendMessage(queue);
+        	}
         },
         error: function() {
             console.log("No se ha podido obtener la información");
@@ -477,10 +527,13 @@ function close(){
 	var window_id = $("#window_id").val();
 	var user_id = $("#user_id").val();
 	$.ajax({
-        url: 'change_status/',
+        url: '/mainapp/change_status/',
         data: {"user_id":user_id, "window_id":window_id, status:"4"},
         success: function(data) {
-        
+        	if(data.success){
+        		var queue = data.queue;
+    			sendMessage(queue);
+        	}
         },
         error: function() {
             console.log("No se ha podido obtener la información");
